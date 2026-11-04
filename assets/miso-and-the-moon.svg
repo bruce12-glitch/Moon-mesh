@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 365">
+  <g fill="#fff" stroke="#282331" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path data-part="Crescent moon" d="M251 43c-60-18-124 8-151 63-35 70-8 154 63 184 60 26 135 2 161-59-27 15-59 16-88 4-48-19-74-72-58-123 11-36 36-56 73-69Z"/>
+    <path data-part="Kitten tail" d="M275 226c29 11 53-6 51-24-1-14-17-16-21-6-3 7 4 12 8 8-1 10-17 13-30 8Z"/>
+    <path data-part="Kitten body" d="M228 192c-16 9-21 30-12 44 11 16 53 18 69 5 13-11 8-34-5-48-13-13-35-12-52-1Z"/>
+    <path data-part="Kitten face" d="M221 147c-3-8-6-29-1-37 11 1 21 10 27 18 7-2 15-2 22 0 5-9 14-16 24-18 5 9 3 27 0 34 10 8 13 22 10 32-4 19-28 26-49 25-25-1-46-9-47-27-1-11 4-21 14-27Z"/>
+    <path data-part="Left inner ear" stroke-width="3" d="M227 124c5 2 9 6 12 10l-10 6c-2-6-3-12-2-16Z"/>
+    <path data-part="Right inner ear" stroke-width="3" d="M286 124c-5 2-9 6-12 10l11 6c2-6 3-12 1-16Z"/>
+    <path data-part="Kitten bandana" d="M218 189c18 10 44 13 65 7-6 16-22 27-30 29-12-7-25-21-35-36Z"/>
+    <path data-part="Bandana knot" stroke-width="3" d="M281 197c6-6 16-7 21 0-5 7-12 8-21 0Z"/>
+    <path data-part="Little cloud" d="M117 271c-9-17-29-17-39-3-13-7-28 1-29 14-14 0-21 16-11 25 9 9 34 6 51 6 25 0 49 4 58-6 10-11 1-30-16-28-3-6-8-8-14-8Z"/>
+    <path data-part="Big cloud" d="M286 290c-6-9-23-11-32 0-12-2-23 7-20 18 4 15 28 14 56 14 22 0 42 2 47-11 5-12-6-23-18-20-4-13-24-17-33-1Z"/>
+    <path data-part="Big star" d="M343 52c4 18 10 24 27 27-18 4-23 10-27 28-4-18-10-24-27-28 17-3 23-9 27-27Z"/>
+    <path data-part="Left star" d="M56 96c3 11 8 17 19 19-11 3-16 7-19 19-2-12-7-16-19-19 12-2 17-8 19-19Z"/>
+    <path data-part="Right star" d="M371 169c3 11 7 15 18 18-11 3-15 7-18 18-3-11-7-15-18-18 11-3 15-7 18-18Z"/>
+    <path data-part="Top star" stroke-width="3.5" d="M278 25c2 10 6 13 15 15-9 3-13 7-15 16-3-9-7-13-16-16 9-2 13-5 16-15Z"/>
+    <path fill="none" stroke-width="3" d="M143 174c7 10 18 10 25 0m1 20c5 4 12 4 17-1m44-24c2-4 6-5 9 0m34 0c3-4 7-4 10 0m-33 7 4 3 4-3m-4 3c-1 5-7 6-10 2m10-2c2 5 7 5 10 1m-50-9-8-2m9 9-10 1m89-10 9-3m-8 9 11 1m-76 54c2-5 5-8 11-9m27 5c5 1 8 4 9 8"/>
+  </g>
+  <g fill="#282331">
+    <circle cx="72" cy="183" r="3"/><circle cx="307" cy="91" r="3"/><circle cx="95" cy="66" r="3"/><circle cx="366" cy="235" r="3"/><circle cx="173" cy="326" r="3"/><circle cx="347" cy="141" r="3"/>
+  </g>
+</svg>
