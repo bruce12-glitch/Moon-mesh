@@ -862,8 +862,12 @@ img {
 }
 
 .wordmark img {
-  width: 40px;
-  height: 40px;
+  width: 68px;
+  height: 56px;
+  flex: 0 0 auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 12px;
 }
 
 .search-trigger, .saved-trigger {
@@ -1713,8 +1717,8 @@ img {
 }
 
 .footer-brand .wordmark img {
-  width: 35px;
-  height: 35px;
+  width: 62px;
+  height: 51px;
 }
 
 .footer-tagline {
@@ -2234,8 +2238,9 @@ img {
   }
 
   .wordmark img {
-    width: 31px;
-    height: 31px;
+    width: 46px;
+    height: 38px;
+    border-radius: 8px;
   }
 
   .search-trigger {
@@ -2588,8 +2593,8 @@ img {
   }
 
   .wordmark img {
-    width: 27px;
-    height: 27px;
+    width: 42px;
+    height: 35px;
   }
 
   .saved-count {

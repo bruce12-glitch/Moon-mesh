@@ -1,5 +1,9 @@
 # Moon Mesh storefront and reference audit
 
+## Brand logo
+
+The owner-supplied kitten resting on a crescent crayon is the Moon Mesh brand logo. The original upload is preserved as `assets/brand-logo.png`. A resized WebP is used in the header, footer, and search results. Square PNG derivatives supply the favicon and Apple touch icon. These derivatives retain the supplied artwork, colors, and proportions.
+
 ## Coloring-page artwork correction
 
 The rooftop, garden, rocket, and free moon page now share Miso's small dot eyes and simple rounded silhouette from the current cover artwork. New black-and-white artwork was generated from the approved character references, then traced into sharp SVG ink contours. The free moon drawing has 25 separate named colorable regions, including the background. The studio, search thumbnails, page previews, and A4 PDF all use this revision. A new colored gift doodle replaces the thin gift glyph.

@@ -170,14 +170,14 @@
       title: "Frequently asked questions",
       theme: "Good to know",
       href: "#faq",
-      image: "assets/moon-mark.svg",
+      image: "assets/brand-logo.webp",
       keywords: "help parents ages printing buy purchase questions faq",
     },
     {
       title: "Moon Mail",
       theme: "A little letter",
       href: "#moon-mail",
-      image: "assets/moon-mark.svg",
+      image: "assets/brand-logo.webp",
       keywords: "newsletter email letter subscribe updates moon mail",
     },
   ];

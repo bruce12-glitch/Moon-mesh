@@ -88,7 +88,7 @@
   .utility { @apply grid items-center gap-3; grid-template-columns: 1fr auto 1fr; min-height: 90px; }
   .utility-left { justify-self: start; }
   .wordmark { @apply inline-flex items-center gap-2; font-family: Caveat, cursive; font-size: 45px; font-weight: 700; letter-spacing: -.035em; line-height: 1; white-space: nowrap; }
-  .wordmark img { width: 40px; height: 40px; }
+  .wordmark img { width: 68px; height: 56px; flex: 0 0 auto; object-fit: contain; border-radius: 12px; }
   .search-trigger, .saved-trigger { @apply inline-flex items-center gap-2; min-height: 44px; padding: 8px 13px; border: 0; border-radius: 25px; font-size: 15px; font-weight: 500; }
   .search-trigger { min-width: 250px; justify-content: space-between; flex-direction: row-reverse; padding-inline: 19px; background: #f7f7f7; color: #716c73; }
   .search-trigger:hover { background: #f0ebf4; }
@@ -221,7 +221,7 @@
   .footer { padding-top: 52px; background: var(--lilac); }
   .footer-inner { display: grid; grid-template-columns: 1fr 1.55fr; gap: 75px; padding-bottom: 40px; }
   .footer-brand .wordmark { font-size: 38px; }
-  .footer-brand .wordmark img { width: 35px; height: 35px; }
+  .footer-brand .wordmark img { width: 62px; height: 51px; }
   .footer-tagline { margin-top: 16px; font-family: Caveat, cursive; font-size: 28px; }
   .footer-blurb { max-width: 34ch; margin-top: 8px; color: var(--ink-soft); font-size: 14px; line-height: 1.75; }
   .footer-nav { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 24px; }
@@ -310,7 +310,7 @@
   .ribbon-stars { display: none; }
   .utility { min-height: 78px; gap: 6px; }
   .wordmark { font-size: 37px; gap: 4px; }
-  .wordmark img { width: 31px; height: 31px; }
+  .wordmark img { width: 46px; height: 38px; border-radius: 8px; }
   .search-trigger { min-width: 44px; width: 44px; padding: 12px; background: transparent; }
   .search-trigger span, .saved-label { display: none; }
   .saved-trigger { gap: 4px; padding: 7px 3px; }
@@ -387,7 +387,7 @@
 }
 @media (max-width: 400px) {
   .wordmark { font-size: 32px; }
-  .wordmark img { width: 27px; height: 27px; }
+  .wordmark img { width: 42px; height: 35px; }
   .saved-count { min-width: 16px; height: 16px; font-size: 10px; }
   .main-nav { gap: 1px 14px; }
   .main-nav a { font-size: 12px; }
