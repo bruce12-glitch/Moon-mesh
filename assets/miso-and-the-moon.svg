@@ -40,9 +40,7 @@
       <path data-part="Miso’s face" d="M204 300c0-37 25-62 58-62s58 25 58 62c0 44-25 70-58 70s-58-26-58-70Z"/>
       <path data-part="Left inner ear" fill="#FFFDF7" d="M210 292c-6-14-6-28-2-32 5-5 13 1 20 11l6 11Z"/>
       <path data-part="Right inner ear" fill="#FFFDF7" d="M314 292c6-14 6-28 2-32-5-5-13 1-20 11l-6 11Z"/>
-      <path fill="#241C2E" stroke="none" d="M230 290c5-6 14-6 19 0 3 5 2 13-1 17-2 3-4 4-7 4s-5-1-7-4c-3-4-4-12-1-17Zm45 0c5-6 14-6 19 0 3 5 2 13-1 17-2 3-4 4-7 4s-5-1-7-4c-3-4-4-12-1-17Z"/>
-      <circle cx="239" cy="294" r="3" fill="#FFFDF7" stroke="none"/>
-      <circle cx="284" cy="294" r="3" fill="#FFFDF7" stroke="none"/>
+      <path fill="#241C2E" stroke="none" d="M236 298c-1-7 10-8 11-1 1 8-10 8-11 1Zm45 0c-1-7 10-8 11-1 1 8-10 8-11 1Z"/>
       <path fill="#241C2E" d="M251 311c4-5 15-5 19 0-2 7-6 10-9 10s-8-3-10-10Z"/>
       <path fill="none" stroke-width="3" d="M261 322c-4 6-9 7-15 4m15-4c4 6 9 7 15 4"/>
       <path fill="none" stroke-width="4" d="M224 307h-9m10 8-9 3m81-11h9m-10 8 9 3"/>
