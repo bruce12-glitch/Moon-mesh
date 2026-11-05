@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="cgTitle cgDesc">
+  <title id="cgTitle">Starlight Garden cover illustration</title>
+  <desc id="cgDesc">Miso the kitten waters giant red and yellow flowers in a mint-green night garden while Sprout the snail says hello under a small crescent moon.</desc>
+  <g stroke="#241C2E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="680" height="560" fill="#EAF6D9" stroke="none"/>
+
+    <!-- small moon -->
+    <path fill="#FFC81E" d="M588 58c42 14 64 54 58 94-7 40-36 68-74 72 26-22 38-54 34-88-3-28-11-52-18-78Z"/>
+    <path fill="#FFF6E2" d="M486 84c3 16 8 21 24 24-16 3-21 8-24 24-3-16-8-21-24-24 16-3 21-8 24-24Z"/>
+    <path fill="#F04A3C" d="M540 160c3 13 7 17 20 20-13 3-17 7-20 20-3-13-7-17-20-20 13-3 17-7 20-20Z"/>
+
+    <!-- background leaves -->
+    <path fill="#2F8A57" d="M-30 380c58-126 124-190 204-218 22 84-26 174-118 230Z"/>
+    <path fill="none" stroke="#B7DDAA" stroke-width="5" d="M20 340c40-58 84-96 132-120"/>
+    <path fill="#2F8A57" d="M710 360c-70-110-142-166-218-190-14 80 42 164 138 210Z"/>
+    <path fill="none" stroke="#B7DDAA" stroke-width="5" d="M650 330c-44-52-92-86-140-106"/>
+
+    <!-- stems -->
+    <path fill="none" stroke="#2F8A57" stroke-width="15" d="M380 540c-10-120 4-230 42-330"/>
+    <path fill="none" stroke="#2F8A57" stroke-width="13" d="M252 540c10-92 22-168 48-232"/>
+    <path fill="none" stroke="#2F8A57" stroke-width="11" d="M470 540c4-70 14-128 32-176"/>
+    <path fill="none" stroke="#3FA268" stroke-width="5" d="M392 436c-34-20-58-48-74-84m84 38c30-10 54-30 72-58M266 458c26-18 44-42 54-72"/>
+
+    <!-- leaves -->
+    <path fill="#3FA268" d="M330 440c-54-26-84-64-86-112 50-2 92 28 112 86Z"/>
+    <path fill="#3FA268" d="M428 380c48-24 74-58 76-100-44-2-82 26-100 78Z"/>
+    <path fill="#3FA268" d="M268 500c-44-14-70-40-76-76 40-2 70 18 86 58Z"/>
+    <path fill="#3FA268" d="M492 470c42-12 66-36 72-70-38-2-66 16-82 54Z"/>
+
+    <!-- big red flower -->
+    <g>
+      <path fill="#F04A3C" d="M422 104c24-30 62-26 76 4 32-12 62 12 54 44 32 18 28 56-4 70 4 34-30 54-60 36-24 24-62 10-66-24-32-2-48-38-26-62-18-28-2-60 26-68Z"/>
+      <path fill="#FFC81E" d="M438 184c8-22 32-32 52-22 20 11 26 36 12 54-14 18-42 20-58 2-8-9-10-22-6-34Z"/>
+      <path fill="#241C2E" d="M460 198c3-5 9-5 12 0 2 4 1 10-1 14-1 3-3 4-5 4s-4-1-5-4c-2-4-3-10-1-14Zm28 0c3-5 9-5 12 0 2 4 1 10-1 14-1 3-3 4-5 4s-4-1-5-4c-2-4-3-10-1-14Z"/>
+      <circle cx="466" cy="200" r="2" fill="#FFF6E2" stroke="none"/>
+      <circle cx="494" cy="200" r="2" fill="#FFF6E2" stroke="none"/>
+      <path fill="none" stroke-width="3" d="M478 218c-3 5-7 6-11 3m11-3c3 5 7 6 11 3"/>
+    </g>
+
+    <!-- big yellow flower -->
+    <g>
+      <path fill="#FFC81E" d="M236 208c18-26 50-24 62 2 26-10 50 10 44 36 26 14 22 46-3 57 4 28-24 44-49 29-19 20-50 8-53-20-26-2-38-31-20-50-14-22 0-48 19-54Z"/>
+      <path fill="#F04A3C" d="M252 270c6-17 25-25 41-17 16 8 21 28 10 42-11 14-33 16-46 2-6-7-8-17-5-27Z"/>
+      <path fill="#241C2E" d="M270 282c3-4 8-4 10 0 2 3 1 8-1 11-1 2-2 3-4 3s-3-1-4-3c-2-3-2-8-1-11Zm22 0c3-4 8-4 10 0 2 3 1 8-1 11-1 2-2 3-4 3s-3-1-4-3c-2-3-2-8-1-11Z"/>
+      <circle cx="275" cy="284" r="1.7" fill="#FFF6E2" stroke="none"/>
+      <circle cx="297" cy="284" r="1.7" fill="#FFF6E2" stroke="none"/>
+      <path fill="none" stroke-width="2.5" d="M283 298c-2 4-6 4-9 2m9-2c2 4 6 4 9 2"/>
+    </g>
+
+    <!-- small pink flower -->
+    <g>
+      <path fill="#F5A9BC" d="M520 292c12-16 34-14 42 4 17-6 32 6 29 23 17 9 14 30-2 37 3 18-15 29-31 19-13 13-33 6-35-13-17-1-25-20-13-32-9-14 0-31 10-38Z"/>
+      <path fill="#FFC81E" d="M530 330c4-10 16-14 25-9 9 5 12 17 6 25-6 8-19 9-26 1-4-4-6-10-5-17Z"/>
+    </g>
+
+    <!-- Miso watering -->
+    <path fill="#FFF6E2" d="M226 322c-9-22-8-43-1-50 8-8 23 0 32 16l11 22Z"/>
+    <path fill="#F04A3C" d="M233 316c-4-14-3-27 0-30 4-3 11 3 17 14l5 14Z" stroke-width="5"/>
+    <path fill="#FFF6E2" d="M322 320c9-22 10-43 3-50-8-8-23 1-33 17l-12 23Z"/>
+    <path fill="#F04A3C" d="M315 314c5-14 5-27 2-30-4-3-11 4-17 15l-5 14Z" stroke-width="5"/>
+    <path fill="#FFF6E2" d="M212 348c0-35 25-57 60-57s61 23 61 58c0 40-26 67-61 67s-60-28-60-68Z"/>
+    <path fill="none" stroke-width="4" d="M252 336c5-6 11-6 16 0m35 0c-5-6-11-6-16 0"/>
+    <path fill="#241C2E" d="M260 348c4-6 11-6 15 0 3 5 2 14-1 19-2 4-4 5-6 5s-4-1-6-5c-3-5-4-14-2-19Zm42 0c4-6 11-6 15 0 3 5 2 14-1 19-2 4-4 5-6 5s-4-1-6-5c-3-5-4-14-2-19Z"/>
+    <circle cx="266" cy="351" r="3" fill="#FFF6E2" stroke="none"/>
+    <circle cx="308" cy="351" r="3" fill="#FFF6E2" stroke="none"/>
+    <path fill="#F5A9BC" d="M282 372c3-4 8-4 11 0-1 5-4 7-6 7s-4-2-5-7Z"/>
+    <path fill="none" stroke-width="3" d="M288 379c-3 5-7 6-11 3m11-3c3 5 7 6 11 3"/>
+    <path fill="none" stroke="#F04A3C" stroke-width="4" d="M242 366h-8m9 8-8 3m69-11h8m-9 8 8 3"/>
+    <path fill="#F04A3C" d="M246 394c12 11 48 13 64 2l-4 18c-17 11-38 10-53-2Z"/>
+    <path fill="#FFF6E2" d="M268 404c1 5 4 8 9 9-5 1-8 4-9 9-1-5-4-8-9-9 5-1 8-4 9-9Z" stroke="none"/>
+    <path fill="#F04A3C" d="M250 420c12 10 44 11 60 1l-4 17c-15 10-36 9-50-1Z"/>
+    <path fill="#F04A3C" d="M308 426c8-5 16-3 20 4-8 5-16 4-20-4Z"/>
+    <path fill="#FFF6E2" d="M250 424c-26 20-32 58-16 82 16 26 62 28 78 3 15-23 7-62-14-83Z"/>
+    <path fill="#FFF6E2" d="M244 490c-11 0-18 9-18 20 0 13 8 21 20 21s18-8 18-20-8-21-20-21Zm58 0c-11 0-18 9-18 20 0 13 8 21 20 21s18-8 18-20-8-21-20-21Z"/>
+    <path fill="#F5A9BC" d="M240 502c5-2 10 1 11 6 1 6-3 10-9 10-5-1-7-6-5-11 1-3 1-4 3-5Zm58 0c5-2 10 1 11 6 1 6-3 10-9 10-5-1-7-6-5-11 1-3 1-4 3-5Z" stroke="none"/>
+
+    <!-- Miso's arms and watering can -->
+    <path fill="#FFF6E2" d="M266 420c-18 6-28 22-26 40 2 15 19 20 30 11 10-8 13-24 8-36-3-7-7-12-12-15Z"/>
+    <path fill="#FFF6E2" d="M320 420c16 8 22 24 16 38-5 12-20 14-29 5-8-8-9-22-4-32 5-8 10-11 17-11Z"/>
+    <path fill="#F04A3C" d="M338 412h38v38h-38Z"/>
+    <path fill="#F04A3C" d="M374 428h26l-2 16h-24Z"/>
+    <path fill="#F04A3C" d="M392 438c18 4 28 16 28 32h-20c0-10-4-16-14-18Z"/>
+    <path fill="none" stroke="#F04A3C" stroke-width="7" d="M348 412c-8-20 2-34 20-34 14 0 22 10 22 24"/>
+    <path fill="#F04A3C" d="M344 450h28v8h-28Z"/>
+    <path fill="#9F86D4" d="M414 470c2 8 6 12 14 14-8 2-12 6-14 14-2-8-6-12-14-14 8-2 12-6 14-14Z" stroke="none"/>
+    <path fill="#9F86D4" d="M438 490c2 6 5 9 11 11-6 2-9 5-11 11-2-6-5-9-11-11 6-2 9-5 11-11Z" stroke="none"/>
+    <path fill="#9F86D4" d="M404 508c2 5 4 7 9 9-5 2-7 4-9 9-2-5-4-7-9-9 5-2 7-4 9-9Z" stroke="none"/>
+
+    <!-- Sprout -->
+    <path fill="#FFF6E2" d="M528 470c-12 0-19 10-19 22 0 14 10 24 24 24h34c10 0 16-8 14-16-3-10-13-13-22-12-3-11-12-18-31-18Z"/>
+    <path fill="#2F8A57" d="M578 482c-20 0-34 14-34 33 0 19 15 34 35 34 21 0 36-15 36-34 0-19-16-33-37-33Z"/>
+    <path fill="none" stroke="#FFF6E2" stroke-width="6" d="M592 504c7 3 9 12 4 19-5 6-14 7-19 2-6-5-5-13 1-17 5-3 12-1 13 4 1 4-2 7-6 6"/>
+    <path fill="#FFF6E2" d="M506 470c-3 1-5 3-6 6-8-1-14 4-14 12 0 8 7 13 16 11l10-2c4-10 2-22-6-27Z"/>
+    <path fill="none" stroke-width="4" d="M494 464c-3-11-2-20 4-27m15 26c3-10 8-17 15-20"/>
+    <circle cx="496" cy="436" r="6" fill="#FFF6E2"/>
+    <circle cx="528" cy="442" r="6" fill="#FFF6E2"/>
+    <path fill="#F04A3C" d="M536 488c8-6 17-5 22 2-6 7-14 7-22-2Z"/>
+    <path fill="#241C2E" d="M506 482c2-3 6-3 9 0 2-3 6-3 9 0 2 3 1 6-2 7-2 1-5 0-6-2-2 2-4 3-7 2-3-1-4-4-3-7Z"/>
+    <path fill="none" stroke-width="3" d="M512 494c3 2 6 2 9 0"/>
+    <path fill="none" stroke="#F5A9BC" stroke-width="3" d="M496 488h-6m7 6-6 2m32-8h6m-7 6 6 2"/>
+
+    <!-- grass -->
+    <path fill="#3FA268" d="M-20 512c120-24 220-10 330 8 124 20 244 12 390-8v68H-20Z"/>
+    <path fill="none" stroke="#2F8A57" stroke-width="6" d="M-10 514c130-22 234-4 344 14 116 18 236 10 356-8"/>
+    <path fill="none" stroke="#2F8A57" stroke-width="4" d="M42 526c6-14 14-24 24-30m-4 34c4-12 10-20 18-26m470 26c6-14 14-24 24-30"/>
+    <path fill="#F5A9BC" d="M92 528c-6 0-9-5-8-10 2-6 8-8 12-5 4-4 10-2 10 3 1 5-3 9-8 8-1 3-3 4-6 4Z"/>
+    <path fill="#FFC81E" d="M606 524c-6 0-9-5-8-10 2-6 8-8 12-5 4-4 10-2 10 3 1 5-3 9-8 8-1 3-3 4-6 4Z"/>
+
+    <g fill="#241C2E" stroke="none">
+      <circle cx="190" cy="120" r="2.5"/><circle cx="384" cy="72" r="3"/><circle cx="632" cy="240" r="2"/><circle cx="72" cy="240" r="2.5"/>
+    </g>
+  </g>
+</svg>
