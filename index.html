@@ -44,7 +44,7 @@
           <svg class="icon" aria-hidden="true"><use href="#search"/></svg><span>Search the bookshelf</span>
         </button>
       </div>
-      <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/brand-logo.webp" width="240" height="198" alt="">Moon Mesh</a>
+      <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mesh-lockup.webp" width="305" height="71" alt="Moon Mesh"></a>
       <button class="saved-trigger" type="button" aria-label="Saved books" aria-haspopup="dialog" data-catalog="saved" hidden>
         <svg class="icon" aria-hidden="true"><use href="#heart"/></svg><span class="saved-label">Saved</span><span class="saved-count" aria-hidden="true">0</span>
       </button>
@@ -81,18 +81,16 @@
     <section class="crew" id="story" aria-labelledby="story-title">
       <div class="shell">
         <figure class="crew-lineup">
-          <img class="crew-img" id="crew-art" src="assets/our-little-crew-outline.webp" data-line="assets/our-little-crew-outline.webp" data-color-src="assets/our-little-crew.webp" width="1400" height="467" alt="Miso with a warm mug, Pip with a crayon, Plum with a coloring book, and Sprout beside a pot of flowers." loading="lazy">
+          <button class="crew-art-button" type="button" aria-label="Show Miso and friends in color" aria-pressed="false" aria-describedby="crew-art-description">
+            <img class="crew-img crew-img-outline" src="assets/our-little-crew-outline.webp" width="1400" height="467" alt="" loading="lazy">
+            <img class="crew-img crew-img-color" src="assets/our-little-crew.webp" width="1400" height="467" alt="" loading="lazy">
+          </button>
+          <p id="crew-art-description" class="visually-hidden">Miso with a warm mug, Pip with a crayon, Plum with a coloring book, and Sprout beside a pot of flowers. Tap the illustration to switch between the drawing and its colors.</p>
           <figcaption class="crew-names"><span>Miso <small>the daydreamer</small></span><span>Pip <small>the bright idea</small></span><span>Plum <small>the kind heart</small></span><span>Sprout <small>the slow-and-steady</small></span></figcaption>
         </figure>
         <div class="section-heading section-heading-center">
           <h2 id="story-title">Hi, friend!</h2>
           <p>Some of our favorite moments are the smallest ones. A warm mug. A quiet table. A page full of possibilities. That’s the world we’re making with Miso and friends, and there’s always a little room for you.</p>
-        </div>
-        <div class="crew-actions">
-          <button class="button button-paper crew-toggle" type="button" aria-pressed="false" aria-controls="crew-art">
-            <span class="crayon-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="crew-toggle-label">Bring the crew to color</span>
-          </button>
         </div>
       </div>
     </section>
@@ -200,15 +198,15 @@
         <div class="peek-grid">
           <a class="peek-card peek-card-a" href="#color" data-peek="rooftop" data-title="Rooftop dreams" data-description="Miso tiptoes across the rooftops under a fat yellow moon. Color the lanterns, the sleepy clouds, and the very top of the town." aria-haspopup="dialog">
             <span class="peek-paper"><img src="assets/rooftop-coloring.svg" width="1254" height="1254" alt="Miso with a mug and lantern on a moonlit rooftop, ready to color." loading="lazy"></span>
-            <span class="peek-label"><strong>Rooftop dreams</strong><span>Open the page <span aria-hidden="true">→</span></span></span>
+            <span class="peek-label"><strong>Rooftop dreams</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
           <a class="peek-card peek-card-b" href="#color" data-peek="garden" data-title="Midnight garden" data-description="Giant flowers, a watering can, and one small snail. This is the page for every color in the crayon box — especially the loud ones." aria-haspopup="dialog">
             <span class="peek-paper"><img src="assets/garden-coloring.svg" width="1254" height="1254" alt="Miso watering flowers beside Sprout the snail, ready to color." loading="lazy"></span>
-            <span class="peek-label"><strong>Midnight garden</strong><span>Open the page <span aria-hidden="true">→</span></span></span>
+            <span class="peek-label"><strong>Midnight garden</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
           <a class="peek-card peek-card-c" href="#color" data-peek="rocket" data-title="A tiny planet" data-description="A rocket, a ringed planet, and a star with somewhere to be. Buckle up and color outside the lines." aria-haspopup="dialog">
             <span class="peek-paper"><img src="assets/rocket-coloring.svg" width="1254" height="1254" alt="Miso and Pip in their little rocket beside a ringed planet, ready to color." loading="lazy"></span>
-            <span class="peek-label"><strong>A tiny planet</strong><span>Open the page <span aria-hidden="true">→</span></span></span>
+            <span class="peek-label"><strong>A tiny planet</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
         </div>
 
@@ -323,9 +321,11 @@
   </main>
 
   <footer class="footer">
+    <figure class="footer-illustration"><img src="assets/see-you-on-the-moon.webp" width="1400" height="477" alt="Miso and Plum wave goodbye with Pip and Sprout beside their open coloring book." loading="lazy"></figure>
+    <div class="footer-main">
     <div class="shell footer-inner">
       <div class="footer-brand">
-        <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/brand-logo.webp" width="240" height="198" alt="">Moon Mesh</a>
+        <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mesh-lockup-lilac.webp" width="672" height="227" alt="Moon Mesh" loading="lazy"></a>
         <p class="footer-tagline">See you on the moon.</p>
         <p class="footer-blurb">Coloring books for little dreamers and their grown-ups. A small, happy world, one page at a time.</p>
       </div>
@@ -361,6 +361,7 @@
       <p>For small hands and big imaginations.</p>
       <a href="#top">Back to top <svg class="icon" aria-hidden="true"><use href="#arrow-up"/></svg></a>
     </div>
+    </div>
   </footer>
 
   <aside class="gift-tab" aria-label="Free coloring page shortcut" hidden>
@@ -394,7 +395,7 @@
 
   <dialog id="peek-dialog" class="dialog peek-dialog" aria-labelledby="peek-dialog-title">
     <form method="dialog" class="dialog-close"><button aria-label="Close page preview" autofocus><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button></form>
-    <div class="peek-dialog-art"><img id="peek-dialog-image" src="assets/rooftop-coloring.svg" width="1254" height="1254" alt=""></div>
+    <div class="peek-dialog-art"><img id="peek-dialog-image" src="assets/rooftop-colored.svg" width="1254" height="1254" alt=""></div>
     <div class="peek-dialog-copy">
       <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Peek inside</p>
       <h2 id="peek-dialog-title">Rooftop dreams</h2>

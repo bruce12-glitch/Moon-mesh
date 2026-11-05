@@ -2,7 +2,15 @@
 
 ## Brand logo
 
-The owner-supplied kitten resting on a crescent crayon is the Moon Mesh brand logo. The original upload is preserved as `assets/brand-logo.png`. A resized WebP is used in the header, footer, and search results. Square PNG derivatives supply the favicon and Apple touch icon. These derivatives retain the supplied artwork, colors, and proportions.
+The owner-supplied kitten resting on a crescent crayon is the Moon Mesh brand logo. The original upload is preserved as `assets/brand-logo.png`. The owner's complete icon-and-wordmark lockups are now used as single images: `moon-mesh-lockup.webp` on the white header and `moon-mesh-lockup-lilac.webp` on the lavender footer. The original symbol remains in search results, the favicon, and the Apple touch icon. These derivatives retain the supplied artwork, colors, and proportions.
+
+## Tap-to-color revision
+
+The crew illustration is now a borderless native button. Clicking, tapping, Enter, and Space toggle between its outline and colored versions. Both images are loaded together to avoid an empty frame during the reveal, and `aria-pressed` describes the state. The separate “Bring the crew to color” action has been removed.
+
+Each page preview opens its matching colored drawing and leaves that thumbnail in color after closing. `scripts/color-previews.mjs` adds fills beneath the original SVG ink contours, so the colored and outline drawings have identical geometry. The build regenerates all three colored SVGs without third-party dependencies.
+
+A new original scene of Miso and friends waving beside their coloring book leads into the lavender footer. It is a generated pen-style illustration with a transparent background. See `color-and-brand-refresh.md` for the asset brief and provenance.
 
 ## Coloring-page artwork correction
 

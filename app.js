@@ -264,16 +264,19 @@
   const peekDescription = $("#peek-dialog-description");
   const peekCta = $("#peek-dialog-cta");
   const peekPages = {
-    rooftop: "assets/rooftop-coloring.svg",
-    garden: "assets/garden-coloring.svg",
-    rocket: "assets/rocket-coloring.svg",
+    rooftop: "assets/rooftop-colored.svg",
+    garden: "assets/garden-colored.svg",
+    rocket: "assets/rocket-colored.svg",
   };
 
   function openPeek(card) {
     const image = peekPages[card.dataset.peek];
     if (!image) return;
     peekImage.src = image;
-    peekImage.alt = "Line-art coloring page titled " + card.dataset.title + ".";
+    peekImage.alt = "Colored illustration: " + card.dataset.title + ".";
+    const thumbnail = $(".peek-paper img", card);
+    thumbnail.src = image;
+    thumbnail.alt = peekImage.alt;
     peekTitle.textContent = card.dataset.title;
     peekDescription.textContent = card.dataset.description;
     peekDialog.showModal();
@@ -296,22 +299,13 @@
   /* ------------------------------------------------------------ Crew mode */
 
   const crew = $("#story");
-  const crewToggle = $(".crew-toggle", crew);
+  const crewToggle = $(".crew-art-button", crew);
   if (crewToggle) {
-    const crewLabel = $(".crew-toggle-label", crewToggle);
-    const crewImages = $$(".crew-img", crew).map((image) => ({
-      image,
-      color: image.dataset.colorSrc || image.getAttribute("src"),
-      line: image.dataset.line,
-    }));
     crewToggle.addEventListener("click", () => {
       const showColor = crewToggle.getAttribute("aria-pressed") !== "true";
       crewToggle.setAttribute("aria-pressed", String(showColor));
+      crewToggle.setAttribute("aria-label", showColor ? "Show Miso and friends as a drawing" : "Show Miso and friends in color");
       crew.classList.toggle("is-colored", showColor);
-      crewImages.forEach((entry) => {
-        entry.image.src = showColor ? entry.color : entry.line;
-      });
-      crewLabel.textContent = showColor ? "Back to the drawing" : "Bring the crew to color";
     });
   }
 
