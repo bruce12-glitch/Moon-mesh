@@ -149,14 +149,14 @@
       title: "Miso & the Moon",
       theme: "Free coloring page",
       href: "#color",
-      image: "assets/miso-and-the-moon.svg",
+      image: "assets/miso-moon-coloring.svg",
       keywords: "free printable print pdf color online colouring download club page miso moon studio",
     },
     {
       title: "Peek inside the books",
       theme: "Line-art gallery",
       href: "#peek",
-      image: "assets/peek-rooftop.svg",
+      image: "assets/rooftop-coloring.svg",
       keywords: "peek inside pages gallery line art lineart sample interior look",
     },
     {
@@ -264,9 +264,9 @@
   const peekDescription = $("#peek-dialog-description");
   const peekCta = $("#peek-dialog-cta");
   const peekPages = {
-    rooftop: "assets/peek-rooftop.svg",
-    garden: "assets/peek-garden.svg",
-    rocket: "assets/peek-rocket.svg",
+    rooftop: "assets/rooftop-coloring.svg",
+    garden: "assets/garden-coloring.svg",
+    rocket: "assets/rocket-coloring.svg",
   };
 
   function openPeek(card) {
@@ -407,7 +407,7 @@
   const reset = $("#reset-color");
   const status = $("#studio-status");
   const downloadArt = $("#download-art");
-  const pageUrl = "assets/miso-and-the-moon.svg";
+  const pageUrl = "assets/miso-moon-coloring.svg";
   let swatch = palette.querySelector('[aria-pressed="true"]');
 
   async function loadStudioPage() {
@@ -457,7 +457,7 @@
   function colorPart(part) {
     const color = swatch.dataset.color;
     const name = swatch.getAttribute("aria-label");
-    const isEraser = color.toUpperCase() === "#FFFDF7";
+    const isEraser = ["#FFFFFF", "#FFFDF7"].includes(color.toUpperCase());
     part.style.fill = color;
     part.setAttribute("aria-label", isEraser ? part.dataset.part : part.dataset.part + ", " + name);
     status.textContent = isEraser
@@ -521,7 +521,7 @@
       output.width = output.height = 1040;
       const context = output.getContext("2d");
       if (!context) throw new Error("Canvas is unavailable");
-      context.fillStyle = "#FFFDF7";
+      context.fillStyle = "#FFFFFF";
       context.fillRect(0, 0, 1040, 1040);
       context.drawImage(image, 0, 0, 1040, 1040);
 

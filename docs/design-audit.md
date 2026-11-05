@@ -1,5 +1,11 @@
 # Moon Mesh storefront and reference audit
 
+## Coloring-page artwork correction
+
+The rooftop, garden, rocket, and free moon page now share Miso's small dot eyes and simple rounded silhouette from the current cover artwork. New black-and-white artwork was generated from the approved character references, then traced into sharp SVG ink contours. The free moon drawing has 25 separate named colorable regions, including the background. The studio, search thumbnails, page previews, and A4 PDF all use this revision. A new colored gift doodle replaces the thin gift glyph.
+
+Current assets are `rooftop-coloring.svg`, `garden-coloring.svg`, `rocket-coloring.svg`, `miso-moon-coloring.svg`, `miso-moon-coloring.pdf`, and `gift-doodle.svg`. The previous artwork stays in repository history and is no longer referenced by the live page.
+
 ## November 2026 storefront revision
 
 The latest GitHub source at `e6a53ec` supplies the retained page previews, saved-book behavior, coloring studio, PNG export, and Moon Mail preview. The new visual treatment uses white surfaces, charcoal Nunito text, light lavender accents, cream retailer tiles, and restrained controls. Caveat is self-hosted and subset for the wordmark and short personal notes. Custom Tailwind components compile from `src/styles.css`.

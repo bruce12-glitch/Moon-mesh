@@ -164,7 +164,7 @@
   .peek-heading > p { max-width: 55ch; margin: 15px auto 0; color: var(--ink-soft); font-size: 17px; }
   .peek-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
   .peek-paper { display: block; padding: 20px; border: 1px solid #e4dfe7; border-radius: 12px; background: white; }
-  .peek-paper img { width: 100%; aspect-ratio: 680 / 560; }
+  .peek-paper img { width: 100%; aspect-ratio: 1; object-fit: contain; }
   .peek-label { display: block; padding-top: 14px; text-align: center; }
   .peek-label strong { display: block; font-size: 18px; font-weight: 650; }
   .peek-label > span { display: block; margin-top: 5px; font-size: 13px; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 4px; }
@@ -235,6 +235,7 @@
   .gift-tab { position: fixed; z-index: 40; right: 18px; bottom: max(18px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 3px; padding: 5px; border: 1px solid #dfd4e4; border-radius: 25px; background: #fff; }
   .gift-tab a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; font-size: 13px; }
   .gift-tab .icon { width: 19px; height: 19px; }
+  .gift-doodle { width: 32px; height: 35px; transform: rotate(-7deg); }
   .gift-tab button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--lilac); }
   .gift-tab button .icon { width: 14px; height: 14px; }
   .dialog { position: fixed; width: min(calc(100% - 32px), 840px); max-height: calc(100dvh - 40px); margin: auto; padding: 0; overflow-y: auto; border: 1px solid #dcd4e2; border-radius: 18px; background: white; color: var(--ink); }
