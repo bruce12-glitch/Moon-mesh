@@ -1,0 +1,12 @@
+# Build outputs
+.shots/
+
+# Temporary preview files
+*.html
+!index.html
+*.png
+*.webp
+
+# OS files
+.DS_Store
+Thumbs.db
