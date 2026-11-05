@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="sproutTitle">
+  <title id="sproutTitle">Sprout the snail</title>
+  <g stroke="#241C2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="122" cy="126" r="52" fill="#2F8A57"/>
+    <path fill="none" stroke="#FFF6E2" stroke-width="7" d="M146 132c8 3 10 12 5 19-6 8-18 7-22-3-3-9 5-16 13-12 4 2 4 8 1 10"/>
+    <path fill="#FFF6E2" d="M52 142c-8-20-8-42 1-48 10-7 25 7 28 25l3 18Z"/>
+    <circle cx="62" cy="66" r="15" fill="#FFF6E2"/>
+    <circle cx="84" cy="58" r="15" fill="#FFF6E2"/>
+    <circle cx="62" cy="66" r="5" fill="#241C2E" stroke="none"/>
+    <circle cx="84" cy="58" r="5" fill="#241C2E" stroke="none"/>
+    <path fill="#FFF6E2" d="M76 84c24 0 41 18 41 39 0 25-17 43-42 43s-40-18-40-43c0-22 16-39 41-39Z"/>
+    <path fill="#241C2E" stroke="none" d="M58 114c4-6 12-6 16 0 3 5 2 13-1 17-2 3-4 4-6 4s-5-1-6-4c-3-4-4-12-1-17Zm38 0c4-6 12-6 16 0 3 5 2 13-1 17-2 3-4 4-6 4s-5-1-6-4c-3-4-4-12-1-17Z"/>
+    <circle cx="63" cy="118" r="2.5" fill="#FFF6E2" stroke="none"/>
+    <circle cx="101" cy="118" r="2.5" fill="#FFF6E2" stroke="none"/>
+    <path fill="#F5A9BC" d="M76 130c4-5 12-5 16 0-2 6-5 8-8 8s-6-2-8-8Z"/>
+    <path fill="none" stroke-width="3" d="M84 139c-3 4-8 5-12 2m12-2c3 4 8 5 12 2"/>
+    <path fill="#F5A9BC" stroke="none" opacity=".8" d="M51 126c4-2 8 0 9 5 1 4-2 6-5 5-3-1-4-4-4-10Zm64 0c-4-2-8 0-9 5-1 4 2 6 5 5 3-1 4-4 4-10Z"/>
+    <circle cx="154" cy="184" r="4" fill="#F04A3C" stroke-width="3"/>
+  </g>
+</svg>
