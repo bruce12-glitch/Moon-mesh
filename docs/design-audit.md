@@ -1,5 +1,11 @@
 # Moon Mesh storefront and reference audit
 
+## Implementation baseline
+
+Future interface work follows an Aki-style custom Tailwind component system. Use Shadcn UI primitives for accessible, composable controls such as dialogs, buttons, tabs, and menus. Use the Canvas API or React-Canvas-Draw for interactive coloring surfaces, keeping the printable activity pages as the source of truth for line art.
+
+Keep component tokens aligned with the Moon Mesh ink, red, green, yellow, and cream palette. New components should preserve the hand-inked visual language while keeping interaction behavior keyboard-accessible and responsive.
+
 The reference is [Coco Wyo](https://cocowyo.com/). Moon Mesh takes its cues from how the shop uses illustrations to move a visitor from discovery to a book or activity. Its characters, words, colors, cover concepts, and coloring page were developed for Moon Mesh.
 
 ## What Coco Wyo does
