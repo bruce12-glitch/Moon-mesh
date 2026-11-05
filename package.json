@@ -1,0 +1,12 @@
+{
+  "name": "moon-mesh",
+  "version": "0.4.0",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i src/styles.css -o styles.css",
+    "check": "node --check app.js"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

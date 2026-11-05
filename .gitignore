@@ -1,5 +1,6 @@
 # Build outputs
 .shots/
+node_modules/
 
 # Temporary preview files
 *.html
