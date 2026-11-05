@@ -43,3 +43,14 @@ The reference is [Coco Wyo](https://cocowyo.com/). Moon Mesh takes its cues from
 | `assets/paper-grain.svg` | Decorative paper texture. |
 
 The four WebP illustrations were generated from original scene briefs for Moon Mesh. The cover lettering is typeset in the storefront. The line art, mark, and texture are editable SVGs. The two self-hosted fonts are distributed under their included SIL Open Font License texts.
+
+## Screenshot-led revision
+
+| Screenshot evidence | Moon Mesh revision |
+| --- | --- |
+| The original Moon Mesh header shares one row between brand, navigation, and the coloring button. Coco Wyo separates the search and wishlist from its section links. | The new desktop header centers the Moon Mesh mark between search and saved books and moves section navigation to its own row. Phones get icon controls and an expandable menu. |
+| The Coco Wyo introduction shows characters across a generous stretch of white, with both outline and colored examples. | Original crew artwork introduces Miso, Pip, Plum, and Sprout. A button switches the same illustration between line art and color. The hero now uses a full-width lavender field so the illustration has more room. |
+| The original Moon Mesh footer is a short dark strip. Coco Wyo uses an illustrated transition into a light footer with grouped destinations. | A new illustration leads into a lilac footer with the bookshelf, coloring links, and FAQs. A small, dismissible gift shortcut leads to the free page. |
+| Search and wishlist controls are prominent in the reference. | Search finds the three book concepts and key sections. Saved books are stored in the current browser. The book previews and free coloring studio still open from their own actions. |
+
+The two new WebP illustrations use original briefs for a four-character lineup and the same crew sharing a coloring book. The outline view uses a browser filter on the lineup, so both views share one image.
