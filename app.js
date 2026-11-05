@@ -36,7 +36,7 @@
       keywords: [
         previews[previewLink.dataset.preview],
         $(".book-caption > p:not(.book-genre)", card)?.textContent,
-        "book coloring colouring preview concept",
+        "book coloring colouring preview amazon",
       ].join(" "),
       image: $(".cover img", card).getAttribute("src"),
       card,
@@ -301,17 +301,17 @@
     const crewLabel = $(".crew-toggle-label", crewToggle);
     const crewImages = $$(".crew-img", crew).map((image) => ({
       image,
-      color: image.getAttribute("src"),
+      color: image.dataset.colorSrc || image.getAttribute("src"),
       line: image.dataset.line,
     }));
     crewToggle.addEventListener("click", () => {
-      const showLine = crewToggle.getAttribute("aria-pressed") !== "true";
-      crewToggle.setAttribute("aria-pressed", String(showLine));
-      crew.classList.toggle("is-line", showLine);
+      const showColor = crewToggle.getAttribute("aria-pressed") !== "true";
+      crewToggle.setAttribute("aria-pressed", String(showColor));
+      crew.classList.toggle("is-colored", showColor);
       crewImages.forEach((entry) => {
-        entry.image.src = showLine ? entry.line : entry.color;
+        entry.image.src = showColor ? entry.color : entry.line;
       });
-      crewLabel.textContent = showLine ? "Show the colors" : "Color the crew";
+      crewLabel.textContent = showColor ? "Back to the drawing" : "Bring the crew to color";
     });
   }
 
@@ -546,7 +546,7 @@
 
   /* --------------------------------------------------------------- Nav cue */
 
-  const navLinks = $$(".main-nav a");
+  const navLinks = $$('.main-nav a[href^="#"]');
   const navSections = navLinks
     .map((link) => ({ link, section: $(link.getAttribute("href")) }))
     .filter((item) => item.section);

@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#FFC81E">
-  <meta name="description" content="Moon Mesh makes hand-inked coloring books for little dreamers. Meet Miso the kitten, peek inside the Moonlight Collection, and color a free page.">
+  <meta name="theme-color" content="#F8EDFF">
+  <meta name="description" content="Cozy coloring books for little dreamers and their grown-ups. Meet Miso and friends, find Moon Mesh on Amazon, and try a free coloring page.">
   <title>Moon Mesh · Coloring books for little dreamers</title>
   <link rel="icon" href="assets/moon-mark.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fraunces.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="assets/nunito.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
@@ -32,7 +31,7 @@
   <div class="ribbon" id="top">
     <a href="#color">
       <span class="ribbon-stars" aria-hidden="true">✦ ✧ ✦</span>
-      This month’s free page: Miso &amp; the Moon
+      A little gift for you. Download a free coloring page
       <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg>
     </a>
   </div>
@@ -41,104 +40,58 @@
     <div class="utility shell">
       <div class="utility-left">
         <button class="search-trigger" type="button" aria-label="Search Moon Mesh" aria-haspopup="dialog" data-catalog="search" hidden>
-          <svg class="icon" aria-hidden="true"><use href="#search"/></svg><span>Find a page</span>
+          <svg class="icon" aria-hidden="true"><use href="#search"/></svg><span>Search the bookshelf</span>
         </button>
       </div>
-      <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mark.svg" width="46" height="46" alt="">Moon Mesh<span aria-hidden="true">.</span></a>
+      <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mark.svg" width="46" height="46" alt="">Moon Mesh</a>
       <button class="saved-trigger" type="button" aria-label="Saved books" aria-haspopup="dialog" data-catalog="saved" hidden>
         <svg class="icon" aria-hidden="true"><use href="#heart"/></svg><span class="saved-label">Saved</span><span class="saved-count" aria-hidden="true">0</span>
       </button>
     </div>
     <nav id="main-nav" class="main-nav shell" aria-label="Main">
-      <a href="#books">The books</a>
+      <a href="#books">Our books</a>
       <a href="#peek">Peek inside</a>
-      <a href="#story">The crew</a>
+      <a href="#story">Our little world</a>
       <a href="#color">Free page</a>
-      <a href="#faq">Grown-ups</a>
+      <a href="#faq">FAQs</a>
+      <a href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" class="amazon-nav" target="_blank" rel="noopener noreferrer">Shop on Amazon <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-art">
+        <img src="assets/color-together.webp" width="1600" height="900" fetchpriority="high" alt="Miso the kitten and Plum the rabbit share a coloring book at a little table beneath a moonlit window. Pip and Sprout keep them company.">
+      </div>
       <div class="hero-inner shell">
         <div class="hero-copy">
-          <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Coloring books for little dreamers</p>
-          <h1 id="hero-title">Make the <span class="highlight">moon</span><br> your <span class="scribble">color.</span></h1>
-          <p class="hero-lede">Meet Miso the kitten. Wander sleepy rooftops, grow a starlight garden, and color a pocket-sized planet — one bold ink line at a time.</p>
+          <p class="eyebrow">A cozy little world of color</p>
+          <h1 id="hero-title">A little color.<br>A little <span>closer.</span></h1>
+          <p class="hero-lede">For slow afternoons and “one more page” moments. Pull up a chair, pick your favorite crayon, and make a little time together.</p>
           <div class="hero-actions">
-            <a class="button button-ink" href="#books">Browse the bookshelf <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
-            <a class="text-link" href="#color"><svg class="icon" aria-hidden="true"><use href="#crayon"/></svg> Color a free page</a>
+            <a class="button button-ink" href="#books">Find your next book <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
+            <a class="text-link" href="#color">A free page for you</a>
           </div>
-          <ul class="hero-notes" aria-label="What makes Moon Mesh special">
-            <li><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Big, bold shapes</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Hand-inked art</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Made for little hands</li>
-          </ul>
-        </div>
-        <div class="hero-art">
-          <div class="hero-frame">
-            <img src="assets/hero-scene.svg" width="1200" height="1000" fetchpriority="high" alt="Miso the kitten sits on a giant yellow crescent moon with a coloring book and a red crayon. Pip the star floats on a cloud, Plum the rabbit waves from a green hill, and Sprout the snail smiles nearby.">
-            <span class="sticker sticker-hero" aria-hidden="true">Free<br>page<br>inside</span>
-            <span class="hero-tag" aria-hidden="true">Miso &amp; friends</span>
-          </div>
-          <span class="float-star star-a" aria-hidden="true">✦</span>
-          <span class="float-star star-b" aria-hidden="true">✧</span>
-          <span class="float-star star-c" aria-hidden="true">✦</span>
+          <p class="hero-signoff">Love, Miso &amp; friends <span aria-hidden="true">♡</span></p>
         </div>
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>Big shapes <b>✦</b> Bold lines <b>✦</b> Little hands <b>✦</b> Big imaginations <b>✦</b> Made with ink &amp; wonder <b>✦</b> </span>
-        <span>Big shapes <b>✦</b> Bold lines <b>✦</b> Little hands <b>✦</b> Big imaginations <b>✦</b> Made with ink &amp; wonder <b>✦</b> </span>
-      </div>
-    </div>
-
     <section class="crew" id="story" aria-labelledby="story-title">
       <div class="shell">
+        <figure class="crew-lineup">
+          <img class="crew-img" id="crew-art" src="assets/our-little-crew-outline.webp" data-line="assets/our-little-crew-outline.webp" data-color-src="assets/our-little-crew.webp" width="1400" height="467" alt="Miso with a warm mug, Pip with a crayon, Plum with a coloring book, and Sprout beside a pot of flowers." loading="lazy">
+          <figcaption class="crew-names"><span>Miso <small>the daydreamer</small></span><span>Pip <small>the bright idea</small></span><span>Plum <small>the kind heart</small></span><span>Sprout <small>the slow-and-steady</small></span></figcaption>
+        </figure>
         <div class="section-heading section-heading-center">
-          <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Meet the crew</p>
-          <h2 id="story-title">Hello, little dreamer.</h2>
-          <p>Miso always packs a crayon. Come along to water star-shaped flowers, climb a sleepy rooftop, or color a whole planet your favorite shade.</p>
-        </div>
-        <div class="crew-row">
-          <article class="crew-card crew-miso">
-            <p class="speech-bubble" aria-hidden="true">I brought snacks. And crayons.</p>
-            <div class="crew-portrait">
-              <img class="crew-img" src="assets/crew-miso.svg" data-line="assets/crew-miso-line.svg" width="200" height="200" alt="Miso, a cream kitten with red inner ears and a red bandana." loading="lazy">
-            </div>
-            <h3>Miso</h3>
-            <p>The dreamer</p>
-          </article>
-          <article class="crew-card crew-pip">
-            <div class="crew-portrait">
-              <img class="crew-img" src="assets/crew-pip.svg" data-line="assets/crew-pip-line.svg" width="200" height="200" alt="Pip, a smiling yellow star with tiny hands." loading="lazy">
-            </div>
-            <h3>Pip</h3>
-            <p>The bright idea</p>
-          </article>
-          <article class="crew-card crew-plum">
-            <div class="crew-portrait">
-              <img class="crew-img" src="assets/crew-plum.svg" data-line="assets/crew-plum-line.svg" width="200" height="200" alt="Plum, a green rabbit with tall ears and a red scarf." loading="lazy">
-            </div>
-            <h3>Plum</h3>
-            <p>The brave one</p>
-          </article>
-          <article class="crew-card crew-sprout">
-            <div class="crew-portrait">
-              <img class="crew-img" src="assets/crew-sprout.svg" data-line="assets/crew-sprout-line.svg" width="200" height="200" alt="Sprout, a cream snail with a green spiral shell and eye stalks." loading="lazy">
-            </div>
-            <h3>Sprout</h3>
-            <p>The slow-and-steady</p>
-          </article>
+          <h2 id="story-title">Hi, friend!</h2>
+          <p>Some of our favorite moments are the smallest ones. A warm mug. A quiet table. A page full of possibilities. That’s the world we’re making with Miso and friends, and there’s always a little room for you.</p>
         </div>
         <div class="crew-actions">
-          <button class="button button-paper crew-toggle" type="button" aria-pressed="false">
+          <button class="button button-paper crew-toggle" type="button" aria-pressed="false" aria-controls="crew-art">
             <span class="crayon-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="crew-toggle-label">Color the crew</span>
+            <span class="crew-toggle-label">Bring the crew to color</span>
           </button>
-          <p>Every adventure starts with one small paw.</p>
         </div>
       </div>
     </section>
@@ -148,20 +101,20 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> The bookshelf</p>
-            <h2 id="books-title">Pick an adventure.</h2>
+            <h2 id="books-title">Your next happy little escape.</h2>
           </div>
-          <p class="section-aside">Three concept books from the Moonlight Collection. The first print run is still a twinkle in our eye — but you can peek inside today.</p>
+          <p class="section-aside">Sleepy rooftops, little gardens, and faraway planets. A familiar friend in every adventure.</p>
         </div>
 
         <div class="book-grid">
           <article class="book-card book-night" id="midnight-kittens">
             <div class="book-mat">
-              <a class="book-art" href="#midnight-kittens-details" data-preview="midnight-kittens-details" aria-label="Preview Midnight Kittens, a concept coloring book">
+              <a class="book-art" href="#midnight-kittens-details" data-preview="midnight-kittens-details" aria-label="Preview Midnight Kittens, a Moon Mesh coloring book">
                 <span class="cover">
                   <span class="cover-brand">Moon Mesh</span>
                   <span class="cover-no">No. 01</span>
                   <span class="cover-title">Midnight<br><em>Kittens</em></span>
-                  <img src="assets/cover-midnight.svg" width="680" height="560" alt="" loading="lazy">
+                  <img src="assets/cover-midnight-cozy.webp" width="680" height="680" alt="" loading="lazy">
                   <span class="cover-edition">A coloring adventure</span>
                 </span>
               </a>
@@ -178,12 +131,12 @@
 
           <article class="book-card book-garden" id="starlight-garden">
             <div class="book-mat">
-              <a class="book-art" href="#starlight-garden-details" data-preview="starlight-garden-details" aria-label="Preview Starlight Garden, a concept coloring book">
+              <a class="book-art" href="#starlight-garden-details" data-preview="starlight-garden-details" aria-label="Preview Starlight Garden, a Moon Mesh coloring book">
                 <span class="cover">
                   <span class="cover-brand">Moon Mesh</span>
                   <span class="cover-no">No. 02</span>
                   <span class="cover-title">Starlight<br><em>Garden</em></span>
-                  <img src="assets/cover-garden.svg" width="680" height="560" alt="" loading="lazy">
+                  <img src="assets/cover-garden-cozy.webp" width="680" height="680" alt="" loading="lazy">
                   <span class="cover-edition">A coloring adventure</span>
                 </span>
               </a>
@@ -200,12 +153,12 @@
 
           <article class="book-card book-space" id="pocket-sized-planet">
             <div class="book-mat">
-              <a class="book-art" href="#pocket-sized-planet-details" data-preview="pocket-sized-planet-details" aria-label="Preview Pocket-Sized Planet, a concept coloring book">
+              <a class="book-art" href="#pocket-sized-planet-details" data-preview="pocket-sized-planet-details" aria-label="Preview Pocket-Sized Planet, a Moon Mesh coloring book">
                 <span class="cover">
                   <span class="cover-brand">Moon Mesh</span>
                   <span class="cover-no">No. 03</span>
                   <span class="cover-title">Pocket-<br>sized <em>Planet</em></span>
-                  <img src="assets/cover-planet.svg" width="680" height="560" alt="" loading="lazy">
+                  <img src="assets/cover-planet-cozy.webp" width="680" height="680" alt="" loading="lazy">
                   <span class="cover-edition">A coloring adventure</span>
                 </span>
               </a>
@@ -221,7 +174,7 @@
           </article>
         </div>
 
-        <p class="books-footnote">Moon Mesh is a concept collection — the books aren’t for sale yet. The free page really is free, though. <a href="#color">Go color it <span aria-hidden="true">→</span></a></p>
+        <p class="books-footnote">Find Moon Mesh on Amazon. <a href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" target="_blank" rel="noopener noreferrer">Explore the bookshelf <span aria-hidden="true">↗</span></a></p>
 
         <noscript>
           <div class="noscript-details">
@@ -238,9 +191,9 @@
         <div class="peek-heading">
           <div>
             <p class="eyebrow eyebrow-light"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> A look inside</p>
-            <h2 id="peek-title">Peek between<br>the pages.</h2>
+            <h2 id="peek-title">A peek between the pages.</h2>
           </div>
-          <p>Big shapes, bold outlines, and just enough detail to keep little hands happy. Here are three pages waiting inside the collection.</p>
+          <p>A little look at Miso’s world. Simple shapes, familiar friends, and plenty of space for your favorite colors.</p>
         </div>
 
         <div class="peek-grid">
@@ -272,13 +225,13 @@
       <div class="shell free-page-inner">
         <div class="free-copy">
           <p class="eyebrow eyebrow-light"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> The coloring club</p>
-          <h2 id="sample-title">The moon is yours to color.</h2>
+          <h2 id="sample-title">A little gift. A whole lot of color.</h2>
           <p>Give Miso a purple scarf, a pink moon, or a sky full of green stars. This little page is yours — color it here, or print it for the kitchen table.</p>
           <div class="free-actions">
             <button class="button button-yellow" type="button" id="open-studio" hidden><svg class="icon" aria-hidden="true"><use href="#crayon"/></svg> Color it online</button>
             <a class="button button-outline" href="assets/miso-and-the-moon.pdf" download><svg class="icon" aria-hidden="true"><use href="#download"/></svg> Print the page</a>
           </div>
-          <p class="free-note">Always free. No newsletter required. Crayons not included (sorry).</p>
+          <p class="free-note">Print it, share a crayon, and see where the afternoon goes.</p>
         </div>
         <figure class="free-visual">
           <div class="paper-card">
@@ -294,11 +247,23 @@
       </div>
     </section>
 
+    <section class="featured shell" aria-labelledby="featured-title">
+      <div class="section-heading section-heading-center">
+        <h2 id="featured-title">Find us on Amazon</h2>
+        <p>A new little adventure, delivered to your door.</p>
+      </div>
+      <a class="amazon-tile group" href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" target="_blank" rel="noopener noreferrer" aria-label="Find Moon Mesh coloring books on Amazon, opens in a new tab">
+        <span class="amazon-wordmark" aria-hidden="true">amazon<svg viewBox="0 0 180 42"><path d="M13 8c42 25 94 27 143 2M142 9l17-3-3 15" fill="none" stroke="#e99535" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="amazon-tile-copy">Meet your next coloring companion <span aria-hidden="true">↗</span></span>
+      </a>
+    </section>
+
     <section class="faq-section shell" id="faq" aria-labelledby="faq-title">
+      <figure class="faq-art"><img src="assets/books-and-little-moments.webp" width="1100" height="619" alt="Miso peeks out of a box of books while Plum wraps one as a gift." loading="lazy"></figure>
       <div class="faq-intro">
         <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> For the grown-ups</p>
         <h2 id="faq-title">Good to know.</h2>
-        <p>Moon Mesh is a small concept studio with a big soft spot for crayons. Here’s what’s real, what’s still a sketch, and how to get coloring.</p>
+        <p>A few things you might like to know before you open the crayon box.</p>
         <ul class="feature-list">
           <li><span class="feature-icon" aria-hidden="true">✦</span><span><strong>Bold lines.</strong> Easy to follow, even for small hands.</span></li>
           <li><span class="feature-icon" aria-hidden="true">✦</span><span><strong>Big shapes.</strong> Room for a whole imagination inside one page.</span></li>
@@ -306,17 +271,17 @@
         </ul>
       </div>
       <div class="faq">
-        <details name="faq" open>
+        <details name="faq">
           <summary>Who are the books for?</summary>
-          <p>We’re designing them for young colorers — roughly ages 4 and up — with big shapes and bold outlines. Grown-ups are welcome to color along. We won’t tell anyone.</p>
+          <p>Our big shapes and bold outlines welcome young colorers, with the collection aimed at ages 4 and up. Grown-ups are very welcome to pull up a chair, too.</p>
         </details>
         <details name="faq">
           <summary>How do I print the free page?</summary>
           <p>Download the PDF, open it, and print at “Fit to page” on A4 or US Letter paper. Thicker paper is lovely, but ordinary printer paper works just fine.</p>
         </details>
         <details name="faq">
-          <summary>Can I buy the books yet?</summary>
-          <p>Not yet. The three titles are concept previews while the collection takes shape. The free page and the online coloring studio are ready today.</p>
+          <summary>Where can I find Moon Mesh books?</summary>
+          <p>You can find Moon Mesh on Amazon. <a href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" target="_blank" rel="noopener noreferrer">Browse Moon Mesh on Amazon</a> for the current selection and delivery options.</p>
         </details>
         <details name="faq">
           <summary>Is the online coloring studio really free?</summary>
@@ -324,7 +289,7 @@
         </details>
         <details name="faq">
           <summary>What’s Moon Mail?</summary>
-          <p>A monthly-ish letter with new pages, studio doodles, and the occasional moon fact. The signup on this concept site is a demo, so no email is sent yet.</p>
+          <p>A little home for future studio letters and free pages. Email subscriptions are still being prepared. For now, the Coloring Club has a page ready whenever you are.</p>
         </details>
       </div>
     </section>
@@ -334,7 +299,7 @@
         <div class="mail-copy">
           <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg> Moon Mail</p>
           <h2 id="mail-title">A little letter from the moon.</h2>
-          <p>New pages, behind-the-scenes doodles, and the occasional moon fact. One letter a month, max. No noise, just a small envelope with a star on it.</p>
+          <p>We’re getting our little postbox ready. Until then, come by the Coloring Club for a free page and a few quiet minutes with Miso.</p>
         </div>
         <div class="mail-card">
           <span class="mail-stamp" aria-hidden="true"><img src="assets/moon-mark.svg" width="64" height="64" alt=""></span>
@@ -342,14 +307,14 @@
             <label for="mail-email">Your email</label>
             <div class="mail-field">
               <input id="mail-email" name="email" type="email" autocomplete="email" placeholder="you@somewhere.com" required aria-describedby="mail-help mail-status">
-              <button class="button button-ink" type="submit">Send it <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
+              <button class="button button-ink" type="submit">Preview <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
             </div>
-            <p id="mail-help" class="mail-help">Concept preview: the form doesn’t send yet. One day soon.</p>
+            <p id="mail-help" class="mail-help">Email subscriptions are coming soon. This form is a preview and does not send or store your email.</p>
             <p id="mail-status" class="mail-status" role="status"></p>
           </form>
           <div class="mail-success" role="status" hidden>
             <span class="mail-success-icon" aria-hidden="true"><svg class="icon"><use href="#check"/></svg></span>
-            <p><strong>You’re on the list!</strong> Well, in spirit. This is a concept site, so no email has flown off yet.</p>
+            <p><strong>Thanks for stopping by.</strong> Moon Mail is still getting ready. Email subscriptions will open soon.</p>
           </div>
         </div>
       </div>
@@ -359,9 +324,9 @@
   <footer class="footer">
     <div class="shell footer-inner">
       <div class="footer-brand">
-        <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mark.svg" width="44" height="44" alt="">Moon Mesh<span aria-hidden="true">.</span></a>
+        <a class="wordmark" href="./" aria-label="Moon Mesh home"><img src="assets/moon-mark.svg" width="44" height="44" alt="">Moon Mesh</a>
         <p class="footer-tagline">See you on the moon.</p>
-        <p class="footer-blurb">Hand-inked coloring books for little dreamers, made with ink, paper, and one very patient kitten.</p>
+        <p class="footer-blurb">Coloring books for little dreamers and their grown-ups. A small, happy world, one page at a time.</p>
       </div>
       <nav class="footer-nav" aria-label="Explore Moon Mesh">
         <div>
@@ -391,8 +356,8 @@
       </div>
     </div>
     <div class="shell footer-bottom">
-      <p>© 2026 Moon Mesh. A concept collection — not yet for sale.</p>
-      <p>Made with ink, paper &amp; a very patient kitten.</p>
+      <p>© 2026 Moon Mesh. A little world of color.</p>
+      <p>For small hands and big imaginations.</p>
       <a href="#top">Back to top <svg class="icon" aria-hidden="true"><use href="#arrow-up"/></svg></a>
     </div>
   </footer>
@@ -419,7 +384,8 @@
       <h2 id="preview-title"></h2>
       <p id="preview-description"></p>
       <div class="dialog-actions">
-        <button class="button button-ink" type="button" id="preview-color">Try a free page <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
+        <a class="button button-ink preview-amazon" href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" target="_blank" rel="noopener noreferrer">Find on Amazon <span aria-hidden="true">↗</span></a>
+        <button class="text-link" type="button" id="preview-color">Try a free page <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
         <button class="button button-paper" type="button" id="preview-save" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#heart"/></svg> <span>Save this book</span></button>
       </div>
     </div>

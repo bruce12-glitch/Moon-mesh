@@ -1,5 +1,15 @@
 # Moon Mesh storefront and reference audit
 
+## November 2026 storefront revision
+
+The latest GitHub source at `e6a53ec` supplies the retained page previews, saved-book behavior, coloring studio, PNG export, and Moon Mail preview. The new visual treatment uses white surfaces, charcoal Nunito text, light lavender accents, cream retailer tiles, and restrained controls. Caveat is self-hosted and subset for the wordmark and short personal notes. Custom Tailwind components compile from `src/styles.css`.
+
+The illustration brief is a small shared moment: Miso and friends coloring at a table. Original digitally generated pen-style artwork uses small dot faces, uneven round contours, and a common cream, butter, rose, leaf, and lilac palette. The hero, welcome strip, FAQ scene, and three cover scenes share the same Miso reference. The welcome strip has paired color and outline versions. These are generated illustrations with a hand-drawn aesthetic, not a claim of human hand authorship.
+
+Assets are `color-together.webp`, `our-little-crew.webp`, `our-little-crew-outline.webp`, `books-and-little-moments.webp`, and the three `cover-*-cozy.webp` files. The built-in image generation tool produced them from original scene prompts. Each prompt specifies simple dot eyes, stubby paws, natural black felt-tip contours, flat warm fills, and no lettering. The cover prompts retain the rooftop, gardening, and small-rocket themes.
+
+The owner states that Moon Mesh is on Amazon. The UI reflects that statement through retailer discovery links. Exact storefront URLs and ASINs have not been supplied, so links use an explicit Amazon search for Moon Mesh coloring books. No price, review count, sales figure, or additional retail affiliation is asserted. The historical audit below describes earlier iterations.
+
 ## Implementation baseline
 
 Future interface work follows an Aki-style custom Tailwind component system. Use Shadcn UI primitives for accessible, composable controls such as dialogs, buttons, tabs, and menus. Use the Canvas API or React-Canvas-Draw for interactive coloring surfaces, keeping the printable activity pages as the source of truth for line art.
