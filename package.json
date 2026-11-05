@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "private": true,
   "scripts": {
-    "build": "tailwindcss -i src/styles.css -o styles.css",
+    "build": "node scripts/color-previews.mjs && tailwindcss -i src/styles.css -o styles.css",
     "check": "node --check app.js"
   },
   "devDependencies": {
