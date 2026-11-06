@@ -14,6 +14,39 @@
   const openStudioButton = $("#open-studio");
   if (openStudioButton) openStudioButton.hidden = false;
 
+  /* -------------------------------------------------------- Coloring clip */
+
+  const videoDialog = $("#video-dialog");
+  const coloringVideo = $("#coloring-video");
+  const videoStatus = $("#video-status");
+  if (videoDialog && coloringVideo && typeof videoDialog.showModal === "function") {
+    $$("[data-watch]").forEach((link) => {
+      link.setAttribute("aria-haspopup", "dialog");
+      link.setAttribute("aria-controls", "video-dialog");
+      link.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        videoStatus.textContent = "";
+        videoDialog.showModal();
+        coloringVideo.currentTime = 0;
+        coloringVideo.play().catch(() => {
+          if (videoDialog.open && !coloringVideo.error) {
+            videoStatus.textContent = "Press play in the video controls to watch the clip.";
+          }
+        });
+      });
+    });
+    videoDialog.addEventListener("close", () => coloringVideo.pause());
+    coloringVideo.addEventListener("error", () => {
+      videoStatus.replaceChildren(document.createTextNode("The clip couldn’t load. "));
+      const fallback = document.createElement("a");
+      fallback.href = "assets/coloring-table.mp4";
+      fallback.className = "text-link";
+      fallback.textContent = "Open the video directly";
+      videoStatus.append(fallback);
+    });
+  }
+
   /* ---------------------------------------------------------------- Books */
 
   const bookDialog = $("#book-dialog");
@@ -145,6 +178,13 @@
   const catalogStatus = $(".catalog-status", catalog);
   const catalogResults = $(".catalog-results", catalog);
   const catalogPages = [
+    {
+      title: "From the coloring table",
+      theme: "Watch a 16-second coloring clip",
+      href: "#watch",
+      image: "assets/coloring-table-poster.webp",
+      keywords: "video watch clip markers puppies coloring table",
+    },
     {
       title: "Miso & the Moon",
       theme: "Free coloring page",

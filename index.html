@@ -9,6 +9,7 @@
   <link rel="icon" href="assets/favicon.png" type="image/png" sizes="128x128">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
   <link rel="preload" href="assets/nunito.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fraunces.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
@@ -17,6 +18,7 @@
 
   <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0c1.8 7.2 4.8 10.2 12 12-7.2 1.8-10.2 4.8-12 12C10.2 16.8 7.2 13.8 0 12 7.2 10.2 10.2 7.2 12 0Z"/></symbol>
+    <symbol id="play" viewBox="0 0 24 24"><path fill="currentColor" d="m8 4 13 8-13 8Z"/></symbol>
     <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="arrow-up" viewBox="0 0 24 24"><path d="M12 20V4m-7 7 7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="crayon" viewBox="0 0 24 24"><path d="m5 16 10-10 4 4L9 20l-5 1 1-5Zm8-8 4 4M6 15l4 4m5-13 3-3 3 2v3l-2 2" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -67,7 +69,7 @@
       <div class="hero-inner shell">
         <div class="hero-copy">
           <p class="eyebrow">A cozy little world of color</p>
-          <h1 id="hero-title">A little color.<br>A little <span>closer.</span></h1>
+          <h1 id="hero-title">Make the<br><span class="marker-highlight">moon</span><br>your <span class="marker-underline">color.</span></h1>
           <p class="hero-lede">For slow afternoons and “one more page” moments. Pull up a chair, pick your favorite crayon, and make a little time together.</p>
           <div class="hero-actions">
             <a class="button button-ink" href="#books">Find your next book <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
@@ -220,6 +222,30 @@
       </div>
     </section>
 
+    <section class="coloring-table" id="watch" aria-labelledby="watch-title">
+      <div class="scallop-divider" aria-hidden="true"></div>
+      <div class="shell coloring-table-inner">
+        <div class="coloring-table-copy">
+          <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> From the coloring table</p>
+          <h2 id="watch-title">Real color.<br>Real happy mess.</h2>
+          <p class="coloring-table-lede">No rules, no wrong colors — just a page, a handful of markers, and a quiet minute that belongs to you. Press play for a little look at the coloring table.</p>
+          <div class="coloring-table-actions">
+            <a class="button button-ink" href="#color">Color a free page <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
+            <a class="text-link watch-link" href="assets/coloring-table.mp4" data-watch><svg class="icon play-icon" aria-hidden="true"><use href="#play"/></svg> Watch the clip</a>
+          </div>
+          <p class="coloring-table-note">A 16-second peek at the good part of a quiet afternoon.</p>
+        </div>
+        <figure class="coloring-table-visual">
+          <a class="clip-card" href="assets/coloring-table.mp4" data-watch aria-label="Play the 16-second coloring table clip">
+            <img src="assets/coloring-table-poster.webp" width="960" height="720" loading="lazy" alt="A hand colors a cozy page with puppies, plants, and a sunny window.">
+            <span class="clip-duration" aria-hidden="true">0:16</span>
+            <span class="clip-play" aria-hidden="true"><span class="clip-play-icon"><svg class="icon"><use href="#play"/></svg></span> Play the clip</span>
+          </a>
+          <figcaption><span aria-hidden="true">✦</span> A little clip from our coloring table. Puppies, markers, and all.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="free-page" id="color" aria-labelledby="sample-title">
       <div class="shell free-page-inner">
         <div class="free-copy">
@@ -368,6 +394,19 @@
     <a href="#color" aria-label="Free coloring page"><img class="gift-doodle" src="assets/gift-doodle.svg" width="32" height="35" alt=""><span>A little gift</span></a>
     <button type="button" aria-label="Dismiss free page shortcut"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button>
   </aside>
+
+  <dialog id="video-dialog" class="dialog video-dialog" aria-labelledby="video-title" aria-describedby="video-description">
+    <form method="dialog" class="dialog-close"><button aria-label="Close coloring clip" autofocus><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button></form>
+    <div class="video-heading">
+      <p class="eyebrow">From the coloring table</p>
+      <h2 id="video-title">A little color. A little quiet.</h2>
+    </div>
+    <video id="coloring-video" src="assets/coloring-table.mp4" controls playsinline preload="none" width="720" height="1280" aria-label="A 16-second look at the coloring table" aria-describedby="video-description">
+      <p><a href="assets/coloring-table.mp4">Open the coloring clip</a> to watch it in your video player.</p>
+    </video>
+    <p id="video-description" class="video-description">A hand adds color with markers to a cozy page of puppies and plants.</p>
+    <p id="video-status" class="video-status" role="status"></p>
+  </dialog>
 
   <dialog id="catalog-dialog" class="dialog catalog-dialog" aria-labelledby="catalog-title">
     <form method="dialog" class="dialog-close"><button aria-label="Close catalog"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button></form>
