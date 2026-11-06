@@ -2,6 +2,10 @@
 
 Moon Mesh is a children's coloring-book storefront featuring Miso the kitten. The site includes a themed bookshelf, Amazon discovery links, book previews, a free coloring activity, and a printable PDF.
 
+Live site: [Moon Mesh on GitHub Pages](https://bruce12-glitch.github.io/Moon-mesh/).
+
+GitHub Pages publishes the repository root from `main`. The compiled `styles.css` and static assets are committed, and `.nojekyll` keeps publishing as a plain static site. After editing the source styles, run `npm run build` and commit the generated stylesheet before pushing to `main`.
+
 ## Run locally
 
 From the repository root:
