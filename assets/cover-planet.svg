@@ -1,97 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="cpTitle cpDesc">
-  <title id="cpTitle">Pocket-Sized Planet cover illustration</title>
-  <desc id="cpDesc">Miso the kitten rides a yellow rocket with red fins past a lilac ringed planet, a friendly star, and a little comet.</desc>
-  <g stroke="#241C2E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="680" height="560" fill="#FFD9C8" stroke="none"/>
-
-    <!-- ringed planet -->
-    <g transform="rotate(-15 520 420)">
-      <ellipse cx="520" cy="420" rx="200" ry="54" fill="none" stroke-width="30"/>
-      <ellipse cx="520" cy="420" rx="200" ry="54" fill="none" stroke="#FFC81E" stroke-width="21"/>
-    </g>
-    <circle cx="520" cy="420" r="118" fill="#B79BDD"/>
-    <path fill="#E6D9F6" d="M483 336c30-15 65-8 85 16 18 22 17 52-1 72-11 12-27 18-43 17 19-12 31-32 31-55 0-21-13-41-32-51-11-6-24-9-40 1Z" stroke="none"/>
-    <circle cx="568" cy="452" r="11" fill="none" stroke-width="5"/>
-    <circle cx="501" cy="464" r="6" fill="none" stroke-width="4"/>
-    <g transform="rotate(-15 520 420)">
-      <ellipse cx="520" cy="420" rx="200" ry="54" fill="none" stroke-width="30" clip-path="url(#frontRing)"/>
-      <ellipse cx="520" cy="420" rx="200" ry="54" fill="none" stroke="#FFC81E" stroke-width="21" clip-path="url(#frontRing)"/>
-    </g>
-    <clipPath id="frontRing"><rect x="260" y="420" width="520" height="120"/></clipPath>
-
-    <!-- comet -->
-    <path fill="#E6D9F6" d="M601 66c-32 12-65 38-91 70 33-9 66-13 95-10 10-19 14-39 12-58Z"/>
-    <path fill="#B79BDD" d="M601 66c15 1 29 8 36 18-11 10-24 15-39 15 4-11 5-22 3-33Z"/>
-    <path fill="none" stroke-width="5" d="M499 145c-12 9-23 20-33 32m110-83c-8-2-16-3-24-2"/>
-    <circle cx="614" cy="95" r="3" fill="#241C2E" stroke="none"/>
-    <circle cx="573" cy="125" r="2.5" fill="#241C2E" stroke="none"/>
-
-    <!-- friendly star -->
-    <g>
-      <path fill="#FFC81E" d="M139 42c5 4 9 10 11 17l12 29 31 3c14 1 18 9 7 17l-24 19 8 31c3 14-3 18-14 10l-27-17-27 17c-11 8-17 4-14-10l8-31-24-19c-11-8-7-16 7-17l31-3 12-29c2-7 6-13 11-17Z"/>
-      <path fill="#241C2E" stroke="none" d="M119 94c5-6 13-6 18 0 5-6 13-6 18 0 4 5 3 12-1 17-5 5-12 5-17 0-5 5-12 5-17 0-4-5-5-12-1-17Z"/>
-      <circle cx="130" cy="98" r="3" fill="#FFF6E2" stroke="none"/>
-      <circle cx="152" cy="98" r="3" fill="#FFF6E2" stroke="none"/>
-      <path fill="#F04A3C" d="M135 113c5-5 14-5 19 0-1 8-8 12-10 12-1 0-8-4-9-12Z"/>
-      <path fill="none" stroke="#F04A3C" stroke-width="4" d="M110 112h-8m9 7-8 3m62-10h8m-9 7 8 3"/>
-    </g>
-
-    <!-- exhaust clouds -->
-    <g fill="#FFF6E2">
-      <path d="M104 420c-14-18-42-14-51 7-20-4-36 12-32 30 4 18 28 26 46 18 10 16 34 17 46 1 18 4 32-10 28-26-4-14-20-22-37-18Z"/>
-      <path d="M70 486c-11-13-31-9-37 5-14-2-24 10-21 22 3 12 20 18 32 12 8 11 25 12 34 1 12 2 22-8 19-19-3-10-15-15-27-12Z"/>
-    </g>
-
-    <!-- rocket -->
-    <g transform="rotate(-10 320 285)">
-      <!-- fins -->
-      <path fill="#F04A3C" d="M188 212 151 146l99 42Z"/>
-      <path fill="#F04A3C" d="M188 358 151 424l99-42Z"/>
-      <path fill="#F04A3C" d="M128 246 78 225l17 60 33 18Z"/>
-      <!-- exhaust -->
-      <path fill="#F04A3C" d="M104 248 66 236v98l38-12Z"/>
-      <path fill="#FFC81E" d="M66 285 12 250l17 35-17 35Z"/>
-      <path fill="#FFF0B7" d="M62 285 34 270l9 15-9 15Z" stroke-width="4"/>
-      <!-- body -->
-      <path fill="#FFC81E" d="M100 285c0-50 50-78 130-78h160c70 0 125 30 155 78-30 48-85 78-155 78H230c-80 0-130-28-130-78Z"/>
-      <!-- nose -->
-      <path fill="#F04A3C" d="M470 214c38 12 64 39 79 71-15 32-41 59-79 71Z"/>
-      <!-- body highlight -->
-      <path fill="none" stroke="#FFE27A" stroke-width="9" d="M152 244c54-22 130-27 210-22"/>
-      <!-- porthole -->
-      <circle cx="410" cy="285" r="78" fill="#B79BDD"/>
-      <circle cx="410" cy="285" r="61" fill="#FFF6E2"/>
-      <!-- Miso in the porthole -->
-      <g>
-        <path fill="#FFF6E2" d="M377 255c-4-12-4-25 1-29 7-5 18 2 25 13l9 15Z"/>
-        <path fill="#FFF6E2" d="M443 255c4-12 4-25-1-29-7-5-18 2-25 13l-9 15Z"/>
-        <path fill="#F04A3C" stroke-width="4" d="M382 248c-2-6-2-12 0-14 4-2 8 1 12 7l4 8Z"/>
-        <path fill="#F04A3C" stroke-width="4" d="M438 248c2-6 2-12 0-14-4-2-8 1-12 7l-4 8Z"/>
-        <path fill="#FFF6E2" d="M369 280c0-22 18-38 41-38s41 16 41 38c0 25-18 43-41 43s-41-18-41-43Z"/>
-        <path fill="#241C2E" stroke="none" d="M384 274c3-4 9-4 12 0 2 4 1 11-1 14-1 3-3 4-5 4s-4-1-5-4c-2-3-3-10-1-14Zm28 0c3-4 9-4 12 0 2 4 1 11-1 14-1 3-3 4-5 4s-4-1-5-4c-2-3-3-10-1-14Z"/>
-        <circle cx="388" cy="277" r="2.5" fill="#FFF6E2" stroke="none"/>
-        <circle cx="415" cy="277" r="2.5" fill="#FFF6E2" stroke="none"/>
-        <path fill="#F04A3C" d="M399 293c3-4 8-4 11 0-1 5-4 7-6 7s-4-2-5-7Z"/>
-        <path fill="none" stroke-width="3" d="M404 300c-3 4-7 5-11 2m11-2c3 4 7 5 11 2"/>
-        <path fill="none" stroke="#F04A3C" stroke-width="3" d="M381 290h-7m8 7-7 3m47-10h7m-8 7 7 3"/>
-      </g>
-      <!-- porthole bolts -->
-      <g fill="#241C2E" stroke="none">
-        <circle cx="410" cy="216" r="4"/><circle cx="410" cy="354" r="4"/><circle cx="341" cy="285" r="4"/><circle cx="479" cy="285" r="4"/>
-      </g>
-      <!-- seams and rivets -->
-      <path fill="none" stroke-width="5" d="M250 212c-10 20-10 44 0 62M286 208c-8 24-8 52 0 76"/>
-      <g fill="#241C2E" stroke="none">
-        <circle cx="286" cy="245" r="3"/><circle cx="286" cy="325" r="3"/>
-      </g>
-    </g>
-
-    <!-- little sparkles -->
-    <path fill="#F04A3C" d="M620 286c3 14 8 19 22 22-14 3-19 8-22 22-3-14-8-19-22-22 14-3 19-8 22-22Z"/>
-    <path fill="#2F8A57" d="M62 174c3 12 7 16 19 19-12 2-16 7-19 19-2-12-7-16-19-19 12-3 16-7 19-19Z"/>
-    <path fill="#FFF6E2" d="M612 196c2 9 6 13 15 15-9 2-13 6-15 15-2-9-6-13-15-15 9-2 13-6 15-15Z"/>
-    <g fill="#241C2E" stroke="none">
-      <circle cx="304" cy="64" r="3"/><circle cx="646" cy="158" r="2.5"/><circle cx="42" cy="50" r="2.5"/><circle cx="552" cy="204" r="2"/>
-    </g>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="title"><title id="title">Pocket-Sized Planet: a tiny rocket, a ringed planet and Pip the star</title><g stroke="#322f37" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path fill="#f9e9df" stroke="none" d="M0 0h680v560H0Z"/><path fill="#f7d774" d="m87 59 8 22 24 2-19 16 5 24-21-12-21 13 5-24-19-16 25-3Zm501 98 6 15 17 2-13 11 3 16-15-8-14 9 3-17-13-11 17-2Z"/>
+<path fill="none" d="m220 53 0 18m-8-9h17m326 242v17m-8-9h17m-487-34v15m-7-8h14"/>
+<g fill="#322f37" stroke="none"><circle cx="379" cy="60" r="2.5"/><circle cx="37" cy="220" r="3"/><circle cx="627" cy="358" r="3"/><circle cx="494" cy="107" r="2.5"/></g>
+<path fill="#d8c6eb" d="M502 77c57-2 97 38 97 86s-40 87-91 84c-57-2-94-39-91-88 2-47 36-80 85-82Z"/>
+<path fill="#fff9ed" d="M411 160c-44 16-69 35-60 48 12 22 101 18 190-11 88-28 150-66 138-85-8-12-34-11-62-7l9 16c11-2 23-3 26 1 6 8-45 35-117 58-75 24-145 32-153 22-3-4 12-14 33-22Z"/>
+<path fill="none" d="M482 109c13 3 20 12 21 22m40 57c12-1 20 4 24 10"/>
+<g transform="rotate(-22 295 329)">
+<path fill="#ee857e" d="M223 357c-46 0-67 29-60 88l62-32m140-51c43 0 65 30 53 86l-60-35"/>
+<path fill="#fff9ed" d="M217 381c-6-99 31-183 77-213 47 33 86 116 77 213l-17 61H234Z"/>
+<path fill="#ee857e" d="M241 239q20-48 53-71 37 27 57 75c-35-10-72-12-110-4Z"/>
+<path fill="#d8c6eb" d="M233 409h123v32H233Z"/>
+<path fill="#f7d774" d="M246 443c-3 42 10 66 29 81l20-29 20 28c26-26 32-55 26-80Z"/>
+<path fill="#c2d6ad" d="M251 319c0-28 20-48 45-47 28 0 46 22 45 49-2 27-20 47-47 46-25 0-43-20-43-48Z"/>
+<path fill="#fff9ed" d="m269 321-2-25 15 12q13-7 25 0l16-11-2 26q8 26-24 30c-27 0-36-11-28-32Z"/>
+<path fill="#322f37" stroke="none" d="M280 327c0-5 6-5 6 0s-6 5-6 0Zm24 0c0-5 6-5 6 0s-6 5-6 0Z"/>
+<path fill="none" d="M291 337q5 6 10 0"/>
+<path fill="none" d="M252 393h18m45 0h20"/>
+</g><g transform="translate(448 330) scale(.8)">
+<path fill="#f7d774" d="M96 47c4-12 10-12 15 0l16 38 39 4c13 0 17 7 6 15l-29 25 8 37c3 12-3 17-14 10l-32-20-32 21c-10 6-16 0-13-11l8-36-29-26c-9-9-7-15 5-16l39-3Z"/>
+<path fill="#322f37" stroke="none" d="M83 113c1-6 7-6 8 0s-7 6-8 0Zm38 0c1-6 7-6 8 0s-7 6-8 0Z"/>
+<path fill="none" d="M99 127q6 7 13-1"/>
+<path fill="#ee857e" stroke="none" d="M73 120q11-5 12 2t-12 0Zm51 1q11-5 12 2t-12 0Z"/>
+<path fill="#fff9ed" d="M69 170q-9 8-8 19c6 4 16 2 20-2m51-16q10 10 8 20c-7 3-15 0-17-3"/>
+<g transform="rotate(17 145 148)"><path fill="#d8c6eb" d="M139 94h16v89h-16Z"/><path fill="#fff9ed" d="m139 94 8-17 8 17Z"/><path fill="#322f37" d="m144 82 3-5 3 5Z"/><path fill="#ee857e" d="M139 145h16v22h-16Z"/><path fill="none" stroke-width="2" d="M142 151h10m-10 7h10"/></g>
+<path fill="#f7d774" d="M143 132q-11-5-15 3c-4 10 8 15 16 11"/>
+<path fill="none" stroke-width="2.5" d="m46 53-10-9m126 14 9-10M30 140l-12 2"/>
+</g>
+<path fill="none" d="m82 422-35 20m42-5-24 19m21-1-13 12"/>
+</g></svg>

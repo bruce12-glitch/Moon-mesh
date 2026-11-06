@@ -7,6 +7,8 @@ node_modules/
 !index.html
 *.png
 *.webp
+!assets/*.png
+!assets/*.webp
 
 # OS files
 .DS_Store

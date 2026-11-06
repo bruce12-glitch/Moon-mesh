@@ -1,5 +1,7 @@
 # Moon Mesh storefront and reference audit
 
+The current design is described in [Color and brand refresh](color-and-brand-refresh.md#current-storefront-design). The audit below records earlier implementations and their provenance.
+
 ## Brand logo
 
 The owner-supplied kitten resting on a crescent crayon is the Moon Mesh brand logo. The original upload is preserved as `assets/brand-logo.png`. The owner's complete icon-and-wordmark lockups are now used as single images: `moon-mesh-lockup.webp` on the white header and `moon-mesh-lockup-lilac.webp` on the lavender footer. The original symbol remains in search results, the favicon, and the Apple touch icon. These derivatives retain the supplied artwork, colors, and proportions.

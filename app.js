@@ -3,8 +3,6 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
   const masthead = $(".masthead");
   if (masthead) masthead.classList.add("is-ready");
 
@@ -27,6 +25,48 @@
   };
 
   const bookCards = $$(".book-card");
+  const bookFilters = $(".book-filters");
+  if (bookFilters) {
+    bookFilters.hidden = false;
+    bookFilters.addEventListener("click", (event) => {
+      const selected = event.target.closest("[data-filter]");
+      if (!selected) return;
+      const filter = selected.dataset.filter;
+      $$("[data-filter]", bookFilters).forEach((button) => {
+        button.setAttribute("aria-pressed", String(button === selected));
+      });
+      bookCards.forEach((card) => { card.hidden = filter !== "all" && card.id !== filter; });
+      $(".book-grid").classList.toggle("is-filtered", filter !== "all");
+      const count = bookCards.filter((card) => !card.hidden).length;
+      $("#filter-status").textContent = count + (count === 1 ? " adventure" : " adventures") + " on the bookshelf.";
+    });
+  }
+
+  /* -------------------------------------------------------- Coloring film */
+
+  const coloringVideo = $("#coloring-video");
+  const videoPlay = $(".video-play");
+  if (coloringVideo && videoPlay) {
+    videoPlay.hidden = false;
+    videoPlay.addEventListener("click", async () => {
+      try {
+        await coloringVideo.play();
+      } catch {
+        $(".video-status").textContent = "The video couldn’t start. Try the video controls.";
+      }
+    });
+    coloringVideo.addEventListener("play", () => {
+      if (document.activeElement === videoPlay) coloringVideo.focus({ preventScroll: true });
+      videoPlay.hidden = true;
+      $(".video-status").textContent = "";
+    });
+    coloringVideo.addEventListener("pause", () => { videoPlay.hidden = false; });
+    coloringVideo.addEventListener("ended", () => { videoPlay.hidden = false; });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) coloringVideo.pause();
+    });
+  }
+
   const books = bookCards.map((card) => {
     const previewLink = $("[data-preview]", card);
     return {
@@ -170,14 +210,14 @@
       title: "Frequently asked questions",
       theme: "Good to know",
       href: "#faq",
-      image: "assets/brand-logo.webp",
+      image: "assets/moon-mark.svg",
       keywords: "help parents ages printing buy purchase questions faq",
     },
     {
       title: "Moon Mail",
       theme: "A little letter",
       href: "#moon-mail",
-      image: "assets/brand-logo.webp",
+      image: "assets/moon-mark.svg",
       keywords: "newsletter email letter subscribe updates moon mail",
     },
   ];
@@ -558,6 +598,7 @@
       { rootMargin: "-40% 0px -55% 0px" }
     );
     navSections.forEach((item) => navObserver.observe(item.section));
+    navObserver.observe($(".hero"));
   }
 
   syncSaved();

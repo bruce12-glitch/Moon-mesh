@@ -1,5 +1,17 @@
 # Color and brand refresh
 
+## Current storefront design
+
+The storefront now uses warm cream, a contrasting lilac hero, coral accents, butter yellow, and mint. Rounded Nunito text pairs with a complete self-hosted Caveat font for short handwritten notes. A compact header, filterable bookshelf, portrait film section, interactive crew, dark plum sketchbook gallery, free activity, FAQ, and lavender footer form the page.
+
+The main artwork is custom SVG: `hero-scene.svg`, the three `cover-*.svg` files, `crew-lineup.svg` and its matching outline version, `farewell.svg`, and a path-based `moon-mesh-wordmark.svg`. These use simple faces, asymmetrical paths, rounded pen outlines, and flat fills. They do not use generated raster images. The older raster artwork remains available in the repository; the existing traced coloring activity and printable are retained.
+
+The owner-supplied video is included as a complete 720 × 1280 H.264/AAC clip, 16.4 seconds long, with a local WebP poster. The player keeps its portrait proportions and supports native controls without autoplay. It starts muted, defers loading until requested, and pauses when the tab becomes hidden.
+
+The notes below document earlier versions and their asset provenance.
+
+## Earlier brand refresh
+
 The header and footer now use the two complete logo lockups provided by the owner. They are encoded as WebP without redrawing the artwork or retypesetting the name. The white and lavender backgrounds match their respective placements.
 
 The three colored preview SVGs are produced from the exact contours of their outline counterparts. `npm run build` runs `scripts/color-previews.mjs` before compiling Tailwind. All ink paths are preserved on top of the flat fills. The activity pages and printable remain black-and-white.

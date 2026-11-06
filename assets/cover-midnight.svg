@@ -1,77 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="cmTitle cmDesc">
-  <title id="cmTitle">Midnight Kittens cover illustration</title>
-  <desc id="cmDesc">Miso the kitten sits on a sleepy lilac rooftop under a big yellow moon, with a red lantern, hanging stars, and cozy chimneys.</desc>
-  <g stroke="#241C2E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="680" height="560" fill="#E6D9F6" stroke="none"/>
-
-    <!-- moon -->
-    <path fill="#FFC81E" d="M474 48c114 40 172 154 154 264-18 108-96 178-190 188-46 5-86-3-120-24 60-36 99-100 103-174 4-80-30-150-92-200 42-28 92-44 145-54Z"/>
-    <path fill="none" stroke-width="5" opacity=".5" d="M544 88c58 54 84 132 72 208-11 72-50 128-108 162"/>
-    <path fill="#F3B51B" d="M548 206c16-2 27 8 27 22 0 15-13 25-28 23-14-2-21-13-19-27 2-11 10-17 20-18Z"/>
-
-    <!-- hanging stars -->
-    <path fill="none" stroke-width="3" d="M110 0v86m0 0-11 24m11-24 11 24M584 0v92m0 0-10 22m10-22 10 22"/>
-    <path fill="#FFC81E" d="M110 100c3 16 9 22 25 25-16 3-22 9-25 25-3-16-9-22-25-25 16-3 22-9 25-25Z"/>
-    <path fill="#FFC81E" d="M584 106c3 14 8 19 22 22-14 3-19 8-22 22-3-14-8-19-22-22 14-3 19-8 22-22Z"/>
-    <path fill="#FFF6E2" d="M620 260c2 12 7 17 19 19-12 2-17 7-19 19-2-12-7-17-19-19 12-2 17-7 19-19Z"/>
-
-    <!-- sleepy clouds -->
-    <path fill="#FFF6E2" d="M62 180c-4-22 12-38 31-36 5-20 33-27 47-10 17-8 38 4 37 24 18 2 27 19 19 34-8 16-30 17-45 16l-62-1c-16 0-25-11-27-27Z"/>
-    <path fill="none" stroke-width="4" d="M100 184c5 4 11 4 16 0m22 0c5 4 11 4 16 0"/>
-    <path fill="none" stroke-width="3" d="M126 196c5 3 10 3 15 0"/>
-
-    <!-- rooftops -->
-    <path fill="#5B4A7A" d="M-20 430 160 330l180 100v150H-20Z"/>
-    <path fill="#715D93" d="M-20 448 160 356l180 92v20L160 382-20 468Z" stroke-width="5"/>
-    <path fill="#4A3A66" d="M320 410 500 316l200 94v170H320Z"/>
-    <path fill="#6B558C" d="M320 430 500 340l200 90v18L500 364 320 454Z" stroke-width="5"/>
-    <path fill="#F04A3C" d="M94 380h42v84H94Z"/>
-    <path fill="#FFF6E2" d="M100 386h30v28H100Z" stroke-width="5"/>
-    <path fill="#FFC81E" d="M410 460h44v48h-44Z"/>
-    <path fill="none" stroke-width="5" d="M432 460v48m-22-24h44"/>
-    <path fill="#FFC81E" d="M574 468h36v42h-36Z"/>
-    <path fill="none" stroke-width="5" d="M592 468v42m-18-21h36"/>
-    <path fill="#4A3A66" d="M520 360c0-38 24-58 54-58s54 20 54 58Z"/>
-    <path fill="#F04A3C" d="M562 302h22v52h-22Z"/>
-
-    <!-- Miso -->
-    <path fill="#FFF6E2" d="M256 318c-10-24-10-48-3-56 8-9 25-1 37 16l14 24Z"/>
-    <path fill="#F04A3C" d="M264 312c-5-16-5-31-2-35 4-4 13 2 20 15l6 16Z" stroke-width="5"/>
-    <path fill="#FFF6E2" d="M372 316c10-24 12-48 5-56-8-9-25 0-38 17l-15 25Z"/>
-    <path fill="#F04A3C" d="M364 310c6-16 7-31 4-35-4-4-13 3-20 16l-6 16Z" stroke-width="5"/>
-    <path fill="#FFF6E2" d="M248 344c0-38 27-62 64-62s65 25 65 63c0 43-27 72-65 72s-64-30-64-73Z"/>
-    <path fill="none" stroke-width="4" d="M292 330c5-6 12-6 18 0m35 0c-5-6-12-6-18 0"/>
-    <path fill="#241C2E" d="M300 342c4-7 12-7 16 0 3 5 2 15-1 21-2 4-5 6-7 6s-5-2-7-6c-3-6-4-16-1-21Zm45 0c4-7 12-7 16 0 3 5 2 15-1 21-2 4-5 6-7 6s-5-2-7-6c-3-6-4-16-1-21Z"/>
-    <circle cx="306" cy="345" r="3" fill="#FFF6E2" stroke="none"/>
-    <circle cx="351" cy="345" r="3" fill="#FFF6E2" stroke="none"/>
-    <path fill="#F5A9BC" d="M324 368c3-4 9-4 12 0-1 5-4 7-6 7s-5-2-6-7Z"/>
-    <path fill="none" stroke-width="3" d="M330 375c-3 5-8 6-12 3m12-3c3 5 8 6 12 3"/>
-    <path fill="none" stroke="#F04A3C" stroke-width="4" d="M282 360h-9m10 9-9 3m72-12h9m-10 9 9 3"/>
-    <path fill="#F04A3C" d="M282 392c14 12 53 14 70 3l-5 20c-18 12-41 11-58-2Z"/>
-    <path fill="#FFF6E2" d="M306 402c1 5 4 8 9 9-5 1-8 4-9 9-1-5-4-8-9-9 5-1 8-4 9-9Z" stroke="none"/>
-    <path fill="#FFF6E2" d="M246 398c-24 8-40 30-40 54 0 22 20 32 38 21 16-10 24-32 20-51-2-10-8-18-18-24Z"/>
-    <path fill="#FFF6E2" d="M374 398c24 8 40 30 40 54 0 22-20 32-38 21-16-10-24-32-20-51 2-10 8-18 18-24Z"/>
-    <path fill="#FFF6E2" d="M310 424c-28 22-34 62-18 88 18 30 70 32 88 4 16-25 8-68-16-90Z"/>
-    <path fill="#F04A3C" d="M296 444c14 12 54 14 72 3l-5 21c-19 12-42 11-59-2Z"/>
-    <path fill="#FFF6E2" d="M300 490c-12 0-20 10-20 22 0 14 9 23 22 23 12 0 20-9 20-22 0-14-9-23-22-23Z"/>
-    <path fill="#FFF6E2" d="M364 490c-12 0-20 10-20 22 0 14 9 23 22 23 12 0 20-9 20-22 0-14-9-23-22-23Z"/>
-    <path fill="#F5A9BC" d="M296 504c6-2 11 1 13 7 1 7-4 12-10 11-6-1-8-7-6-12 1-3 1-5 3-6Zm64 0c6-2 11 1 13 7 1 7-4 12-10 11-6-1-8-7-6-12 1-3 1-5 3-6Z" stroke="none"/>
-    <path fill="#FFF6E2" d="M390 446c34-8 60 4 64 24 4 18-12 30-28 25-12-4-13-16-5-21 6-4 12 0 12 5 4-8-2-18-18-19-12-1-24 4-31 11Z"/>
-
-    <!-- lantern -->
-    <path fill="none" stroke-width="4" d="M548 300v28"/>
-    <path fill="#F04A3C" d="M520 330h56v58h-56Z"/>
-    <path fill="#FFC81E" d="M532 342h32v34h-32Z"/>
-    <path fill="#241C2E" d="M534 342v34m28-34v34M534 356h28M534 365h28" stroke-width="3"/>
-    <path fill="#F04A3C" d="M510 318h76l-8 14h-60Z"/>
-    <path fill="#F04A3C" d="M514 388h68l-8 10h-52Z"/>
-    <path fill="none" stroke="#FFC81E" stroke-width="4" d="M508 330l-14-6m18 22-16 2m94-18 14-6m-18 22 16 2"/>
-
-    <!-- moon cat silhouette? tiny window -->
-    <path fill="none" stroke="#FFF6E2" stroke-width="3" d="M164 470c8 4 16 4 24 0m72-10c8 4 16 4 24 0"/>
-
-    <g fill="#241C2E" stroke="none">
-      <circle cx="228" cy="120" r="3"/><circle cx="404" cy="160" r="2"/><circle cx="640" cy="360" r="2.5"/><circle cx="46" cy="290" r="2"/>
-    </g>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 560" role="img" aria-labelledby="title"><title id="title">Midnight Kittens: Miso enjoys a warm mug on the moonlit rooftops</title><g stroke="#322f37" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path fill="#eee7f5" stroke="none" d="M0 0h680v560H0Z"/><path fill="#f7d774" d="M488 44c74 22 114 99 89 163-24 64-94 89-150 62 63-4 98-62 78-113-12-31-34-47-67-50 11-31 28-49 50-62Z"/><path fill="#f7d774" d="m87 59 8 22 24 2-19 16 5 24-21-12-21 13 5-24-19-16 25-3Zm501 98 6 15 17 2-13 11 3 16-15-8-14 9 3-17-13-11 17-2Z"/>
+<path fill="none" d="m220 53 0 18m-8-9h17m326 242v17m-8-9h17m-487-34v15m-7-8h14"/>
+<g fill="#322f37" stroke="none"><circle cx="379" cy="60" r="2.5"/><circle cx="37" cy="220" r="3"/><circle cx="627" cy="358" r="3"/><circle cx="494" cy="107" r="2.5"/></g><path fill="#d8c6eb" d="M-10 379 135 298l161 88v192H-10Z"/><path fill="none" d="m-5 400 140-75 155 82m-260 14 231 3m-249 30 274 1m-274 30 274 1"/>
+<path fill="#ee857e" d="m281 400 178-99 226 111v159H280Z"/><path fill="none" d="m283 424 178-97 224 105M314 451h351m-352 29h350m-352 29h351"/>
+<path fill="#fff9ed" d="M450 398h74v84h-74Z"/><path fill="#f7d774" d="M458 407h58v66h-58Z"/><path fill="none" d="M486 408v65m-27-32h56"/>
+<path fill="#c2d6ad" d="M74 343v-68h44v46m-52-45h60v-13H66Z"/><g transform="translate(188 168) scale(1.55)">
+<path fill="#fff9ed" d="M55 171c-17 0-27-7-30-21-2-13 10-21 20-13-8 4-9 13 2 15l13-3M60 132c-8 15-8 48-3 64l79 1c6-21 7-45-3-62Z"/>
+<path fill="#fff9ed" d="M47 99 42 39c-1-10 5-12 12-6l31 24c10-4 25-4 36 0l29-25c7-6 13-3 12 7l-6 61c3 32-21 53-56 53-38 0-59-21-53-54Z"/>
+<path fill="#ee857e" stroke="none" d="m51 45 4 32 20-16Zm100-1-22 19 19 14Z"/>
+<path fill="none" d="M70 103q5 7 11 0m40-1q5 7 11-1"/>
+<path fill="#322f37" stroke="none" d="m98 111 6 1-3 4Z"/>
+<path fill="none" stroke-width="2.5" d="M101 116q-4 7-9 3m9-3q5 7 10 2M59 112l-12-1m12 9-11 3m94-12 12-3m-11 11 12 1"/>
+<path fill="#ee857e" stroke="none" d="M64 115c3-3 10-2 11 1 2 6-11 8-12 2Zm63-1c3-2 11-2 11 3 1 5-11 6-12 1Z"/>
+<path fill="#d8c6eb" d="M62 142q36 13 74-1l-1 15q-36 14-72 1Zm56 16 17-3 5 34-17 3Z"/>
+<path fill="#fff9ed" d="M59 181q-14 10-7 21c4 7 17 7 22-2l1-16m58-3q15 8 9 20c-5 9-18 6-22-1l-2-16"/>
+<path fill="#ee857e" d="M73 168q25-4 50 0l-2 34q-22 10-43-1Z"/>
+<path fill="none" d="M123 175c21-7 25 20-2 17m-36-38q-7-10 1-18m15 18q-7-10 1-18"/>
+<path fill="#fff9ed" d="M63 175q-10-5-12 5c-3 12 10 20 16 13m65-18q12-4 12 7c0 10-10 17-15 10"/>
+</g><path fill="none" d="M575 278v64"/><path fill="#c2d6ad" d="M552 342h47v63h-47Z"/><path fill="#f7d774" d="M560 352h31v42h-31Z"/><path fill="none" d="m575 352 0 42m-28-54h56m-53 67h51"/></g></svg>

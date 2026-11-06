@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "node scripts/color-previews.mjs && tailwindcss -i src/styles.css -o styles.css",
-    "check": "node --check app.js"
+    "check": "node --check app.js",
+    "test:browser": "python3 scripts/smoke-test.py"
   },
   "devDependencies": {
     "tailwindcss": "3.4.17"
