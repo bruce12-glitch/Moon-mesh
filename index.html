@@ -19,6 +19,7 @@
   <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0c1.8 7.2 4.8 10.2 12 12-7.2 1.8-10.2 4.8-12 12C10.2 16.8 7.2 13.8 0 12 7.2 10.2 10.2 7.2 12 0Z"/></symbol>
     <symbol id="play" viewBox="0 0 24 24"><path fill="currentColor" d="m8 4 13 8-13 8Z"/></symbol>
+    <symbol id="pause" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
     <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="arrow-up" viewBox="0 0 24 24"><path d="M12 20V4m-7 7 7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="crayon" viewBox="0 0 24 24"><path d="m5 16 10-10 4 4L9 20l-5 1 1-5Zm8-8 4 4M6 15l4 4m5-13 3-3 3 2v3l-2 2" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -87,7 +88,7 @@
             <img class="crew-img crew-img-outline" src="assets/our-little-crew-outline.webp" width="1400" height="467" alt="" loading="lazy">
             <img class="crew-img crew-img-color" src="assets/our-little-crew.webp" width="1400" height="467" alt="" loading="lazy">
           </button>
-          <p id="crew-art-description" class="visually-hidden">Miso with a warm mug, Pip with a crayon, Plum with a coloring book, and Sprout beside a pot of flowers. Tap the illustration to switch between the drawing and its colors.</p>
+          <p id="crew-art-description" class="visually-hidden">Miso with a warm mug, Pip with a crayon, Plum with a coloring book, and Sprout beside a pot of flowers. Move over the drawing or focus it to reveal its colors. On a touch screen, tap to switch.</p>
           <figcaption class="crew-names"><span>Miso <small>the daydreamer</small></span><span>Pip <small>the bright idea</small></span><span>Plum <small>the kind heart</small></span><span>Sprout <small>the slow-and-steady</small></span></figcaption>
         </figure>
         <div class="section-heading section-heading-center">
@@ -199,15 +200,15 @@
 
         <div class="peek-grid">
           <a class="peek-card peek-card-a" href="#color" data-peek="rooftop" data-title="Rooftop dreams" data-description="Miso tiptoes across the rooftops under a fat yellow moon. Color the lanterns, the sleepy clouds, and the very top of the town." aria-haspopup="dialog">
-            <span class="peek-paper"><img src="assets/rooftop-coloring.svg" width="1254" height="1254" alt="Miso with a mug and lantern on a moonlit rooftop, ready to color." loading="lazy"></span>
+            <span class="peek-paper"><span class="peek-drawing"><img src="assets/rooftop-coloring.svg" width="1254" height="1254" alt="Miso with a mug and lantern on a moonlit rooftop, ready to color." loading="lazy"><img class="peek-colored" src="assets/rooftop-colored.svg" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy"></span></span>
             <span class="peek-label"><strong>Rooftop dreams</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
           <a class="peek-card peek-card-b" href="#color" data-peek="garden" data-title="Midnight garden" data-description="Giant flowers, a watering can, and one small snail. This is the page for every color in the crayon box — especially the loud ones." aria-haspopup="dialog">
-            <span class="peek-paper"><img src="assets/garden-coloring.svg" width="1254" height="1254" alt="Miso watering flowers beside Sprout the snail, ready to color." loading="lazy"></span>
+            <span class="peek-paper"><span class="peek-drawing"><img src="assets/garden-coloring.svg" width="1254" height="1254" alt="Miso watering flowers beside Sprout the snail, ready to color." loading="lazy"><img class="peek-colored" src="assets/garden-colored.svg" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy"></span></span>
             <span class="peek-label"><strong>Midnight garden</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
           <a class="peek-card peek-card-c" href="#color" data-peek="rocket" data-title="A tiny planet" data-description="A rocket, a ringed planet, and a star with somewhere to be. Buckle up and color outside the lines." aria-haspopup="dialog">
-            <span class="peek-paper"><img src="assets/rocket-coloring.svg" width="1254" height="1254" alt="Miso and Pip in their little rocket beside a ringed planet, ready to color." loading="lazy"></span>
+            <span class="peek-paper"><span class="peek-drawing"><img src="assets/rocket-coloring.svg" width="1254" height="1254" alt="Miso and Pip in their little rocket beside a ringed planet, ready to color." loading="lazy"><img class="peek-colored" src="assets/rocket-colored.svg" width="1254" height="1254" alt="" aria-hidden="true" loading="lazy"></span></span>
             <span class="peek-label"><strong>A tiny planet</strong><span>See it in color <span aria-hidden="true">→</span></span></span>
           </a>
         </div>
@@ -223,24 +224,27 @@
     </section>
 
     <section class="coloring-table" id="watch" aria-labelledby="watch-title">
-      <div class="scallop-divider" aria-hidden="true"></div>
       <div class="shell coloring-table-inner">
         <div class="coloring-table-copy">
           <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> From the coloring table</p>
           <h2 id="watch-title">Real color.<br>Real happy mess.</h2>
-          <p class="coloring-table-lede">No rules, no wrong colors — just a page, a handful of markers, and a quiet minute that belongs to you. Press play for a little look at the coloring table.</p>
+          <p class="coloring-table-lede">No rules, no wrong colors — just a page, a handful of markers, and a quiet minute that belongs to you. Settle in for a little look at the coloring table.</p>
           <div class="coloring-table-actions">
             <a class="button button-ink" href="#color">Color a free page <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
-            <a class="text-link watch-link" href="assets/coloring-table.mp4" data-watch><svg class="icon play-icon" aria-hidden="true"><use href="#play"/></svg> Watch the clip</a>
+            <a class="text-link watch-link" href="assets/coloring-table.mp4" data-watch><svg class="icon play-icon" aria-hidden="true"><use href="#play"/></svg> Watch the full clip</a>
           </div>
           <p class="coloring-table-note">A 16-second peek at the good part of a quiet afternoon.</p>
         </div>
         <figure class="coloring-table-visual">
-          <a class="clip-card" href="assets/coloring-table.mp4" data-watch aria-label="Play the 16-second coloring table clip">
-            <img src="assets/coloring-table-poster.webp" width="960" height="720" loading="lazy" alt="A hand colors a cozy page with puppies, plants, and a sunny window.">
+          <div class="clip-card">
+            <video class="clip-video" id="inline-coloring-video" src="assets/coloring-table.mp4" poster="assets/coloring-table-portrait.webp" width="720" height="1280" controls muted loop playsinline preload="none" aria-label="A quiet moment at the coloring table" aria-describedby="inline-video-description">
+              <a href="assets/coloring-table.mp4">Watch the coloring clip</a>
+            </video>
             <span class="clip-duration" aria-hidden="true">0:16</span>
-            <span class="clip-play" aria-hidden="true"><span class="clip-play-icon"><svg class="icon"><use href="#play"/></svg></span> Play the clip</span>
-          </a>
+            <button class="clip-toggle" type="button" aria-label="Play coloring video" aria-controls="inline-coloring-video" hidden><svg class="icon" aria-hidden="true"><use href="#play"/></svg><span>Play</span></button>
+          </div>
+          <p id="inline-video-description" class="visually-hidden">A hand adds color with markers to a cozy page of puppies and plants. The silent clip loops while in view; open the full clip for a larger player with sound and video controls.</p>
+          <p class="clip-status" role="status"></p>
           <figcaption><span aria-hidden="true">✦</span> A little clip from our coloring table. Puppies, markers, and all.</figcaption>
         </figure>
       </div>
@@ -347,7 +351,10 @@
   </main>
 
   <footer class="footer">
-    <figure class="footer-illustration"><img src="assets/see-you-on-the-moon.webp" width="1400" height="477" alt="Miso and Plum wave goodbye with Pip and Sprout beside their open coloring book." loading="lazy"></figure>
+    <div class="footer-scene">
+      <figure class="footer-illustration"><img src="assets/see-you-on-the-moon.webp" width="1400" height="477" alt="Miso and Plum wave goodbye with Pip and Sprout beside their open coloring book." loading="lazy"></figure>
+      <div class="scallop-divider" aria-hidden="true"></div>
+    </div>
     <div class="footer-main">
     <div class="shell footer-inner">
       <div class="footer-brand">

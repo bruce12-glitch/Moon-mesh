@@ -2,7 +2,7 @@
 
 Moon Mesh is a children's coloring-book storefront featuring Miso the kitten. The site includes a themed bookshelf, Amazon discovery links, book previews, a free coloring activity, and a printable PDF.
 
-GitHub Pages URL (available after Pages is enabled): [Moon Mesh](https://bruce12-glitch.github.io/Moon-mesh/).
+Live site: [Moon Mesh](https://bruce12-glitch.github.io/Moon-mesh/).
 
 To enable publishing, open **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/(root)**, and save. The compiled `styles.css` and static assets are committed, and `.nojekyll` keeps publishing as a plain static site. After editing the source styles, run `npm run build` and commit the generated stylesheet before pushing to `main`.
 
@@ -22,7 +22,9 @@ Visit [localhost:8000](http://localhost:8000/). The coloring studio reads a same
 
 Custom Tailwind components live in `src/styles.css`; `npm run build` compiles them to the shipped `styles.css`. Self-hosted Nunito handles interface text, Fraunces the hero and coloring-table headlines, and Caveat short handwritten notes. The coloring studio uses editable SVG shapes and the Canvas API for PNG downloads.
 
-The coloring-table section uses the supplied 16.4-second clip, optimized to a 720 × 1280 H.264/AAC MP4 (about 3 MB) with fast-start metadata. Its landscape poster opens a native-controls dialog that preserves the full portrait video. The video loads on interaction, pauses when the dialog closes, and has a direct-file fallback without JavaScript. Keep `assets/coloring-table.mp4` and `assets/coloring-table-poster.webp` with the static site when deploying.
+The coloring-table section uses the supplied 16.4-second clip, optimized to a 720 × 1280 H.264/AAC MP4 (about 3 MB) with fast-start metadata. Its inline player preserves the full portrait frame and loops silently while visible. Scrolling away or switching tabs pauses it; returning resumes from the same point. A manual pause persists until the visitor presses Play. Reduced-motion visitors start with a still poster and can choose to play. The full-clip link opens a larger native-controls dialog. Without JavaScript, the inline player retains native controls and the full-clip link opens the MP4 directly. Keep the MP4 and both video posters with the static site when deploying.
+
+The paired crew and page-preview drawings reveal color on pointer hover or keyboard focus. Touch users can still tap the crew or open page previews. Books respond to fine-pointer movement with a slight lift/tilt; spatial motion is disabled under reduced motion. The complete hero and FAQ artwork stays visible, and the yellow scalloped trim sits under the farewell drawing.
 
 The three cover designs share a common series layout. Amazon links currently open a Moon Mesh book search. Replace them with verified storefront or product URLs when those are supplied. Moon Mail is explicitly marked as a form preview and does not send or store email.
 
