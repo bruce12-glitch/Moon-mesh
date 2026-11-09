@@ -4,6 +4,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
   const masthead = $(".masthead");
   if (masthead) masthead.classList.add("is-ready");
@@ -19,6 +20,66 @@
   const videoDialog = $("#video-dialog");
   const coloringVideo = $("#coloring-video");
   const videoStatus = $("#video-status");
+  const inlineVideo = $("#inline-coloring-video");
+  const clipToggle = $(".clip-toggle");
+  const clipStatus = $(".clip-status");
+  let clipInView = false;
+  let clipPausedByUser = false;
+  let clipStartedByUser = false;
+
+  function syncInlinePlayback() {
+    if (!inlineVideo) return;
+    const shouldPlay = clipInView && !document.hidden && !videoDialog?.open &&
+      !clipPausedByUser && (!reduceMotion.matches || clipStartedByUser);
+    if (shouldPlay) {
+      inlineVideo.play().catch(() => {
+        // The visible play button also works when autoplay is blocked.
+      });
+    } else {
+      inlineVideo.pause();
+    }
+  }
+
+  if (inlineVideo && clipToggle) {
+    inlineVideo.muted = true;
+    inlineVideo.controls = false;
+    clipToggle.hidden = false;
+    const syncClipControl = () => {
+      const playing = !inlineVideo.paused;
+      clipToggle.setAttribute("aria-label", playing ? "Pause coloring video" : "Play coloring video");
+      $("span", clipToggle).textContent = playing ? "Pause" : "Play";
+      $("use", clipToggle).setAttribute("href", playing ? "#pause" : "#play");
+    };
+    inlineVideo.addEventListener("play", syncClipControl);
+    inlineVideo.addEventListener("pause", syncClipControl);
+    clipToggle.addEventListener("click", () => {
+      if (inlineVideo.paused) {
+        clipPausedByUser = false;
+        clipStartedByUser = true;
+        syncInlinePlayback();
+      } else {
+        clipPausedByUser = true;
+        inlineVideo.pause();
+      }
+    });
+    inlineVideo.addEventListener("error", () => {
+      clipStatus.textContent = "The clip couldn’t load. Try the full clip link above.";
+      clipToggle.disabled = true;
+    });
+    if ("IntersectionObserver" in window) {
+      const clipObserver = new IntersectionObserver(([entry]) => {
+        clipInView = entry.isIntersecting;
+        syncInlinePlayback();
+      }, { threshold: 0 });
+      clipObserver.observe(inlineVideo);
+    } else {
+      inlineVideo.controls = true;
+      clipToggle.hidden = true;
+    }
+    document.addEventListener("visibilitychange", syncInlinePlayback);
+    reduceMotion.addEventListener("change", syncInlinePlayback);
+  }
+
   if (videoDialog && coloringVideo && typeof videoDialog.showModal === "function") {
     $$("[data-watch]").forEach((link) => {
       link.setAttribute("aria-haspopup", "dialog");
@@ -28,6 +89,7 @@
         event.preventDefault();
         videoStatus.textContent = "";
         videoDialog.showModal();
+        syncInlinePlayback();
         coloringVideo.currentTime = 0;
         coloringVideo.play().catch(() => {
           if (videoDialog.open && !coloringVideo.error) {
@@ -36,7 +98,10 @@
         });
       });
     });
-    videoDialog.addEventListener("close", () => coloringVideo.pause());
+    videoDialog.addEventListener("close", () => {
+      coloringVideo.pause();
+      syncInlinePlayback();
+    });
     coloringVideo.addEventListener("error", () => {
       videoStatus.replaceChildren(document.createTextNode("The clip couldn’t load. "));
       const fallback = document.createElement("a");
@@ -129,6 +194,19 @@
 
   books.forEach((book) => {
     $(".book-save", book.card).addEventListener("click", () => toggleSaved(book.id));
+    const art = $(".book-art", book.card);
+    art.addEventListener("pointermove", (event) => {
+      if (!finePointer.matches || reduceMotion.matches || event.pointerType === "touch") return;
+      const bounds = art.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - .5;
+      const y = (event.clientY - bounds.top) / bounds.height - .5;
+      art.style.setProperty("--book-rx", (-y * 6).toFixed(2) + "deg");
+      art.style.setProperty("--book-ry", (x * 8).toFixed(2) + "deg");
+    });
+    art.addEventListener("pointerleave", () => {
+      art.style.removeProperty("--book-rx");
+      art.style.removeProperty("--book-ry");
+    });
   });
 
   function openBook(card) {
@@ -314,9 +392,6 @@
     if (!image) return;
     peekImage.src = image;
     peekImage.alt = "Colored illustration: " + card.dataset.title + ".";
-    const thumbnail = $(".peek-paper img", card);
-    thumbnail.src = image;
-    thumbnail.alt = peekImage.alt;
     peekTitle.textContent = card.dataset.title;
     peekDescription.textContent = card.dataset.description;
     peekDialog.showModal();
@@ -341,11 +416,26 @@
   const crew = $("#story");
   const crewToggle = $(".crew-art-button", crew);
   if (crewToggle) {
-    crewToggle.addEventListener("click", () => {
-      const showColor = crewToggle.getAttribute("aria-pressed") !== "true";
+    const setCrewColor = (showColor) => {
       crewToggle.setAttribute("aria-pressed", String(showColor));
       crewToggle.setAttribute("aria-label", showColor ? "Show Miso and friends as a drawing" : "Show Miso and friends in color");
       crew.classList.toggle("is-colored", showColor);
+    };
+    crewToggle.addEventListener("pointerenter", (event) => {
+      if (finePointer.matches && event.pointerType !== "touch") setCrewColor(true);
+    });
+    crewToggle.addEventListener("pointerleave", () => {
+      if (finePointer.matches) setCrewColor(crewToggle.matches(":focus-visible"));
+    });
+    crewToggle.addEventListener("focus", () => {
+      if (crewToggle.matches(":focus-visible")) setCrewColor(true);
+    });
+    crewToggle.addEventListener("blur", () => {
+      if (!finePointer.matches || !crewToggle.matches(":hover")) setCrewColor(false);
+    });
+    crewToggle.addEventListener("click", (event) => {
+      if (event.detail > 0 && finePointer.matches) return;
+      setCrewColor(crewToggle.getAttribute("aria-pressed") !== "true");
     });
   }
 

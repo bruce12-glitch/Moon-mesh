@@ -938,33 +938,31 @@ img {
 .hero {
   position: relative;
   isolation: isolate;
-  width: min(calc(100% - 48px), 1480px);
+  width: 100%;
   margin: 0 auto;
-  min-height: 560px;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #faf3e7;
+  min-height: 650px;
+  background: #fdf3e6;
 }
 
 .hero-art {
   position: absolute;
   z-index: -1;
-  inset: 0;
+  inset: 24px max(24px, calc((100% - 1480px) / 2));
 }
 
 .hero-art img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center;
-     object-position: center;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: right center;
+     object-position: right center;
 }
 
 .hero-inner {
   display: flex;
   align-items: center;
-  min-height: 560px;
+  min-height: 650px;
 }
 
 .hero-copy {
@@ -1206,8 +1204,9 @@ img {
   border-radius: 2px 5px 5px 2px;
   background: var(--cover);
   container-type: inline-size;
-  transform: rotate(var(--tilt, 0deg));
+  transform: perspective(900px) rotate(var(--tilt, 0deg));
   box-shadow: 3px 3px 0 #fff, 4px 4px 0 #988e9270;
+  transition: transform .35s ease, box-shadow .35s ease;
 }
 
 .cover-brand, .cover-no {
@@ -1252,8 +1251,21 @@ img {
   height: 58%;
   border: 0;
   background: var(--art-bg);
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.book-art:focus-visible .cover {
+  transform: perspective(900px) translateY(-7px) rotate(0deg);
+  box-shadow: 3px 3px 0 #fff, 7px 12px 18px #342e4225;
+}
+
+.book-link .icon {
+  transition: transform .25s ease;
+}
+
+.book-card:focus-within .book-link .icon {
+  transform: translateX(4px);
 }
 
 .cover-edition {
@@ -1383,11 +1395,27 @@ img {
   background: white;
 }
 
+.peek-drawing {
+  position: relative;
+  display: block;
+}
+
 .peek-paper img {
   width: 100%;
   aspect-ratio: 1;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.peek-colored {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+
+.peek-card:focus-visible .peek-colored {
+  opacity: 1;
 }
 
 .peek-label {
@@ -1434,8 +1462,7 @@ img {
   --clip-red: #ed493d;
   position: relative;
   isolation: isolate;
-  padding: 132px 0 80px;
-  overflow: hidden;
+  padding: 72px 0;
   background: #ddd0ef;
   color: var(--clip-ink);
 }
@@ -1452,7 +1479,7 @@ img {
 
 .scallop-divider {
   position: absolute;
-  inset: 0 0 auto;
+  inset: auto 0 0;
   height: 56px;
   background: #ffc81e;
 }
@@ -1464,7 +1491,7 @@ img {
   right: 0;
   bottom: -2px;
   height: 25px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='25' viewBox='0 0 48 25'%3E%3Cpath d='M0 25C0-6 48-6 48 25' fill='%23ddd0ef' stroke='%23251c2d' stroke-width='2.5'/%3E%3C/svg%3E") repeat-x bottom left;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='25' viewBox='0 0 48 25'%3E%3Cpath d='M0 25C0-6 48-6 48 25' fill='%23f8edff' stroke='%23251c2d' stroke-width='2.5'/%3E%3C/svg%3E") repeat-x bottom left;
 }
 
 .coloring-table-inner {
@@ -1543,6 +1570,8 @@ img {
 .clip-card {
   position: relative;
   display: block;
+  width: min(100%, 320px);
+  margin-inline: auto;
   padding: 12px;
   border: 2px solid var(--clip-ink);
   border-radius: 36px;
@@ -1551,26 +1580,15 @@ img {
   transform: rotate(-1.5deg);
 }
 
-.clip-card::after {
-  content: "";
-  position: absolute;
-  left: 5%;
-  right: 24%;
-  bottom: 25px;
-  height: 4px;
-  background: var(--clip-red);
-  border-radius: 50% 10% 30% 20%;
-  transform: rotate(1deg);
-  pointer-events: none;
-}
-
-.clip-card > img {
+.clip-video {
+  display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3;
-  -o-object-fit: cover;
-     object-fit: cover;
+  aspect-ratio: 9 / 16;
+  -o-object-fit: contain;
+     object-fit: contain;
   border-radius: 23px;
+  background: #fffdf6;
 }
 
 .clip-duration {
@@ -1591,44 +1609,40 @@ img {
   transform: rotate(8deg);
 }
 
-.clip-play {
+.clip-toggle {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  left: 24px;
+  bottom: 24px;
   display: inline-flex;
   align-items: center;
-  gap: 13px;
-  width: -moz-max-content;
-  width: max-content;
-  padding: 9px 19px 9px 9px;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 14px;
   border: 2px solid var(--clip-ink);
-  border-radius: 50px;
+  border-radius: 30px;
   background: #fffdf6;
-  box-shadow: 4px 5px 0 var(--clip-ink);
-  font-size: 15px;
+  color: var(--clip-ink);
+  font-size: 13px;
   font-weight: 900;
-  transform: translate(-50%, -50%) rotate(1.5deg);
-  transition: background-color .2s;
+  box-shadow: 3px 3px 0 var(--clip-ink);
 }
 
-.clip-play-icon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 2px solid var(--clip-ink);
-  border-radius: 50%;
-  background: var(--clip-red);
-  color: white;
+.clip-toggle .icon {
+  width: 17px;
+  height: 17px;
 }
 
-.clip-play-icon .icon {
-  width: 22px;
-  height: 22px;
-}
-
-.clip-card:hover .clip-play {
+.clip-toggle:hover {
   background: #fff0ba;
+}
+
+.clip-status {
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.clip-status:empty {
+  display: none;
 }
 
 .coloring-table-visual figcaption {
@@ -1800,12 +1814,11 @@ img {
 .faq-art {
   max-width: 650px;
   margin: 0 auto 15px;
-  overflow: hidden;
 }
 
 .faq-art img {
   width: 100%;
-  margin-top: -13%;
+  height: auto;
 }
 
 .faq-intro {
@@ -1978,11 +1991,16 @@ img {
   background: var(--paper);
 }
 
+.footer-scene {
+  position: relative;
+  padding-bottom: 48px;
+}
+
 .footer-illustration {
   position: relative;
   z-index: 1;
   width: min(calc(100% - 40px), 740px);
-  margin: 0 auto -3px;
+  margin: 0 auto;
 }
 
 .footer-illustration img {
@@ -2414,12 +2432,21 @@ img {
   color: var(--ink-soft);
 }
 
+.visible {
+  visibility: visible;
+}
+
 .table {
   display: table;
 }
 
 .hidden {
   display: none;
+}
+
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {
@@ -2468,11 +2495,11 @@ img {
   }
 
   .hero {
-    min-height: 500px;
+    min-height: 590px;
   }
 
   .hero-inner {
-    min-height: 500px;
+    min-height: 590px;
   }
 
   .hero-copy {
@@ -2567,27 +2594,24 @@ img {
   }
 
   .hero {
-    width: calc(100% - 24px);
     min-height: 0;
   }
 
   .hero-art {
     position: relative;
     z-index: 0;
-    height: 360px;
-    margin-top: -8px;
+    inset: auto;
+    margin: 0 auto;
+    width: min(100%, 650px);
     overflow: hidden;
   }
 
   .hero-art img {
-    position: absolute;
-    left: 50%;
-    width: auto;
+    position: relative;
+    left: -54%;
+    width: 154%;
     max-width: none;
-    height: 100%;
-    -o-object-fit: initial;
-       object-fit: initial;
-    transform: translateX(-72%);
+    height: auto;
   }
 
   .hero-inner {
@@ -2732,7 +2756,7 @@ img {
   }
 
   .coloring-table {
-    padding: 105px 0 50px;
+    padding: 50px 0;
   }
 
   .coloring-table-inner {
@@ -2935,10 +2959,6 @@ img {
     font-size: 12px;
   }
 
-  .hero-art {
-    height: 265px;
-  }
-
   .hero h1 {
     font-size: 46px;
   }
@@ -2957,19 +2977,8 @@ img {
     box-shadow: 7px 8px 0 var(--clip-ink);
   }
 
-  .clip-card > img {
+  .clip-video {
     border-radius: 17px;
-  }
-
-  .clip-play {
-    font-size: 13px;
-    gap: 8px;
-    padding: 6px 13px 6px 6px;
-  }
-
-  .clip-play-icon {
-    width: 39px;
-    height: 39px;
   }
 
   .clip-duration {
@@ -3061,6 +3070,21 @@ img {
   }
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .book-art:hover .cover {
+    transform: perspective(900px) translateY(-8px) rotateX(var(--book-rx, 0deg)) rotateY(var(--book-ry, 0deg)) rotate(var(--tilt, 0deg)) scale(1.025);
+    box-shadow: 3px 3px 0 #fff, 8px 16px 22px #342e4228;
+  }
+
+  .book-card:hover .book-link .icon {
+    transform: translateX(4px);
+  }
+
+  .peek-card:hover .peek-colored {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -3070,5 +3094,9 @@ img {
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .book-art:is(:hover, :focus-visible) .cover {
+    transform: rotate(var(--tilt, 0deg));
   }
 }
