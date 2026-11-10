@@ -232,12 +232,17 @@
   .faq-intro .eyebrow { justify-content: center; }
   .faq-intro > p:not(.eyebrow) { margin-top: 10px; color: var(--ink-soft); font-size: 16px; }
   .feature-list { display: none; }
-  .faq details { border-bottom: 1px solid var(--ink-faint); }
+  .faq details { overflow: hidden; max-height: 68px; border-bottom: 1px solid var(--ink-faint); transition: max-height .38s cubic-bezier(.22, 1, .36, 1); }
   .faq details:first-child { border-top: 1px solid var(--ink-faint); }
+  .faq details[open] { max-height: 320px; }
+  .faq details.is-expanding, .faq details.is-closing { max-height: 68px; }
   .faq summary { @apply flex items-center justify-between gap-4; min-height: 66px; padding: 16px 4px; font-size: 18px; font-weight: 600; line-height: 1.5; list-style: none; cursor: var(--cursor-pointer); }
   .faq summary::-webkit-details-marker { display: none; }
-  .faq summary::after { content: ""; width: 10px; height: 10px; margin-right: 7px; flex: 0 0 auto; border-right: 1.5px solid #8d8294; border-bottom: 1.5px solid #8d8294; transform: rotate(45deg); transition: transform .2s; }
-  .faq details[open] summary::after { transform: rotate(225deg); }
+  .faq summary::after { content: ""; width: 10px; height: 10px; margin-right: 7px; flex: 0 0 auto; border-right: 1.5px solid #8d8294; border-bottom: 1.5px solid #8d8294; transform: rotate(45deg); transition: transform .32s cubic-bezier(.22, 1, .36, 1); }
+  .faq details[open]:not(.is-expanding):not(.is-closing) summary::after { transform: rotate(225deg); }
+  .faq-body { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .38s cubic-bezier(.22, 1, .36, 1), opacity .28s ease; }
+  .faq details[open]:not(.is-expanding):not(.is-closing) .faq-body { grid-template-rows: 1fr; opacity: 1; }
+  .faq-body > p { min-height: 0; overflow: hidden; }
   .faq details p { padding: 0 28px 20px 4px; max-width: 75ch; color: var(--ink-soft); font-size: 16px; line-height: 1.75; }
   .faq details p a { text-decoration: underline; text-underline-offset: 4px; }
   .moon-mail { padding: 36px 0 48px; background: var(--paper); }

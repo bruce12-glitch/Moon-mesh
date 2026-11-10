@@ -682,5 +682,39 @@
     navSections.forEach((item) => navObserver.observe(item.section));
   }
 
+  /* ----------------------------------------------------------- FAQ smooth */
+
+  const faqDetails = $$(".faq details");
+  faqDetails.forEach((detail) => {
+    const summary = $("summary", detail);
+    if (!summary) return;
+    summary.addEventListener("click", (event) => {
+      if (reduceMotion.matches) return;
+      event.preventDefault();
+      if (detail.open && !detail.classList.contains("is-closing")) {
+        detail.classList.add("is-closing");
+        window.setTimeout(() => {
+          detail.open = false;
+          detail.classList.remove("is-closing");
+        }, 360);
+      } else {
+        faqDetails.forEach((other) => {
+          if (other !== detail && other.open && !other.classList.contains("is-closing")) {
+            other.classList.add("is-closing");
+            window.setTimeout(() => {
+              other.open = false;
+              other.classList.remove("is-closing");
+            }, 360);
+          }
+        });
+        detail.classList.remove("is-closing");
+        detail.classList.add("is-expanding");
+        detail.open = true;
+        void detail.offsetHeight;
+        detail.classList.remove("is-expanding");
+      }
+    });
+  });
+
   syncSaved();
 })();

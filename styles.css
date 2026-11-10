@@ -1773,11 +1773,22 @@ img {
 }
 
 .faq details {
+  overflow: hidden;
+  max-height: 68px;
   border-bottom: 1px solid var(--ink-faint);
+  transition: max-height .38s cubic-bezier(.22, 1, .36, 1);
 }
 
 .faq details:first-child {
   border-top: 1px solid var(--ink-faint);
+}
+
+.faq details[open] {
+  max-height: 320px;
+}
+
+.faq details.is-expanding, .faq details.is-closing {
+  max-height: 68px;
 }
 
 .faq summary {
@@ -1807,11 +1818,28 @@ img {
   border-right: 1.5px solid #8d8294;
   border-bottom: 1.5px solid #8d8294;
   transform: rotate(45deg);
-  transition: transform .2s;
+  transition: transform .32s cubic-bezier(.22, 1, .36, 1);
 }
 
-.faq details[open] summary::after {
+.faq details[open]:not(.is-expanding):not(.is-closing) summary::after {
   transform: rotate(225deg);
+}
+
+.faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .38s cubic-bezier(.22, 1, .36, 1), opacity .28s ease;
+}
+
+.faq details[open]:not(.is-expanding):not(.is-closing) .faq-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.faq-body > p {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .faq details p {
