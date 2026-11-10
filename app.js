@@ -40,19 +40,13 @@
     }
   }
 
-  if (inlineVideo && clipToggle) {
+  if (inlineVideo) {
     inlineVideo.muted = true;
     inlineVideo.controls = false;
-    clipToggle.hidden = false;
-    const syncClipControl = () => {
-      const playing = !inlineVideo.paused;
-      clipToggle.setAttribute("aria-label", playing ? "Pause coloring video" : "Play coloring video");
-      $("span", clipToggle).textContent = playing ? "Pause" : "Play";
-      $("use", clipToggle).setAttribute("href", playing ? "#pause" : "#play");
-    };
-    inlineVideo.addEventListener("play", syncClipControl);
-    inlineVideo.addEventListener("pause", syncClipControl);
-    clipToggle.addEventListener("click", () => {
+    if (clipToggle) {
+      clipToggle.hidden = true;
+    }
+    inlineVideo.addEventListener("click", () => {
       if (inlineVideo.paused) {
         clipPausedByUser = false;
         clipStartedByUser = true;
@@ -63,8 +57,9 @@
       }
     });
     inlineVideo.addEventListener("error", () => {
-      clipStatus.textContent = "The clip couldn’t load. Try the full clip link above.";
-      clipToggle.disabled = true;
+      if (clipStatus) {
+        clipStatus.textContent = "The clip couldn’t load.";
+      }
     });
     if ("IntersectionObserver" in window) {
       const clipObserver = new IntersectionObserver(([entry]) => {
@@ -72,9 +67,6 @@
         syncInlinePlayback();
       }, { threshold: 0 });
       clipObserver.observe(inlineVideo);
-    } else {
-      inlineVideo.controls = true;
-      clipToggle.hidden = true;
     }
     document.addEventListener("visibilitychange", syncInlinePlayback);
     reduceMotion.addEventListener("change", syncInlinePlayback);
