@@ -4,7 +4,7 @@ Moon Mesh is a children's coloring-book storefront featuring Miso the kitten. Th
 
 Live site: [Moon Mesh](https://bruce12-glitch.github.io/Moon-mesh/).
 
-To enable publishing, open **Settings → Pages**, choose **Deploy from a branch**, select **main** and **/(root)**, and save. The compiled `styles.css` and static assets are committed, and `.nojekyll` keeps publishing as a plain static site. After editing the source styles, run `npm run build` and commit the generated stylesheet before pushing to `main`.
+GitHub Pages is enabled and publishes directly from the `main` branch (`/(root)`). The compiled `styles.css` and static assets are committed, and `.nojekyll` keeps publishing as a plain static site. After editing the source styles, run `npm run build` and commit the generated stylesheet before pushing to `main`.
 
 ## Run locally
 
