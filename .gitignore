@@ -5,6 +5,7 @@ node_modules/
 # Temporary preview files
 *.html
 !index.html
+!404.html
 *.png
 *.webp
 
