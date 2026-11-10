@@ -1175,6 +1175,8 @@ img {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  will-change: transform;
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1);
 }
 
 .book-night {
@@ -1184,6 +1186,7 @@ img {
   --cover-accent: #6c557b;
   --art-bg: #e6d9f6;
   --tilt: -3deg;
+  --card-hover-tilt: -1.4deg;
 }
 
 .book-garden {
@@ -1193,6 +1196,7 @@ img {
   --cover-accent: #4a6641;
   --art-bg: #eaf6d9;
   --tilt: 2deg;
+  --card-hover-tilt: 1.4deg;
 }
 
 .book-space {
@@ -1202,6 +1206,7 @@ img {
   --cover-accent: #9d5a58;
   --art-bg: #ffd9c8;
   --tilt: -2deg;
+  --card-hover-tilt: -1.2deg;
 }
 
 .book-mat {
@@ -1212,6 +1217,7 @@ img {
   overflow: hidden;
   border-radius: 16px;
   background: var(--mat);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s ease;
 }
 
 .book-art {
@@ -2995,8 +3001,16 @@ img {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .book-art:hover .cover {
-    transform: perspective(900px) translateY(-8px) rotateX(var(--book-rx, 0deg)) rotateY(var(--book-ry, 0deg)) rotate(var(--tilt, 0deg)) scale(1.025);
+  .book-card:hover {
+    transform: translateY(-6px) rotate(var(--card-hover-tilt, -1.25deg));
+  }
+
+  .book-card:hover .book-mat {
+    box-shadow: 0 14px 28px rgba(52, 46, 66, 0.11);
+  }
+
+  .book-card:hover .cover, .book-art:hover .cover {
+    transform: perspective(900px) translateY(-8px) rotateX(var(--book-rx, 0deg)) rotateY(var(--book-ry, 0deg)) rotate(calc(var(--tilt, 0deg) * -0.6)) scale(1.035);
     box-shadow: 3px 3px 0 #fff, 8px 16px 22px #342e4228;
   }
 
@@ -3018,6 +3032,10 @@ img {
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .book-card:hover {
+    transform: none;
   }
 
   .book-art:is(:hover, :focus-visible) .cover {

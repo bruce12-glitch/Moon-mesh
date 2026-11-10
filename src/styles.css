@@ -142,11 +142,11 @@
   .crew .section-heading > p { max-width: 68ch; }
   .books { padding: 40px 0 48px; background: var(--paper); }
   .book-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: stretch; }
-  .book-card { min-width: 0; display: flex; flex-direction: column; }
-  .book-night { --mat: #f3eef8; --cover: #d4c6e7; --cover-text: #342e42; --cover-accent: #6c557b; --art-bg: #e6d9f6; --tilt: -3deg; }
-  .book-garden { --mat: #f0f3e9; --cover: #c4d7b7; --cover-text: #354831; --cover-accent: #4a6641; --art-bg: #eaf6d9; --tilt: 2deg; }
-  .book-space { --mat: #fcf1e8; --cover: #f2c3b1; --cover-text: #563e3c; --cover-accent: #9d5a58; --art-bg: #ffd9c8; --tilt: -2deg; }
-  .book-mat { position: relative; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 16px; background: var(--mat); }
+  .book-card { min-width: 0; display: flex; flex-direction: column; will-change: transform; transition: transform .35s cubic-bezier(.22, 1, .36, 1); }
+  .book-night { --mat: #f3eef8; --cover: #d4c6e7; --cover-text: #342e42; --cover-accent: #6c557b; --art-bg: #e6d9f6; --tilt: -3deg; --card-hover-tilt: -1.4deg; }
+  .book-garden { --mat: #f0f3e9; --cover: #c4d7b7; --cover-text: #354831; --cover-accent: #4a6641; --art-bg: #eaf6d9; --tilt: 2deg; --card-hover-tilt: 1.4deg; }
+  .book-space { --mat: #fcf1e8; --cover: #f2c3b1; --cover-text: #563e3c; --cover-accent: #9d5a58; --art-bg: #ffd9c8; --tilt: -2deg; --card-hover-tilt: -1.2deg; }
+  .book-mat { position: relative; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 16px; background: var(--mat); transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s ease; }
   .book-art { display: grid; place-items: center; width: 100%; height: 100%; padding: 23px; }
   .cover { position: relative; width: 64%; max-width: 250px; aspect-ratio: 3 / 4; overflow: hidden; border: 1px solid #342e4260; border-radius: 2px 5px 5px 2px; background: var(--cover); container-type: inline-size; transform: perspective(900px) rotate(var(--tilt, 0deg)); box-shadow: 3px 3px 0 #fff, 4px 4px 0 #988e9270; transition: transform .35s ease, box-shadow .35s ease; }
   .cover-brand, .cover-no { position: absolute; z-index: 2; top: 5%; color: var(--cover-text); font-size: 4cqw; font-weight: 800; line-height: 1; }
@@ -467,13 +467,16 @@
   }
 }
 @media (hover: hover) and (pointer: fine) {
-  .book-art:hover .cover { transform: perspective(900px) translateY(-8px) rotateX(var(--book-rx, 0deg)) rotateY(var(--book-ry, 0deg)) rotate(var(--tilt, 0deg)) scale(1.025); box-shadow: 3px 3px 0 #fff, 8px 16px 22px #342e4228; }
+  .book-card:hover { transform: translateY(-6px) rotate(var(--card-hover-tilt, -1.25deg)); }
+  .book-card:hover .book-mat { box-shadow: 0 14px 28px rgba(52, 46, 66, 0.11); }
+  .book-card:hover .cover, .book-art:hover .cover { transform: perspective(900px) translateY(-8px) rotateX(var(--book-rx, 0deg)) rotateY(var(--book-ry, 0deg)) rotate(calc(var(--tilt, 0deg) * -0.6)) scale(1.035); box-shadow: 3px 3px 0 #fff, 8px 16px 22px #342e4228; }
   .book-card:hover .book-link .icon { transform: translateX(4px); }
   .peek-card:hover .peek-colored { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .book-card:hover { transform: none; }
   .book-art:is(:hover, :focus-visible) .cover { transform: rotate(var(--tilt, 0deg)); }
   .hero-actions .button-ink:is(:hover, :focus-visible) { animation: none; transform: none; }
 }
