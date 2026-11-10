@@ -445,21 +445,25 @@
   if (giftTab && !giftDismissed) {
     const hero = $(".hero");
     const coloring = $("#color");
+    const watchSection = $("#watch");
     let pastHero = false;
     let coloringVisible = false;
+    let watchVisible = false;
     const updateGiftTab = () => {
-      giftTab.hidden = !pastHero || coloringVisible;
+      giftTab.hidden = !pastHero || coloringVisible || watchVisible;
     };
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.target === hero) pastHero = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
           if (entry.target === coloring) coloringVisible = entry.isIntersecting;
+          if (entry.target === watchSection) watchVisible = entry.isIntersecting;
         });
         updateGiftTab();
       });
       observer.observe(hero);
       observer.observe(coloring);
+      if (watchSection) observer.observe(watchSection);
       $("button", giftTab).addEventListener("click", () => {
         observer.disconnect();
         giftTab.hidden = true;

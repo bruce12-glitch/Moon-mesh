@@ -45,7 +45,7 @@
     --focus: #8161a7;
     --radius: 16px;
   }
-  html { scroll-behavior: smooth; scroll-padding-top: 28px; }
+  html { scroll-behavior: smooth; scroll-padding-top: 0; }
   body { margin: 0; background: var(--paper); color: var(--ink); font: 400 18px/1.65 var(--body); -webkit-font-smoothing: antialiased; }
   body:has(dialog[open]) { overflow: hidden; }
   h1, h2, h3, p, figure, fieldset { margin: 0; }
