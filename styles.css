@@ -939,7 +939,7 @@ img {
   color: var(--red);
 }
 
-.main-nav .amazon-nav {
+.main-nav .amazon-nav, .main-nav .etsy-nav {
   color: var(--ink);
   font-size: 17px;
   font-weight: 800;
@@ -1687,13 +1687,29 @@ img {
   margin-inline: auto;
 }
 
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+  max-width: 1120px;
+  margin-inline: auto;
+  align-items: stretch;
+}
+
+.featured-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .featured .section-heading {
   margin-bottom: 24px;
 }
 
 .amazon-tile {
   display: flex;
-  width: min(100%, 560px);
+  width: 100%;
+  max-width: 540px;
   margin-inline: auto;
   align-items: center;
   justify-content: center;
@@ -1704,11 +1720,22 @@ img {
   border: 1px solid #ebe4d4;
   border-radius: 20px;
   background: #fbf9f1;
-  transition: background-color .2s;
+  transition: background-color .2s, transform .25s ease, box-shadow .25s ease;
 }
 
 .amazon-tile:hover {
   background: #f5efe0;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(50, 47, 55, 0.08);
+}
+
+.etsy-tile {
+  border-color: #f0dcd2;
+  background: #fdf6f2;
+}
+
+.etsy-tile:hover {
+  background: #faeae1;
 }
 
 .amazon-wordmark {
@@ -1726,6 +1753,24 @@ img {
   right: 6px;
   width: 140px;
   height: 32px;
+}
+
+.etsy-wordmark {
+  position: relative;
+  display: block;
+  padding-bottom: 20px;
+  font: 800 52px/.9 Fraunces, Georgia, serif;
+  letter-spacing: -1.5px;
+  color: #c84b24;
+}
+
+.etsy-wordmark svg {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 132px;
+  height: 26px;
 }
 
 .amazon-tile-copy {
@@ -2564,7 +2609,7 @@ img {
     padding-bottom: 12px;
   }
 
-  .main-nav a, .main-nav .amazon-nav {
+  .main-nav a, .main-nav .amazon-nav, .main-nav .etsy-nav {
     font-size: 14px;
     margin-left: 0;
   }
@@ -2779,6 +2824,11 @@ img {
     width: calc(100% - 30px);
   }
 
+  .featured-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
   .amazon-tile {
     min-height: 170px;
   }
@@ -2926,7 +2976,7 @@ img {
     gap: 2px 14px;
   }
 
-  .main-nav a, .main-nav .amazon-nav {
+  .main-nav a, .main-nav .amazon-nav, .main-nav .etsy-nav {
     font-size: 12px;
   }
 
