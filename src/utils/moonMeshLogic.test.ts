@@ -8,6 +8,8 @@ import {
   computeBookTiltAngles,
   dampValue,
   isEraserSwatch,
+  getForestAudioUiState,
+  getDioramaLightMood,
 } from './moonMeshLogic';
 import { HERO_SLIDES, BOOKS } from '../data/moonMeshData';
 
@@ -109,4 +111,27 @@ test('BOOKS catalog contains exclusively The Little Moon Picnic with valid cover
   assert.equal(BOOKS[0].coverImage, '/assets/the-little-moon-picnic-book.png');
   assert.ok(BOOKS[0].stageTagline.length > 0);
 });
+
+test('getForestAudioUiState switches between speaker and muted states accurately', () => {
+  const mutedState = getForestAudioUiState(false);
+  assert.equal(mutedState.iconState, 'muted');
+  assert.equal(mutedState.statusBadge, 'Muted');
+  assert.ok(mutedState.ariaLabel.toLowerCase().includes('play ambient forest sound'));
+
+  const playingState = getForestAudioUiState(true);
+  assert.equal(playingState.iconState, 'speaker');
+  assert.equal(playingState.statusBadge, 'On');
+  assert.ok(playingState.ariaLabel.toLowerCase().includes('mute ambient forest sound'));
+});
+
+test('getDioramaLightMood returns valid lighting configuration for all presets', () => {
+  const moonlit = getDioramaLightMood('moonlit-night');
+  assert.equal(moonlit.label, 'Moonlit Night');
+  assert.ok(moonlit.keyLightIntensity > 0);
+
+  const dusk = getDioramaLightMood('golden-dusk');
+  assert.equal(dusk.label, 'Golden Dusk');
+  assert.ok(dusk.moonGlowIntensity > moonlit.moonGlowIntensity);
+});
+
 

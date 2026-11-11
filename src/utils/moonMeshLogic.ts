@@ -106,3 +106,104 @@ export function isEraserSwatch(hexColor: string): boolean {
   const upper = hexColor.trim().toUpperCase();
   return upper === '#FFFFFF' || upper === '#FFFDF7';
 }
+
+export interface ForestAudioUiState {
+  isPlaying: boolean;
+  iconState: 'speaker' | 'muted';
+  ariaLabel: string;
+  buttonLabel: string;
+  statusBadge: string;
+}
+
+/**
+ * Computes consistent UI & accessibility metadata for the global and 3D scene ambient forest sound toggles.
+ */
+export function getForestAudioUiState(isPlaying: boolean): ForestAudioUiState {
+  if (isPlaying) {
+    return {
+      isPlaying: true,
+      iconState: 'speaker',
+      ariaLabel: 'Mute ambient forest sound for the 3D Moon Picnic scene',
+      buttonLabel: 'Forest Sound',
+      statusBadge: 'On',
+    };
+  }
+  return {
+    isPlaying: false,
+    iconState: 'muted',
+    ariaLabel: 'Play ambient forest sound for the 3D Moon Picnic scene',
+    buttonLabel: 'Forest Sound',
+    statusBadge: 'Muted',
+  };
+}
+
+export type DioramaMoodId = 'moonlit-night' | 'golden-dusk' | 'starlight-bloom';
+
+export interface DioramaLightMoodConfig {
+  id: DioramaMoodId;
+  label: string;
+  skyTop: string;
+  skyMid: string;
+  skyHorizon: string;
+  skyBottom: string;
+  fogColor: number;
+  keyLightColor: number;
+  keyLightIntensity: number;
+  fillLightColor: number;
+  fillLightIntensity: number;
+  moonGlowIntensity: number;
+  fireflyOpacity: number;
+}
+
+export const DIORAMA_LIGHT_MOODS: Record<DioramaMoodId, DioramaLightMoodConfig> = {
+  'moonlit-night': {
+    id: 'moonlit-night',
+    label: 'Moonlit Night',
+    skyTop: '#243B6B',
+    skyMid: '#375A9E',
+    skyHorizon: '#5688C7',
+    skyBottom: '#2B3F66',
+    fogColor: 0x375a9e,
+    keyLightColor: 0xfff3d6,
+    keyLightIntensity: 2.35,
+    fillLightColor: 0xffb8d1,
+    fillLightIntensity: 0.9,
+    moonGlowIntensity: 2.6,
+    fireflyOpacity: 0.92,
+  },
+  'golden-dusk': {
+    id: 'golden-dusk',
+    label: 'Golden Dusk',
+    skyTop: '#3B2D5E',
+    skyMid: '#6E4578',
+    skyHorizon: '#C97A7E',
+    skyBottom: '#422B4E',
+    fogColor: 0x6e4578,
+    keyLightColor: 0xffdf9e,
+    keyLightIntensity: 2.65,
+    fillLightColor: 0xff9eb5,
+    fillLightIntensity: 1.15,
+    moonGlowIntensity: 3.1,
+    fireflyOpacity: 0.85,
+  },
+  'starlight-bloom': {
+    id: 'starlight-bloom',
+    label: 'Starlight',
+    skyTop: '#19284C',
+    skyMid: '#284278',
+    skyHorizon: '#466FA6',
+    skyBottom: '#1C2B4B',
+    fogColor: 0x284278,
+    keyLightColor: 0xeef6ff,
+    keyLightIntensity: 2.15,
+    fillLightColor: 0xc8b6ff,
+    fillLightIntensity: 1.05,
+    moonGlowIntensity: 2.9,
+    fireflyOpacity: 1.0,
+  },
+};
+
+export function getDioramaLightMood(moodId: DioramaMoodId): DioramaLightMoodConfig {
+  return DIORAMA_LIGHT_MOODS[moodId] ?? DIORAMA_LIGHT_MOODS['moonlit-night'];
+}
+
