@@ -159,7 +159,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     signoff: 'Now serving cozy moments ♡',
     bgColor: '#FBF8F3',
     themeClass: 'slide-showcase',
-    image: '/assets/the-little-moon-picnic-book.png',
+    image: '/assets/hero-book-showcase.png',
     imageAlt:
       'The Little Moon Picnic story coloring book standing on a warm wooden tabletop with Miso, Plum, Pip, and Sprout sharing a moonlit picnic.',
     layout: 'book-showcase',
