@@ -9,6 +9,7 @@ import {
   dampValue,
   isEraserSwatch,
 } from './moonMeshLogic';
+import { HERO_SLIDES, BOOKS } from '../data/moonMeshData';
 
 test('getNextSlideIndex wraps around forward and backward', () => {
   assert.equal(getNextSlideIndex(0, 4, 1), 1);
