@@ -106,4 +106,63 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       if (slide.id === 'coloring-treat') return '/assets/hero-coloring-treat.jpg';
       if (slide.id === 'come-join-us') return '/assets/hero-come-join-us.jpg';
       if (slide.id === 'book-showcase') return '/assets/the-little-moon-picnic-book.png';
+      return '/assets/color-together.webp';
+    }
+    return slide.image;
+  };
+
+  return (
+    <section
+      ref={heroRef}
+      className={`hero-carousel relative isolate w-full overflow-hidden transition-colors duration-700 ${activeSlide.themeClass}`}
+      style={{ backgroundColor: activeSlide.bgColor }}
+      aria-roledescription="carousel"
+      aria-label="Featured Moon Mesh books and stories"
+      onKeyDown={handleKeyDown}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Animated Storybook Background Effects Layer per Slide */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        {/* Soft glowing pastel aura spheres */}
+        <div className="hero-ambient-aura aura-left" />
+        <div className="hero-ambient-aura aura-right" />
+
+        {/* Hand-drawn drifting storybook clouds & twinkling stars */}
+        <svg
+          className="hero-bg-clouds-svg"
+          viewBox="0 0 1440 620"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <defs>
+            <linearGradient id="heroCloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.82" />
+              <stop offset="100%" stopColor="#FFF3D6" stopOpacity="0.45" />
+            </linearGradient>
+            <radialGradient id="heroSunGlow" cx="72%" cy="38%" r="48%">
+              <stop offset="0%" stopColor="#FFE89E" stopOpacity="0.55" />
+              <stop offset="55%" stopColor="#FFD6E0" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="1440" height="620" fill="url(#heroSunGlow)" />
+          {/* Soft hand-drawn clouds */}
+          <g className="hero-cloud-drift-slow" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.12" strokeWidth="2.5">
+            <path d="M90 135 C90 112, 118 98, 142 108 C156 84, 196 84, 212 108 C236 102, 258 118, 254 140 C252 152, 236 158, 214 158 L112 158 C96 158, 90 148, 90 135 Z" />
+            <path d="M1140 110 C1140 88, 1168 74, 1192 84 C1208 60, 1248 60, 1264 84 C1288 78, 1310 94, 1306 116 C1304 128, 1288 134, 1266 134 L1162 134 C1146 134, 1140 124, 1140 110 Z" />
+          </g>
+          <g className="hero-cloud-drift-fast" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.1" strokeWidth="2">
+            <path d="M510 92 C510 75, 532 64, 550 72 C562 54, 592 54, 604 72 C622 68, 638 80, 635 96 C633 105, 621 110, 605 110 L526 110 C514 110, 510 102, 510 92 Z" />
+            <path d="M360 495 C360 478, 382 467, 400 475 C412 457, 442 457, 454 475 C472 471, 488 483, 485 499 C483 508, 471 513, 455 513 L376 513 C364 513, 360 505, 360 495 Z" />
+          </g>
+          {/* Hand-drawn twinkling stars & sparkles */}
+          <g fill="#F6C84C" stroke="#2B1B19" strokeWidth="2" strokeLinejoin="round">
+            <path
+              className="hero-svg-star star-a"
+              d="M448 164 L453 176 L466 178 L456 187 L459 200 L448 193 L437 200 L440 187 L430 178 L443 176 Z"
+            />
+            <path
+              className="hero-svg-star star-b"
+    </section>
+  );
 }
