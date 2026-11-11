@@ -230,6 +230,60 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   {/* Main Full-Bleed Stage Artwork (User's Provided Book Showcase Image) */}
                   <div className="cocowyo-banner-figure">
                     <img
+                      src={imgSrc}
+                      width={2000}
+                      height={756}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      alt={`${activeShowcaseBook.title} — Moon Mesh Grand Opening Book Showcase`}
+                      className="cocowyo-banner-img"
+                      onClick={() => onPreviewBook(activeShowcaseBook)}
+                    />
+
+                    {/* Clickable hotspot over the standing 3D book on the wooden tabletop */}
+                    <button
+                      type="button"
+                      className="cocowyo-banner-book-hotspot"
+                      aria-label={`Peek inside ${activeShowcaseBook.title}`}
+                      onClick={() => onPreviewBook(activeShowcaseBook)}
+                    >
+                      {/* When user switches to Books #2, #3, or #4, display that book standing in 3D on the tabletop */}
+                      {showcaseBookIndex > 0 && (
+                        <div
+                          className={`cocowyo-3d-book cocowyo-overlay-book ${activeShowcaseBook.themeClass}`}
+                          style={
+                            {
+                              '--spine-bg': activeShowcaseBook.spineColor,
+                              '--spine-ink': activeShowcaseBook.spineTextColor,
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span className="book-table-shadow" aria-hidden="true" />
+                          <span className="book-3d-spine" aria-hidden="true">
+                            <span className="spine-emblem">✦</span>
+                            <span className="spine-brand">Moon Mesh</span>
+                            <span className="spine-title">{activeShowcaseBook.title}</span>
+                            <span className="spine-no">{activeShowcaseBook.number}</span>
+                          </span>
+                          <span className="book-3d-pages-top" aria-hidden="true" />
+                          <span className="book-3d-front">
+                            <span className="book-3d-structured-cover">
+                              <span className="cover-brand">Moon Mesh</span>
+                              <span className="cover-no">{activeShowcaseBook.number}</span>
+                              <span className="cover-title">
+                                {activeShowcaseBook.titleTop}
+                                <br />
+                                <em>{activeShowcaseBook.titleEm}</em>
+                              </span>
+                              <img
+                                src={activeShowcaseBook.coverImage}
+                                width={680}
+                                height={680}
+                                alt={activeShowcaseBook.title}
+                              />
+                              <span className="cover-edition">A coloring adventure</span>
+                            </span>
+                            <span className="book-3d-hinge-crease" aria-hidden="true" />
+                          </span>
     </section>
   );
 }
