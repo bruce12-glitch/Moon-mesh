@@ -96,3 +96,9 @@ test('isEraserSwatch identifies eraser hex codes', () => {
   assert.equal(isEraserSwatch('#fffdf7'), true);
   assert.equal(isEraserSwatch('#FFC81E'), false);
 });
+
+test('HERO_SLIDES first slide uses Grand Opening book showcase artwork', () => {
+  assert.equal(HERO_SLIDES[0].id, 'little-moon-picnic');
+  assert.equal(HERO_SLIDES[0].image, '/assets/hero-book-showcase.png');
+  assert.ok(HERO_SLIDES[0].badge.includes('GRAND OPENING'));
+});
