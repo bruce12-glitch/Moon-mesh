@@ -2823,3 +2823,8 @@ img {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(18px, -6px, 0); }
 }
+
+@keyframes hero-cloud-drift-fast {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-22px, 5px, 0); }
+}
