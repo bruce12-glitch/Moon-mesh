@@ -82,4 +82,8 @@
       <stop offset="100%" stop-color="#7E9E73"/>
     </linearGradient>
     <linearGradient id="gradSky" x1="18%" y1="8%" x2="84%" y2="92%">
+      <stop offset="0%" stop-color="#E8F5FC"/>
+      <stop offset="52%" stop-color="#BCD9EC"/>
+      <stop offset="86%" stop-color="#8AB4D1"/>
+      <stop offset="100%" stop-color="#6793B3"/>
 </svg>
