@@ -284,6 +284,239 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                             </span>
                             <span className="book-3d-hinge-crease" aria-hidden="true" />
                           </span>
+                        </div>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Interactive Tabletop Control Dock Underneath the Showcase Stage */}
+                  <div className="cocowyo-showcase-dock shell">
+                    <div
+                      className="cocowyo-book-switcher"
+                      role="group"
+                      aria-label="Showcase a Moon Mesh book on the stage"
+                    >
+                      {BOOKS.map((b, bIdx) => {
+                        const isSelected = bIdx === showcaseBookIndex;
+                        return (
+                          <button
+                            key={b.id}
+                            type="button"
+                            aria-pressed={isSelected}
+                            className={`cocowyo-switch-pill ${isSelected ? 'is-active' : ''}`}
+                            onClick={() => {
+                              setIsAutoPlaying(false);
+                              setShowcaseBookIndex(bIdx);
+                            }}
+                          >
+                            <span
+                              className="switch-dot"
+                              style={{ backgroundColor: b.spineColor }}
+                              aria-hidden="true"
+                            />
+                            <span>{b.title}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="cocowyo-dock-actions">
+                      <a
+                        className="button button-ink whitespace-nowrap shrink-0"
+                        href={slide.primaryCta.href}
+                        onClick={(e) => handleCtaClick(e, slide.primaryCta)}
+                        tabIndex={isCurrent ? 0 : -1}
+                      >
+                        {slide.primaryCta.label}: {activeShowcaseBook.title}
+                        <svg className="icon" aria-hidden="true">
+                          <use href="#arrow" />
+                        </svg>
+                      </a>
+                      <a
+                        className="button button-paper whitespace-nowrap shrink-0"
+                        href={slide.secondaryCta.href}
+                        onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
+                        tabIndex={isCurrent ? 0 : -1}
+                      >
+                        {slide.secondaryCta.label}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : slide.layout === 'centered' ? (
+                /* Centered "COME JOIN US" Coco Wyo-inspired Banner Layout */
+                <div className="hero-centered-inner shell">
+                  <div className="hero-centered-art-wrap">
+                    <img
+                      src={imgSrc}
+                      width={1600}
+                      height={900}
+                      alt={slide.imageAlt}
+                      referrerPolicy="no-referrer"
+                      onError={() =>
+                        setImageErrors((prev) => ({ ...prev, [slide.id]: true }))
+                      }
+                      className="hero-centered-img"
+                    />
+                  </div>
+                  <div className="hero-centered-overlay-bar">
+                    <p className="hero-centered-subtitle">{slide.subtitle}</p>
+                    <div className="hero-actions justify-center">
+                      <a
+                        className="button button-ink whitespace-nowrap shrink-0"
+                        href={slide.primaryCta.href}
+                        onClick={(e) => handleCtaClick(e, slide.primaryCta)}
+                        tabIndex={isCurrent ? 0 : -1}
+                      >
+                        {slide.primaryCta.label}
+                        <svg className="icon" aria-hidden="true">
+                          <use href="#arrow" />
+                        </svg>
+                      </a>
+                      <a
+                        className="button button-paper whitespace-nowrap shrink-0"
+                        href={slide.secondaryCta.href}
+                        onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
+                        tabIndex={isCurrent ? 0 : -1}
+                      >
+                        {slide.secondaryCta.label}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Split Layout ("Make the moon your color", "READY FOR a little COLORiNG TREAT?") */
+                <>
+                  <div className="hero-art">
+                    <img
+                      src={imgSrc}
+                      width={1600}
+                      height={900}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      alt={slide.imageAlt}
+                      referrerPolicy="no-referrer"
+                      onError={() =>
+                        setImageErrors((prev) => ({ ...prev, [slide.id]: true }))
+                      }
+                      className="hero-float-art"
+                    />
+                  </div>
+                  <div className="hero-inner shell">
+                    <div className="hero-copy">
+                      <p className="eyebrow">{slide.eyebrow}</p>
+
+                      {slide.id === 'coloring-treat' ? (
+                        <h1 className="hero-treat-heading">
+                          <span className="treat-block-line">{slide.titleLines[0]}</span>
+                          <span className="treat-script-line">{slide.titleLines[1]}</span>
+                          <span className="treat-block-line">{slide.titleLines[2]}</span>
+                          <span className="treat-block-line">{slide.titleLines[3]}</span>
+                        </h1>
+                      ) : slide.id === 'moon-color' ? (
+                        <h1 id={isCurrent ? 'hero-title' : undefined}>
+                          Make the
+                          <br />
+                          <span className="marker-highlight">moon</span>
+                          <br />
+                          your <span className="marker-underline">color.</span>
+                        </h1>
+                      ) : (
+                        <h1>
+                          {slide.titleLines[0]}
+                          <br />
+                          <span className="marker-highlight">{slide.titleLines[1]}</span>
+                          <br />
+                          <span className="marker-underline">{slide.titleLines[2]}</span>
+                        </h1>
+                      )}
+
+                      <p className="hero-lede">{slide.subtitle}</p>
+
+                      <div className="hero-actions">
+                        <a
+                          className="button button-ink whitespace-nowrap shrink-0"
+                          href={slide.primaryCta.href}
+                          onClick={(e) => handleCtaClick(e, slide.primaryCta)}
+                          tabIndex={isCurrent ? 0 : -1}
+                        >
+                          {slide.primaryCta.label}
+                          <svg className="icon" aria-hidden="true">
+                            <use href="#arrow" />
+                          </svg>
+                        </a>
+                        <a
+                          className="text-link whitespace-nowrap shrink-0"
+                          href={slide.secondaryCta.href}
+                          onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
+                          tabIndex={isCurrent ? 0 : -1}
+                        >
+                          {slide.secondaryCta.label}
+                        </a>
+                      </div>
+
+                      {slide.signoff && (
+                        <p className="hero-signoff">
+                          {slide.signoff.replace('♡', '')}{' '}
+                          {slide.signoff.includes('♡') && <span aria-hidden="true">♡</span>}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Coco Wyo-inspired White Bottom Pagination Dots Strip (Pause button removed) */}
+      <div className="hero-pagination-bar" role="region" aria-label="Hero slide controls">
+        <div className="shell flex items-center justify-center gap-3 py-2.5">
+          <button
+            type="button"
+            className="hero-nav-arrow"
+            onClick={() => {
+              setIsAutoPlaying(false);
+              handlePrev();
+            }}
+            aria-label="Previous hero slide"
+          >
+            ‹
+          </button>
+
+          <div className="hero-dots" role="tablist" aria-label="Choose a hero slide">
+            {HERO_SLIDES.map((slide, idx) => {
+              const selected = idx === activeIndex;
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  aria-label={`Slide ${idx + 1}: ${slide.titleLines.join(' ')}`}
+                  className={`hero-dot ${selected ? 'is-selected' : ''}`}
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    handleGoTo(idx);
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            className="hero-nav-arrow"
+            onClick={() => {
+              setIsAutoPlaying(false);
+              handleNext();
+            }}
+            aria-label="Next hero slide"
+          >
+            ›
+          </button>
+        </div>
+      </div>
     </section>
   );
-}
+};
