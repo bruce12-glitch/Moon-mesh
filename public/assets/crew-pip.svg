@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="pipTitle">
+  <title id="pipTitle">Pip the star</title>
+  <g stroke="#241C2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="#FFC81E" d="M100 16c5 4 9 10 11 18l13 34 36 3c16 1 21 10 9 19l-29 22 9 35c4 16-3 21-17 12l-32-20-32 20c-14 9-21 4-17-12l9-35-29-22c-12-9-7-18 9-19l36-3 13-34c2-8 6-14 11-18Z"/>
+    <path fill="#241C2E" d="M66 91c7-9 19-9 26 0 7-9 19-9 26 0 5 7 4 17-1 23-7 7-17 7-25 0-8 7-18 7-25 0-5-6-6-16-1-23Z"/>
+    <circle cx="80" cy="96" r="4" fill="#FFF6E2" stroke="none"/>
+    <circle cx="120" cy="96" r="4" fill="#FFF6E2" stroke="none"/>
+    <path fill="#F04A3C" d="M88 113c5-6 19-6 24 0-2 11-9 16-12 16s-10-5-12-16Z"/>
+    <path fill="none" stroke="#F04A3C" stroke-width="4" d="M53 101h-9m10 13-10 3m103-16h9m-10 13 10 3"/>
+    <path fill="#FFC81E" d="M159 120c11 2 19 9 22 19l-19 11c-6-9-8-19-3-30Z"/>
+    <path fill="#FFC81E" d="M41 120c-11 2-19 9-22 19l19 11c6-9 8-19 3-30Z"/>
+    <path fill="#FFF6E2" d="M52 150c8 0 14 6 14 14s-6 14-14 14-14-6-14-14 6-14 14-14Z"/>
+    <path fill="#FFF6E2" d="M148 150c8 0 14 6 14 14s-6 14-14 14-14-6-14-14 6-14 14-14Z"/>
+    <path fill="none" stroke-width="3" d="M86 64c6-4 12-4 18-1" opacity=".8"/>
+  </g>
+</svg>
