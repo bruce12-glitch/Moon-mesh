@@ -103,11 +103,10 @@ test('HERO_SLIDES first slide uses Grand Opening book showcase artwork', () => {
   assert.equal(HERO_SLIDES[0].layout, 'book-showcase');
 });
 
-test('BOOKS catalog contains all four cozy coloring books with valid cover paths', () => {
-  assert.equal(BOOKS.length, 4);
-  for (const book of BOOKS) {
-    assert.ok(book.coverImage.startsWith('/assets/'));
-    assert.ok(book.stageTagline.length > 0);
-  }
+test('BOOKS catalog contains exclusively The Little Moon Picnic with valid cover path', () => {
+  assert.equal(BOOKS.length, 1);
+  assert.equal(BOOKS[0].id, 'little-moon-picnic');
+  assert.equal(BOOKS[0].coverImage, '/assets/the-little-moon-picnic-book.png');
+  assert.ok(BOOKS[0].stageTagline.length > 0);
 });
 
