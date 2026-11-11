@@ -9,6 +9,7 @@ import {
   dampValue,
   isEraserSwatch,
 } from './moonMeshLogic';
+import { HERO_SLIDES, BOOKS } from '../data/moonMeshData';
 
 test('getNextSlideIndex wraps around forward and backward', () => {
   assert.equal(getNextSlideIndex(0, 4, 1), 1);
@@ -95,3 +96,17 @@ test('isEraserSwatch identifies eraser hex codes', () => {
   assert.equal(isEraserSwatch('#fffdf7'), true);
   assert.equal(isEraserSwatch('#FFC81E'), false);
 });
+
+test('HERO_SLIDES first slide uses Grand Opening book showcase artwork', () => {
+  assert.equal(HERO_SLIDES[0].id, 'book-showcase');
+  assert.equal(HERO_SLIDES[0].image, '/assets/hero-book-showcase.png');
+  assert.equal(HERO_SLIDES[0].layout, 'book-showcase');
+});
+
+test('BOOKS catalog contains exclusively The Little Moon Picnic with valid cover path', () => {
+  assert.equal(BOOKS.length, 1);
+  assert.equal(BOOKS[0].id, 'little-moon-picnic');
+  assert.equal(BOOKS[0].coverImage, '/assets/the-little-moon-picnic-book.png');
+  assert.ok(BOOKS[0].stageTagline.length > 0);
+});
+
