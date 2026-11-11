@@ -39,7 +39,7 @@ const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
   plum: {
     pos: [1.55, 2.55, 3.85],
     target: [1.35, 1.45, 0.05],
-    label: 'Plum (0.95)',
+    label: 'Plum',
     badge: 'Plum · Strawberry Hood & Fresh Tulips',
   },
   pip: {
