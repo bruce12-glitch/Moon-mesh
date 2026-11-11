@@ -45,7 +45,7 @@ const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
   pip: {
     pos: [-0.95, 1.65, 3.35],
     target: [-0.82, 0.68, 1.15],
-    label: 'Pip (0.45)',
+    label: 'Pip',
     badge: 'Pip · Plump Star Pillow & Berry Bowl',
   },
   sprout: {
