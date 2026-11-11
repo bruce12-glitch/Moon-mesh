@@ -1,31 +1,20 @@
-# Moon Mesh
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
 
-Moon Mesh is a children's coloring-book storefront featuring Miso the kitten. The site includes a themed bookshelf, Amazon discovery links, book previews, a free coloring activity, and a printable PDF.
+# Run and deploy your AI Studio app
 
-Live site: [Moon Mesh](https://bruce12-glitch.github.io/Moon-mesh/).
+This contains everything you need to run your app locally.
 
-GitHub Pages is enabled and publishes directly from the `main` branch (`/(root)`). The compiled `styles.css` and static assets are committed, and `.nojekyll` keeps publishing as a plain static site. After editing the source styles, run `npm run build` and commit the generated stylesheet before pushing to `main`.
+View your app in AI Studio: https://ai.studio/apps/953b436a-0877-4518-83ee-7037e946dbeb
 
-## Run locally
+## Run Locally
 
-From the repository root:
+**Prerequisites:**  Node.js
 
-```sh
-npm ci
-npm run build
-python3 -m http.server 8000
-```
 
-Visit [localhost:8000](http://localhost:8000/). The coloring studio reads a same-origin SVG, so use the local server to test it. The site uses plain HTML, CSS, and JavaScript and can be served by any static host.
-
-## Frontend system
-
-Custom Tailwind components live in `src/styles.css`; `npm run build` compiles them to the shipped `styles.css`. Self-hosted Nunito handles interface text, Fraunces the hero and coloring-table headlines, and Caveat short handwritten notes. The coloring studio uses editable SVG shapes and the Canvas API for PNG downloads.
-
-The coloring-table section uses the supplied 16.4-second clip, optimized to a 720 × 1280 H.264/AAC MP4 (about 3 MB) with fast-start metadata. Its inline player preserves the full portrait frame and loops silently while visible. Scrolling away or switching tabs pauses it; returning resumes from the same point. A manual pause persists until the visitor presses Play. Reduced-motion visitors start with a still poster and can choose to play. The full-clip link opens a larger native-controls dialog. Without JavaScript, the inline player retains native controls and the full-clip link opens the MP4 directly. Keep the MP4 and both video posters with the static site when deploying.
-
-The paired crew and page-preview drawings reveal color on pointer hover or keyboard focus. Touch users can still tap the crew or open page previews. Books respond to fine-pointer movement with a slight lift/tilt; spatial motion is disabled under reduced motion. The complete hero and FAQ artwork stays visible, and the yellow scalloped trim sits under the farewell drawing.
-
-The three cover designs share a common series layout. Amazon links currently open a Moon Mesh book search. Replace them with verified storefront or product URLs when those are supplied. Moon Mail is explicitly marked as a form preview and does not send or store email.
-
-See [the design audit](docs/design-audit.md) for the Coco Wyo reference findings, the Moon Mesh palette, and the illustration inventory.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

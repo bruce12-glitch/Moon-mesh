@@ -1,0 +1,6 @@
+{
+  "name": "Moon Mesh",
+  "description": "Cozy coloring books for little dreamers and their grown-ups. Meet Miso, Pip, Plum, and Sprout, explore interactive 3D and animated hero scenes, and color a free page.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

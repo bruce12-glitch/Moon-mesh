@@ -1,0 +1,751 @@
+Drawing design system
+Project: Moon Mesh — Miso, Pip, Plum and Sprout
+Purpose: Direct an illustration agent to create original, warm, handmade-looking colouring-book drawings with the bold, inviting readability of the supplied Coco Wyo references.
+Version: 2.0 — 10 November 2026
+Default reader: Children ages 6–9, with optional shared reading.
+Default deliverable: One finished, uncoloured illustration on white, suitable for a single printed colouring page.
+Read this as an art-direction and production specification. Its numerical settings are proposed house settings, except where a cited platform requirement is identified. They are not measured Coco Wyo specifications, universal child-development thresholds, or promises about image-model performance.
+Navigation
+Quickstart
+Agent operating contract
+Image tools and reference roles
+Reference interpretation
+Creative philosophy
+How the drawing acquires a human hand
+Line work
+Colourable regions and clean intersections
+Character construction
+The four mascot identities
+Scene invention
+Composition library
+Props and material language
+Density and difficulty
+Colour and cover direction
+Page layout and print preparation
+Prompt architecture
+Six generation examples
+Thirty six original scene seeds
+Book continuity
+Production workflow
+Quality review
+Repair instructions
+Handoff format
+Sources and evidence
+Quickstart
+Draw a specific lived moment with confident ink, soft forms, believable contact and room to colour. Handmade appearance comes from the decisions in the drawing: the pose, the silhouette, the placement of objects and the way one curve continues into another.
+Choose the task before doing work
+Request	Read and apply	Produce
+One new illustration	Operating contract, reference roles, human-hand mechanics, line work, relevant mascot rules and prompt architecture	An actual image, then a concise review note
+A change to an existing image	The edit target, invariants, relevant repair instruction and affected quality checks	A targeted image edit that preserves accepted features
+A new book batch	The above, plus continuity, complexity balance and production workflow	A calibrated pilot followed by the requested pages
+A written drawing guide or prompt	The relevant rules and requested output scope	The requested writing; do not generate extra artwork automatically
+For an illustration, follow this loop:
+Identify which images control character identity, line character and environment. Reuse existing approved references.
+State the visible action and one particular observation. Decide the contact between character, prop and support surface.
+Choose a large composition: the action silhouette, one framing shape, two setting anchors and a quiet area. Remove unrelated inventory.
+Decide the gesture before adding facial detail. The body, gaze and prop must support the same action.
+Use the accepted ink profile. For a new book, calibrate it once at final size. Do not hard-code a pen nib description into every image as a physical stroke measurement.
+Compile a compact four-part prompt. Include the relevant references and only the restrictions that matter for this page.
+Generate the image and inspect the actual result. Repair the largest visible defect with a focused edit, then inspect again.
+Record the checks actually performed. Keep untested work labelled as a draft and deliver the best completed stage within the request.
+Do not paste this whole document into an image prompt. The directing agent reads the guide and compiles the page brief. Composition, image-tool execution and print preparation are different jobs; a long list of millimetres will not make an image generator into a print-layout engine.
+Agent operating contract
+Priority when instructions conflict
+Use this order:
+The user's current scene request and explicit corrections.
+Approved character images and approved continuity decisions.
+Hard requirements in this document.
+The page's story brief.
+Optional composition, colour and scene suggestions.
+General inspiration from external references.
+An approved character image controls identity; it does not authorize reproducing another publisher's page composition. A story brief controls the event; it does not require keeping an accidental drawing defect.
+This document's line and density settings supersede earlier provisional art settings in the Miso and Friends book plan. Its story, page order and cast are retained unless the user changes them.
+Hard requirements
+Preserve the named mascots' identities and approved proportions.
+Use clear, rounded, heavy contours. No scratchy construction lines, accidental double tracing or decorative line noise.
+Every intended colourable region must have a closed visible boundary, including boundaries completed by a legitimate overlap.
+In COLOURING_MASTER, use black ink and a white background, with no intentional gray fills, colour, shading or photographic texture.
+Make the action readable without depending on a caption, a particular colour palette or a tiny object.
+Keep foreground faces and the main interaction clear of background lines.
+Give props stable support and plausible connections. Hands, handles, wheels, ropes and furniture must connect correctly.
+Type captions and signs in a separate layout step. Do not accept model-generated pseudo-writing.
+Create an original scene. Use external references to understand principles, not as art to trace or reproduce.
+Do not label generated artwork as drawn by a human artist. A handmade appearance is an aesthetic target, not a statement about authorship.
+Produce the requested artifact. When asked for a drawing, do not stop at a written prompt or replace the illustration with a coded assembly of simple shapes.
+Treat identity and continuity as fixed; treat pose, crop and deliberate object asymmetry as expressive choices. Never randomize facial proportions to create a handmade effect.
+Keep test claims precise. A requested property is not a verified property, and a self-assigned score does not replace looking at the image.
+Select exactly one output mode
+Mode	Required appearance	What to exclude
+COLOURING_MASTER	Black line art; white paper; large unfilled regions; no caption baked into the illustration	Colours, gray shading, marker streaks, paper grain, mockup backgrounds
+COLOURED_PREVIEW	A separate coloured version using the accepted master's exact contours and simple flat fills	Redesigning anatomy, adding new objects or inventing extra outlines to make the preview impressive
+COVER_ART	Coloured, original hero scene; clear focal cast; space for separately added title	Photographing an imaginary finished product, borrowed logos, a crowded catalogue of unrelated props
+ACTIVITY_MASTER	Clean outline scaffolding with intentionally empty drawing space	Filling the spaces the child is meant to complete
+If no mode is supplied, use COLOURING_MASTER. Cover colours must never enter the colouring master.
+Image tools and reference roles
+Use a real image workflow
+For a new raster illustration, use the available dedicated image-generation tool. For a requested modification, use its image-edit workflow when available. Inspect local input images before using them. Follow the actual tool's documented reference-image mechanism and supported parameters.
+Do not invent a model, quality flag, mask control, seed option, destination argument or reference-strength slider. If the built-in image tool is available, use it rather than writing an SDK runner. Follow the host's authorization requirements before switching to a paid or separately configured API route.
+Do not substitute SVG clip art, circles and rectangles drawn by code, HTML, CSS or a Python painting script for the requested handmade-looking illustration. Code is useful for layout, metadata and quality analysis. An illustrator can use a native vector drawing application to make expressive paths, but a programmatic shape collage is a different result. If the user explicitly requests editable vector artwork, respect that format and judge its drawing quality by the same rules.
+Label references by function
+Input role	What it controls	What it must not accidentally control
+Character identity sheet	Silhouette, facial language, anatomy, accessories and comparative scale	Every future pose, expression or composition
+Accepted line-art pilot	Ink character, simplification and relative detail	A duplicate scene arrangement on every page
+Environment reference	Door, window, furniture and recurring spatial relationships	A single frozen camera angle
+External inspiration	Broad observations about shape, warmth or staging	Our mascot identity, another publisher's exact layout, logos or lettering
+Edit target	The accepted image being changed	Permission to redesign unaffected parts
+When the tool uses numbered images, say what each numbered image controls. Use the smallest set that supplies the necessary information. A photograph of a book page includes paper shadows, perspective and perhaps watermarks: those are reference context, not desired drawing features. Never present a competitor's cleaned or traced page as an original production asset.
+For a continuing book, an accepted original pilot becomes the main line-style reference. Repeatedly mixing unrelated reference pages can pull the drawing into different styles.
+Before a targeted edit
+Name the edit target, the region or object to change and the invariants. Repeat the essential invariants in each follow-up: cast identity, expression unless being edited, major geometry, important prop counts, room continuity and accepted ink character. Keep a known-good version so a failed edit can be rolled back.
+Reference interpretation
+What the supplied images actually teach
+These are visual observations, not physical measurements of the original drawings.
+Supplied reference	Useful observation	Original application for our book
+Mascot strip — image(20261110-162421).png	Distinct silhouettes, small faces and a shared calm expression make the cast feel related	Keep the kitten, star, long-eared friend and snail recognizable even when props are removed
+Transit scene — image(20261110-162819).png	Broad structural bands organize luggage, characters and floor; each character has an activity	Establish a simple setting framework before arranging our own cast and actions
+Train compartment — image(20261110-162839).png	A large window, curtain shapes and seat blocks make a contained little world	Use an enclosure with a clear opening and only a few functional props
+Reading nook — image(20261110-162847).png	Soft furniture, a tray and a curved surrounding space communicate comfort through placement	Give objects a lived-in arrangement, including a blanket corner or a reachable cup
+Pool scene — image(20261110-162856).png	Big curved water regions contrast with furniture and float shapes	Use large shape families and clear depth, rather than repeated tiny ripples
+Sled scene — image(20261110-162822).png	A diagonal action is balanced by broad background forms	Allow gentle action pages; do not make every page a static seated portrait
+Parasail vignette — image(20261110-162831).png	A dominant large form makes the event readable with little surrounding scenery	Choose one strong scene silhouette and remove redundant environment details
+Photo collage — image(20261110-162809).png	Broad picture frames group small memories into a coherent page	Use an occasional original memory page, with a different layout and our own events
+Cover — image(20261110-162804).png	Large cast, clear silhouettes and a readable title hierarchy sell the world quickly	Create our own picnic-window cover with a distinct scene and title treatment
+Planner and production photographs	Page systems, paper, ribbon and binding are physical product features	Keep those separate from the drawing style; an illustration cannot supply those features
+The gray diagonal marks across several supplied previews are watermarks, not drawing texture. Pink checks, paper shadows, tilted page edges, desk surfaces and photography must not appear in the printable art.
+What the additional research contributes
+Coco Wyo separates simpler and more detailed collections. Its own descriptions support bold outlines and larger colouring spaces; its brand name does not describe one single complexity level. [S1–S3]
+A current Coco Wyo gallery image shows a finished coloured example with additional surface effects. Treat such effects as a colouring treatment, not evidence that they belong in the blank master. [S4]
+Bobbie Goods demonstrates a recurring-character sequence built around daily activities. Its drawing guide also treats characters, objects and scenes as learnable components. [S5–S6]
+Usborne's first-colouring range supports a simpler large-area approach for younger children. We should simplify further for a preschool edition rather than merely reusing a 6–9 page. [S7]
+Crayola's picnic activity leaves content for the child to invent. Selected pages in our book should allow that kind of participation. [S8]
+Highlights shows that colouring and optional visual discovery can coexist. Our small search motif remains secondary to colouring. [S9]
+Procreate documents both stroke smoothing and controls that retain expression. Clean digital finishing is compatible with human-looking marks. [S10]
+The uploaded cocowyo-design-dna(1).md is a supporting reference. Its website font sizes, UI colours and CSS claims are not drawing measurements and were not independently re-measured for this document. Do not import its website layout, buttons or Nunito typography into the illustration system. Where it suggests dense miniature rooms or zero pressure variation, use the current child-focused density and restrained variation rules below.
+Creative philosophy
+A place the child can imagine entering
+Show a moment that feels comfortable and specific: a seat made ready, a snack saved for a friend, a paper decoration that hangs slightly crooked. Let the picture suggest what happened just before it and what might happen next.
+The illustration should feel drawn by someone who noticed ordinary things. A large berry on Sprout's tray is more memorable than five unrelated floating hearts. A cushion pressed under a character communicates softness without texture rendering.
+What makes a page feel premium
+Selection: each object earns its place through the action, the setting or a character detail.
+Hierarchy: the first thing the reader sees is the intended action.
+Finish: faces, contours, joins and repeated props are consistent.
+Specificity: the page contains a small observation that could not be swapped into any generic cute scene.
+Restraint: the illustrator stops before the empty areas become cluttered.
+Richness comes from meaningful relationships between shapes. An image with only six objects can feel complete when those objects describe a believable moment.
+Handmade appearance
+Use long, confident contours, modest differences between paired forms and a few naturally uneven arrangements. Keep the difference between a relaxed human decision and a drawing error clear.
+Keep	Repair
+A head that is gently wider on one side	A face that changes identity between pages
+One scarf tassel sitting slightly higher	Tassels fused into the arm
+Two cups with slightly different rounded handles	A handle that fails to connect to the cup
+A blanket with a softly curled corner	Impossible folds that become extra limbs
+A smooth hand-swept oval	A trembling, vibrating or sawtoothed outline
+A deliberate loose arrangement	Accidental tangencies and floating furniture
+Avoid adding random jitter, speckle, fake scanning noise or distressed ink to make a clean drawing seem handmade. Raster and vector tools are both acceptable. The issue is the visible result, not whether the software uses Bézier curves.
+How the drawing acquires a human hand
+Begin with the action through the body
+Sketch the relationship mentally or in an internal working draft before finishing the contour. A character should lean toward the dough it is kneading, settle into the cushion it sits on or turn toward the friend it is listening to. A face added to an upright bean does not establish a convincing action.
+For each pose identify:
+The surface bearing the character's weight.
+The direction of the head and body.
+The point where a paw, star point or snail tray meets the important prop.
+The gaze or head orientation toward that action.
+These are art-direction decisions. They do not require making a separate sketch image for every page or delivering construction lines in the master.
+Use a small vocabulary of deliberate curves
+Drawing decision	How it should look	Failure to avoid
+Long outside contour	One confident broad sweep around a cheek, loaf, cushion or shell	Many short bumps pasted together to imitate drawing
+Gentle change of curvature	A soft cheek becomes a chin without a mechanical corner	A lumpy or melted silhouette with no clear form
+Paired shapes	Related ears, paws or handles with modest natural differences	Mirror-copy symmetry, or mismatched anatomy
+Resting surface	Slight compression or flattening where weight meets a cushion or floor	A rigid mascot hovering above its seat
+Fold	One or two curves explaining the cloth's direction	Decorative wrinkle webs unrelated to the pose
+Repeated objects	Similar cups or paper moons with purposeful variation	A cloned stamp repeated at identical intervals
+Keep the silhouette understandable when internal decoration is removed. Do not try to rescue a weak silhouette with blush, sparkles or tiny texture.
+Put asymmetry where it has a reason
+Choose one or two expressive differences in an ordinary scene: one ear responds to the head turn, a scarf end hangs lower, a cushion compresses under weight or one paper decoration tilts on its string. Let the rest of the picture remain quiet.
+Do not make every circle crooked, every line wavy and every shelf slanted. Built objects still have structure. Human-looking art can contain a straight tabletop or a round cup opening; it should not look mechanically cloned throughout.
+Separate softness from inflation
+A soft form still has a useful shape. Give a mitten paw a clear gripping side; let the book remain a book; preserve the kitten's triangular ears and Pip's five points. Rounding every feature into a balloon erases identity and makes props difficult to read.
+Show evidence of life
+Choose a detail that follows from the action: a folded cloth beside a washed cup, a compressed cushion, a saved snack or a picture propped where a friend can see it. Include enough disorder to suggest use, while keeping the colouring spaces clear. Random clutter and evenly scattered decorations do not serve this purpose.
+Before and after examples
+Stiff or generic direction	More useful drawing direction
+Miso smiles while holding a bowl	Miso leans over one broad bowl, paws touching its sides, eyes lowered toward the dough
+Two cute friends drink tea	Plum turns toward Miso while setting down the second cup, leaving a clear space between their faces
+A very cozy room full of details	One broad window behind a low table; a blanket corner curls beside the waiting tiny cup
+Make the lines less digital	Keep long confident contours; slightly flatten the seated base and vary the two cushion corners without adding jitter
+Add more charm	Pip's points remain visible above the cushion that is supposed to hide the star
+The improvement must be visible in the pose, shape or staging. Merely adding “human,” “premium” or “handmade” to the prompt is not an edit to the drawing.
+Line work
+Calibrate the marker feel at final size
+Keep the requested 1.5–2 mm felt-tip pen feel as a medium description. Nib size, the width of a laid-down mark, photographed pixels and final printed width are different quantities. The previous default of a literal 1.5 mm contour on every page is replaced by a small calibration range: the stroke must remain bold without closing faces, handles or useful colouring regions.
+For a new 6.75-inch-square art panel, use 1.2 mm as a provisional primary contour, then compare approximately 1.0, 1.2 and 1.5 mm treatments at final size if the source or drawing tool allows direct stroke control. Choose the treatment closest to the desired boldness that preserves character detail and broad fill areas. An explicit user request for a physical width overrides these starting settings.
+Physical width at final size	Approximate points	Approximate pixels at 300 DPI	Initial use
+1.0 mm	2.83 pt	11.81 px	Lower calibration sample; some secondary structure
+1.2 mm	3.40 pt	14.17 px	Provisional main contour before a pilot is accepted
+1.5 mm	4.25 pt	17.72 px	Heavier calibration sample or an approved bold treatment
+2.0 mm	5.67 pt	23.62 px	A deliberately heavy treatment for very simple large forms
+Conversion: pixels = millimetres × DPI / 25.4. These are house starting values, not measured publisher specifications. A text instruction alone cannot enforce a precise width on a generated bitmap. If direct stroke control is unavailable, compare the visible result with the accepted pilot at the same placed size and record it as a visual match rather than a measured width.
+Once a pilot is accepted, reuse its line character across the book. Do not run a new width experiment for every scene or mechanically thicken an otherwise good page just to satisfy a number.
+Use a quiet hierarchy
+Primary character and foreground contours share one dominant weight. Internal structure can use the same weight or be slightly lighter where needed. Secondary background lines may start around 80% of the primary weight; they still need to print clearly. Small facial dots follow the approved sheet rather than being forced to equal the stroke diameter.
+Do not emphasize every outer edge with a second black border. Avoid thick stickers around characters unless that is a separately requested asset. Depth comes from overlap and placement, with restrained line hierarchy instead of shadows.
+Contour behaviour
+At normal viewing distance, the page should read as nearly monoline.
+Allow subtle, smooth differences in a curve's pressure or shape where they support the drawing. Do not add periodic width changes or random noise.
+Use rounded joins and ends, without bulbous black dots at every endpoint.
+Let one broad contour describe a cheek or cushion. Keep transitions smooth instead of joining many small lumps.
+Keep a tool or furniture edge purposeful. Straight structure is compatible with a handmade drawing.
+Remove ghost outlines, accidental double tracing, broken edges and hairline spikes.
+Use broad fur lobes only where the approved mascot requires them.
+Keep repeated line junctions clean; no heavy black knots at paws, handles or sleeves.
+Interior marks
+Use the fewest marks that explain form, material or action. A cushion may need one seam, a loaf a few broad score marks and a closed book one page-block line. Remove marks that merely subdivide otherwise pleasant areas.
+If an enclosed detail pinches shut at the chosen weight, enlarge or simplify it. A targeted lighter internal line can help when it preserves the book's established ink character; making the entire page delicate is not the default repair.
+Stroke calibration review
+Inspect a small representative sample containing a face, paw-and-cup contact, blanket fold, shell spiral and window edge. At actual size, all must remain recognizable and have usable white separation. Choose and record one ink profile. No sample images or printed tests are claimed merely by following this written procedure.
+Colourable regions and clean intersections
+Closure applies to regions
+An intended fill region must be sealed by its visible boundaries. A shape behind another object can be closed by that foreground object's boundary; its hidden outline must not continue through the foreground object.
+A smile, eyebrow, page crease, motion mark or short fold can be an intentional open stroke. Do not close those marks into little tubes merely to satisfy a literal interpretation of “all lines closed.”
+Occlusion and contact
+Decide which object is in front.
+Draw the front object's outline as the visible boundary.
+Stop the rear object's outline cleanly at that boundary.
+Remove the hidden line through the foreground object.
+Check the resulting fill region and the physical connection.
+For a paw holding a cup, the paw must touch the cup or its handle in a plausible place. Keep enough outline to distinguish paw from ceramic. Do not make a single black knot where fingers, rim, handle and sleeve meet.
+At an attachment, fuse the geometry cleanly where required while retaining the object's identity. “Seamless” does not mean welding every touching prop into one blob.
+The tangency check
+Avoid an ear just touching a window bar, a cup rim kissing a cheek, a hanging string meeting an eye or a plant leaf that looks like an extra limb. Move one form, increase the gap or introduce an unmistakable overlap.
+For unrelated adjacent forms, aim for a visible white separation at least twice the primary stroke width; enlarge it near faces. This is an initial layout target. Deliberate touching and overlapping forms follow the contact rules instead.
+Digital fill test
+When digital colouring compatibility is requested:
+Make a temporary high-resolution test copy. Do not destructively threshold the production master.
+Fill the outside background, then independently test the main character body, clothing, important props and enclosed environment regions.
+Check for spill into a neighbouring region, into the background or through an intersection.
+Inspect narrow diagonal boundaries; if tooling permits, check both four-neighbour and eight-neighbour connectivity on the temporary mask.
+Repair the actual junction and repeat. Do not rely on an application's aggressive gap-closing option to disguise a defect.
+Small antialiasing pixels at a smooth black edge are acceptable. Intentional gray areas, gray halos and soft blurred contours are not. Fill tolerances differ by app, so record the app or mask test used; do not promise universal bucket-tool compatibility without checking it.
+Character construction
+Preserve the character before applying a formula
+Use the approved drawing's head shape, eye relationship, ears, body and accessories. Do not rebuild the existing mascots from a generic kawaii ratio. For a genuinely new rounded animal, a large head and short rounded limbs may be useful, but a new character requires its own coherent design.
+Avoid distinct knuckles, tendons, wrists and realistic elbows. A paw can be a rounded mitten with a clear contact edge. Preserve enough shape to distinguish a gripping paw from a foot or a cheek.
+Pip and Sprout have separate construction rules. Pip is a five-point star, not an animal head on a body. Sprout has one attached shell, a soft body and two eye stalks, with no hands.
+Give the pose a purpose
+Action	Body and contact decision
+Reading	Head and gaze turn toward the book; paws support its sides or lower edge
+Kneading	Body leans slightly toward the work surface; rounded paws clearly press the dough
+Passing food	Giver, food and receiver form a readable path; separate overlapping paws
+Sitting	Base rests on the cushion or floor; fabric compresses a little beneath weight
+Listening	Head and body orient toward the friend; do not force every face toward the viewer
+Pip peeking	Use the star's existing points to establish the pose; keep enough silhouette visible to identify five-point construction
+Sprout carrying	Tray rests on the shell or an established support; the snail does not gain limbs
+Keep a clear difference between expressive lean and impossible balance. Do not make a character's head, paws and accessory all react in unrelated directions.
+Facial minimalism with expression
+Keep the approved small dot eyes or closed arcs and existing nose-and-mouth construction. Use the model sheet's relative face placement instead of a repeated coordinate formula. A head turn changes how the features project; it should not accidentally change the character's face.
+Use head tilt, ear angle, gaze and posture before enlarging a mouth or adding eyebrows. A small asymmetry in a smile can be expressive, but facial identity must remain stable. Avoid glossy eyes, large pupil highlights and elaborate cheek contouring unless already part of the design.
+Emotional range
+Use interest, concentration, mild disappointment, relief, pride or sleepiness when the story needs it. Miso can look disappointed by the rain. Plum can concentrate while placing a cup. Pip can look pleased with an uneven decoration. A content scene does not require every face to wear the same pasted-on smile.
+Clothing and accessories
+Miso's scarf is an identity feature. Keep its basic design stable, with its drape responding to pose. Temporary clothing should support weather or action and remain simple. Broad sweater bands, a cuff or a hem are usually enough; avoid knitting maps, tiny buttons and needless costume changes.
+Do not use accessories to conceal a broken pose or a changing character silhouette.
+The four mascot identities
+The supplied mascot strip is the identity reference. The ratios below are proposed batch-control ratios, not measurements of the strip. A future approved turn sheet can replace them.
+Mascot	Stable identity	Relative height	Action language	Common failure to reject
+Miso	Cream kitten; triangular ears; broad cheeks; small face; yellow scarf with simple tassels	1.00	Leans toward a drawing, tucks a bun into a basket, pulls a small wagon, settles onto a cushion	Becoming a bear or puppy; changing ear shape; scarf changing design on every page
+Pip	Small, rounded five-point star with the supplied face	0.45	Tilts, rests against a prop, uses the existing points for contact, peeks from a cushion	Adding a second human body; extra points; sprouting fingers to solve a difficult pose
+Plum	Lavender long-eared friend with rounded paws and a calm face; preserve the supplied silhouette without inventing a species change	0.95	Makes room for another friend, holds a large bowl, reads, arranges cushions	Shortening or standing up the ears; becoming an unrelated dog or rabbit design
+Sprout	Small snail; cream body; muted green spiral shell; two distinct eye stalks; no hands	0.30	Looks from a low viewpoint, travels on a smooth path, rests beside a low table, carries a leaf tray on the shell	Turning into the flowerpot; detached shell; extra stalks; human arms; changing spiral construction
+In this project Sprout is the snail beside the flowerpot. The pot is a prop, not a fifth mascot. If the user corrects this identity, update all affected briefs before making new artwork.
+Turn sheet requirements
+Before a long batch, establish front, three-quarter and side views, one seated or resting pose, and at least three needed expressions. Show the characters at a common scale on one sheet. The directing agent should reuse that sheet throughout the project.
+Preserve head silhouette, eye placement, ears, scarf shape, star points and shell structure. A fixed seed can help repeat a composition, but it does not guarantee identity. An approved image reference is more useful than repeating the name alone.
+Interaction rules
+Let the friends look toward the object or person involved in the action.
+Keep Sprout's places accessible at floor or low-table level.
+When a character passes an item, show a clear giver, item and receiver.
+Limit a difficult contact pose to one focal interaction; simplify the rest of the scene.
+In a group, preserve individual silhouettes. Do not hide one mascot merely to fit a crowded composition.
+Let personality emerge from choices: Miso draws, Pip improvises, Plum makes space and Sprout notices.
+Scene invention
+Write the moment before drawing the room
+Fill these fields:
+Field	Required decision
+Visible action	What exactly is the character doing with its body or a prop?
+Emotional reason	Why does this moment matter to the character?
+Place	Which two or three shapes make the location recognizable?
+Particular detail	What affectionate, funny or surprising observation makes this scene memorable?
+Shape anchor	Which large silhouette holds the composition together?
+Quiet area	Where can the viewer rest or the child add colour freely?
+Weak brief: “Cute animals in a cozy kitchen.”
+Usable brief: “Miso kneads one big mound of dough while Pip, dusted with two flour patches, peers over the bowl. A rounded worktop and broad cupboard establish the kitchen. Pip's tiny star-shaped dough piece sits beside Miso's much larger bun.”
+One useful twist
+Select one primary creative device for an ordinary page:
+Scale: a berry seems enormous beside Sprout.
+Small mishap: a paper moon hangs the wrong way up.
+Care: Plum puts the smallest cup where Sprout can reach it.
+Adaptation: a rainy porch leads to an indoor picnic.
+Evidence of an activity: the drawing, bowl or folded cloth shows what a character has been doing.
+Shared attention: two friends stop to watch one falling leaf.
+Gentle transformation: an empty corner becomes a reading place using a cushion and blanket.
+Keep the event legible before adding a secondary joke. Do not fill every surface with faces, hearts, bows, stars or random mushrooms.
+Make the ordinary particular
+Use combinations such as a cup saved on a saucer, one uneven paper decoration, two slippers facing different directions or a bookmark made from a leaf. Choose two details that describe the same activity. Remove decorative objects that suggest a different story.
+Fantasy can change the premise, such as a star friend joining a picnic. Within that premise, keep support, scale and contact understandable. A basket needs a bottom; an umbrella shaft needs to meet its canopy.
+The removal test
+For each prop, ask whether removing it would lose the action, setting or particular detail. Keep a few atmosphere props if they create a deliberate rhythm. Delete the rest. A crowded image does not become premium merely because it contains more things.
+Composition library
+Choose one dominant structure per page. Use the suggested cast and prop counts as starting budgets, not requirements to pad a scene.
+Structure	How to stage it	Typical cast	Suitable anchor
+Window nook	Put the character low in the image; let one large opening hold the upper area	1–2	Crescent or round window, bench, one nearby cup
+Worktable	One clear action across a broad table; keep the main prop visible	1–2	Bowl, drawing pad, oversized sheet of paper
+Doorway reveal	Show a foreground threshold and a simple room beyond	1–2	Door arch, empty floor, one important window
+Side-on journey	Use a wide route and a clear direction of travel	1–4	Wagon, path, one gate or tree
+Diagonal action	Let a large prop create the diagonal; keep the horizon gentle	1–2	Blanket corner, kite or sloping cushion
+Low viewpoint	Give a small mascot a large foreground presence	1	Sprout, tray, one furniture leg
+Overhead arrangement	Arrange broad forms around an open centre; limit overlap	1–4	Picnic blanket, basket, cups
+Quiet two-friend scene	Use body orientation and a shared object; allow a broad background	2	Book, umbrella, folded blanket
+Simplified room cutaway	Use two clear planes and a few large furniture blocks	1–3	Low table, broad seat, window
+Shop or service window	Frame the exchange; avoid walls of tiny inventory	1–2	Counter opening, one product tray
+Object vignette	Arrange a related small set with a clear dominant object	0–1	Picnic kit, gardening kit or art supplies
+Memory page	Use two or three large frames with distinct events	1–4 across frames	Drawn pictures with generous borders
+Eye flow
+The focal action should read first at a small thumbnail. A broad window, table edge or blanket curve may lead toward it. A secondary object should reward a closer look. Keep the background quieter than the foreground interaction.
+Do not give every prop the same size or visual importance. Use a few large shapes and some medium ones. Very small details should be rare and purposeful.
+Perspective
+Use a straight-on view or a shallow three-quarter view. A simple illustration can show depth without being a technical perspective drawing, but one table cannot have contradictory edge directions or legs attached to its top face.
+Use overlap, placement and modest scale changes to separate planes. No shading is needed. Avoid fisheye views, dramatic foreshortening and multiple competing vanishing directions.
+Framing
+A gently irregular rounded frame can make a complete vignette. Keep it well inside the page's safe area and leave visible white between it and unrelated contours. It must not crop ears, paws, star points or the key prop. A scene can also stand on a simple ground line; do not force a box around every page.
+Props and material language
+Use familiar objects with slightly softened geometry. Keep the functional feature that makes each object identifiable.
+Material or object	Draw enough to communicate it	Leave out
+Cup or bowl	One clear opening, broad body and connected rounded handle if needed	Several concentric rims or microscopic reflections
+Bread	Pillowy outer contour and two or three broad score marks	Crumb dots, pores and photorealistic crust
+Berries	One large fruit silhouette with a few broad seed or leaf shapes	Dozens of tiny pips and realistic surface texture
+Blanket	Soft outer contour, one or two useful folds and an optional broad border	Dense checks, fringe forests or a pattern in every cell
+Cushion	Rounded block, one seam and slight compression under weight	Tufting grids, heavy shadow or repeated stitching
+Sweater	Broad silhouette, cuff, hem and perhaps two large stripes	Knitted stitches and fine ribbing
+Wood furniture	Round-ended boards, believable joins, one broad grain curve if useful	Repeated grain lines covering every surface
+Book	Soft rectangle, one spine or page-block boundary, simple cover	Tiny pseudo-text and many parallel page lines
+Glass	Clear vessel contour and one meaningful liquid boundary	Gray transparency wash and disconnected duplicate rims
+Metal tool	Familiar outline and a readable connection or handle	Shiny gradients, tiny screws and excess gleam marks
+Plant	A few large leaves with one useful vein each	Intricate serrations, dozens of stems and filler foliage
+Water	Broad bounded areas, a few large ripple curves, clear object overlap	Fine wave hatching or endless nested contours
+Basket or bag	Rounded main volume, one handle and a simple large panel	Full woven lattice, repeated zips and tiny buckles
+Umbrella	Clear canopy, a few broad panels and one connected shaft	Hairline ribs, many spokes and confusing shaft intersections
+Window	One recognizable opening and minimal structural divisions	A grid across a character's face or overlapping impossible frames
+Paper craft	Slightly uneven broad shape and a readable fold or suspension	Elaborate micro-cuts and many dangling thin strings
+Faces on objects
+Miso, Pip, Plum and Sprout already provide character. An occasional friendly plant pot can be charming, but do not add a face to every snack, utensil and piece of furniture. Make the agent identify any personified prop in the scene brief before drawing it.
+Text-like content
+Use simple picture blocks to establish a menu, newspaper or notebook. Keep the marks sparse. If readable words are needed, reserve a blank sign for separately typeset or deliberately hand-lettered text after the illustration is accepted. A generated squiggle that resembles an alphabet is a defect.
+Density and difficulty
+The crayon test
+The child should have satisfying areas to fill with the side of a crayon or a broad pencil stroke. At final print size:
+Keep most deliberate fill areas at least about 8–12 mm across at their narrowest useful part. This is a house usability target to test, not a clinical rule.
+Give important standalone props a recognizable footprint around 18–25 mm or larger. Enlarge the prop if its identity depends on a smaller detail.
+Aim to leave at least 70% of a major object's interior visibly open and unpatterned. A few broad dividing lines can still create large fill regions.
+Exempt eyes, mouths, necessary tiny attachments and the optional search motif from the large-area rule. Do not multiply those exceptions into filler detail.
+Open white space inside objects is different from an unfinished composition. A fully arranged scene can remain mostly white before colouring.
+Treat the percentages as a visual review guide unless actual measurement was performed. Do not claim a computed open-area ratio from an unmeasured image.
+Three complexity levels
+Level	Starting cast and prop budget	Character of the page
+EASY	1 main character; 2–4 functional props; about 10–20 obvious medium or large fill regions	A large action or portrait with very little environment
+STANDARD	1–2 main characters; 4–6 functional props; about 20–35 fill regions	A clear activity with one simple setting
+RICH	2–4 characters; 6–8 carefully chosen props; about 30–45 fill regions	A story milestone with stronger staging, not miniature detail
+These are rough planning counts. Enclosure testing may find many tiny incidental regions that the concept budget did not anticipate; remove those rather than rationalizing them as detail.
+For a 40-scene collection, an initial mix could be 12 easy, 22 standard and 6 richer pages. An existing narrative can use another balance. Do not add unrelated locations or change story order just to satisfy a quota.
+If density is too high: remove texture, consolidate repeated props, enlarge key objects, then simplify the setting. Do not immediately shrink the cast or make the main outline delicate.
+Younger readers
+For a separate preschool edition, use much simpler, larger single actions and fewer objects. Test with that audience. Do not assume a rich page becomes preschool-friendly because its outline is thick. The current project remains ages 6–9.
+Colour and cover direction
+Colouring master
+Use intentional black marks on white. No pre-coloured blush, gray fur, gray water, tinted page, lighting bloom, drop shadow or stipple. Colour choices belong to the child.
+Coloured previews
+Keep the approved outline geometry unchanged and put fills beneath it. Start with flat colour. A coloured preview is a separate derivative; it must not be passed off as an additional uncoloured page. Reusing a locked line layer preserves its geometry; asking a generator to recolour may alter it, so inspect that result and do not claim pixel-identical contours without comparison.
+Do not automatically add highlights and marker effects just because a published gallery shows a skilled colourist's finished page. If an embellished demonstration is explicitly requested, keep it separate from both the master and the simple cover palette.
+Proposed Moon Mesh palette
+These are original house palette proposals, not samples measured from Coco Wyo. The approved mascot reference controls the final mascot colours.
+Role	Starting colour	Use
+Warm cream	#FFF4DB	Miso and Sprout's body
+Butter yellow	#F5C95D	Miso's scarf and Pip
+Soft lavender	#CBBCE0	Plum
+Leaf green	#9DB780	Sprout's shell and selected plants
+Berry coral	#D87977	One food or fabric accent
+Dusk blue	#A9C9DC	A broad sky or room accent
+Warm paper	#FFFAEF	Optional cover ground
+Dark ink	#2C2523	Optional cover contour tone; master remains black
+Use about five to seven main fills in a single preview, with selected repeats. Allow one stronger accent. Avoid making every object a different pastel or using a rainbow simply to make the scene colourful.
+Cover composition
+For The Little Moon Picnic, show the four friends enjoying the indoor picnic beneath the crescent window. Keep the cast large, the food readable and the background broad. Let the window be the recognizable setting feature.
+Reserve a deliberate title area before drawing. At a small retail thumbnail, the title and the cast should remain distinguishable. Add lettering in layout after the picture works.
+Use a rounded, readable display treatment or original hand lettering with modest baseline variation. Avoid duplicating a competitor's logo, exact cover arrangement, character designs or distinctive title treatment. Check font licensing for any commercial font actually used.
+Page layout and print preparation
+Default project geometry
+Element	Initial setting
+Interior trim	8.5 × 8.5 inches
+Whole page at 300 DPI	2550 × 2550 pixels
+Art panel with caption	About 6.75 × 6.75 inches, placed inside the safe area
+Raster art panel at 300 DPI	At least 2025 × 2025 effective pixels at that placed size
+Caption space	About 0.65 inch below the art; allow a visible gap
+Caption type	Start at 16–18 pt with comfortable leading; one or two short lines
+Inner margin	At least 0.625 inch as a project preference
+Other margins	At least 0.5 inch as a project preference
+Default interior bleed	None; keep artwork inset
+These project margins are more generous than KDP's current minimum for a 96-page interior. Recheck the selected printer and page count before final export. KDP specifies single-page interiors and a minimum effective image resolution of 300 DPI. [S11–S12]
+The panel dimensions are a starting layout, not an instruction to crop a composition into a square after it has been drawn. Compose for the final panel. Mirror the inner-margin allowance appropriately on left-hand pages.
+Export discipline
+Preserve an editable or layered working master when the tool supports it.
+Export clean PNG or another lossless working image; use PDF for the assembled print interior.
+Flatten export transparency onto white for a normal print master. Keep a separate transparent line layer only when needed for a digital colouring deliverable.
+Inspect the effective resolution at final placed size. Changing a DPI metadata tag does not add missing pixels or recover detail.
+Avoid JPEG for the line-art master because compression may add halos and damaged edges.
+Keep grayscale edge antialiasing controlled. Avoid aggressive thresholding that turns smooth curves jagged.
+Do not include printer marks, watermarks, signatures, page photographs or mockup shadows in the illustration.
+Export the physical cover separately using the printer's template for the final page count and paper.
+For the current 96-page story book, retain the established arrangement of story illustrations on odd pages 9–87 with blank reverses, and four activity pages on odd pages 89–95 with blank reverses. Do not place captions on the blank backs.
+Blank reverses help preserve the next illustration; they do not make the paper marker-proof. Paper and binding claims must match the product actually manufactured.
+Prompt architecture
+Compile the scene instead of copying the manual
+The prompt should tell the image tool what to draw, how the characters interact and which drawing qualities matter most. Use the same four labels as the original brief. A useful starting length is about 150–250 words for an ordinary page, with more only when necessary. This is a house editing target, not a model limit.
+Put the visible event first. Follow it with one particular observation, the selected composition and the essential ink treatment. Include a short restriction list that addresses plausible failures for this page. The full document's hard requirements remain the directing agent's review checklist.
+Compact four-part template
+Text
+Core Subject:
+[Approved cast] [specific action] in [place].
+[One detail that follows from this action].
+Image 1 controls character identity; Image 2 controls accepted ink style.
+
+Style Injection:
+Original children's colouring-page ink drawing. Confident rounded felt-tip
+contours, broad soft forms, slight purposeful asymmetry, large white fill
+areas, black ink on white. Preserve the approved characters and ink profile.
+
+Geometry & Composition:
+[Viewpoint and large setting shape]. [Body direction, gaze and prop contact].
+[Two necessary setting anchors]. [Quiet area].
+Keep visible colourable boundaries closed and suppress hidden rear outlines.
+Leave lettering for a separate layout step.
+
+Strict Restrictions (Negative Prompt):
+No shading or gray fills, scratchy texture, duplicated contours, tiny filler,
+changed mascot anatomy, pseudo-text or photographed-page background.
+[Only the most relevant page-specific failure to prevent].
+Reference numbers must match the inputs actually supplied. If there is only one input, identify that input and omit an invented second reference. If the tool does not support a separate negative-prompt field, include the restriction prose in the main prompt. Use only documented parameters.
+A complete compact prompt
+Text
+Core Subject:
+Miso kneads a broad mound of dough while Pip peers over one mixing bowl.
+Two small flour patches sit on Pip's star body. The attached mascot sheet
+controls their identity; the accepted pilot controls the line character.
+
+Style Injection:
+Original bold children's colouring page. Confident rounded felt-tip ink,
+soft broad forms and a few deliberate shape differences. Black on white,
+with clean enclosed fill areas and no surface rendering.
+
+Geometry & Composition:
+Use a shallow front view across one broad worktop. Miso leans toward the
+dough, with rounded paws visibly pressing it; Pip looks toward the bowl.
+Include a rolling pin and one cupboard block. Keep the wall open and both
+faces clear. Match the accepted character scale and ink profile.
+
+Strict Restrictions (Negative Prompt):
+No shading, gray fills, tiny patterns, extra star points, human fingers,
+pseudo-labels, doubled ink or photographic paper.
+The exact placement of the cast can change if the story does not constrain it. The garden room's recurring door and window placement remains a continuity requirement.
+Generation and edit are different instructions
+For a new illustration, references supply identity and drawing principles; create the requested original scene. For an edit, identify the existing target and state the change plus the features that must stay fixed. Repeat important invariants on every edit.
+Do not use a full-scene regeneration to repair one cup handle if a targeted edit is supported. Do not claim a local edit stayed local without inspecting the returned image.
+Avoid competing style cues
+Do not combine “perfect geometric vector,” “rough sketch,” “painted texture,” “ultra-thick border,” “delicate pen” and “clean felt tip” in one request. Choose a coherent ink family. Use the approved pilot to settle disputes about visual style.
+Do not include a litany of competitor names in the style prompt. Describe the observed drawing decisions and supply approved original references. Do not pile up adjectives such as premium, beautiful, handmade and professional in place of a scene.
+When the user provides a specific subject, preserve it. When the brief is open, add only the small observation and setting details needed to make the action coherent. The scene bank supplies options, not permission to add unrelated props or characters to a tightly specified request.
+Six generation examples
+These are original subject briefs for this cast. Combine each with the four-part style and restrictions above. For a new edition of the existing story, keep the manuscript and continuity decisions from the book plan.
+Example 1 — Flour on Pip
+Core Subject: Miso kneads one large mound of dough while Pip peers over the mixing bowl with two small outlined flour patches on the star body. One tiny star-shaped piece of dough sits beside Miso's broad round bun.
+Style Injection: Use the approved cast, heavy smooth marker ink, rounded geometry and large white fill areas. The humour comes from the scale and the flour, with calm expressions.
+Geometry & Composition: Use a shallow front view across one broad worktop. Put Miso on the left, Pip on the right and the mixing bowl between them without hiding either face. Include only a rolling pin and one cupboard block behind. Keep the wall mostly open. Show both paws contacting the dough clearly.
+Strict Restrictions (Negative Prompt): No kitchen inventory wall, tiny cookie army, oven glow, flour stipple, pseudo-labels, extra star points, human fingers or shading.
+Example 2 — One good berry
+Core Subject: Sprout carries one broad berry on a flat leaf tray resting securely across the shell. The berry looks large beside the snail, and Sprout looks quietly pleased.
+Style Injection: Use the approved snail silhouette with a clear spiral, two eye stalks and no hands. Keep the finish bold, minimal and hand-swept.
+Geometry & Composition: Use a low viewpoint and make Sprout large in the foreground. Include one rounded chair leg and a floor line to establish scale. Leave the upper background clear. Keep the tray supported and separate from the spiral line. Use only a few broad berry marks.
+Strict Restrictions (Negative Prompt): No face on the berry, tiny seeds, detached shell, extra antennae, arms, dark floor shadow, garden clutter or photographic texture.
+Example 3 — The room behind the door
+Core Subject: Miso and Sprout look through the low doorway into the garden room. The room has a crescent-shaped window, a bench and a low table, with room to imagine their picnic.
+Style Injection: Use a clean black-and-white children's colouring page with confident thick outlines and gentle asymmetry. Keep the room inviting through arrangement.
+Geometry & Composition: Frame the view from just outside the left-hand door. Put Miso to one side of the threshold and Sprout at floor level. Keep the crescent window on the rear wall. Use a broad empty floor between the cast and the table. Maintain the approved room layout in later scenes.
+Strict Restrictions (Negative Prompt): No gothic doorway, hidden clutter, dramatic perspective, gray interior, magical light beams, tiny floorboards or furniture fused to the wall.
+Example 4 — An umbrella over the wagon
+Core Subject: Plum holds one broad umbrella above Sprout and the covered picnic basket in the small wagon. Sprout's berry tray is tucked safely beside the basket.
+Style Injection: Use soft rounded shapes, heavy felt-tip contours and a clean white sky. Suggest the rainy moment with a few spaced drops.
+Geometry & Composition: Use a side view with Plum beside the wagon and a clear path leading toward the porch. Show the shaft connected to Plum's paw and the canopy. Keep the wagon wheels aligned and the handle distinct. Let the umbrella be the largest shape. Do not put a shaft or raindrop across a face.
+Strict Restrictions (Negative Prompt): No storm danger, dense rain hatching, transparent gray umbrella, extra wheels, floating basket, disconnected paws or crowded garden.
+Example 5 — A place beside the book
+Core Subject: Plum reads a large picture book while Miso settles onto a floor cushion. Plum has left a clear little space beside the book for Sprout's tiny cup, though Sprout is not visible in this scene.
+Style Injection: Use the approved characters and a calm original reading scene, with broad unfilled shapes and nearly uniform rounded marker outlines.
+Geometry & Composition: Use a quiet two-character composition beneath one round window. Make the book and the cushion broad. Show a simple crescent and tree inside the book without letters. Include one folded blanket. Keep a clear gap between Miso's ear and the window frame.
+Strict Restrictions (Negative Prompt): No extra visible character, library wall full of tiny books, text, micro-knit, fur texture, patterned wallpaper, shaded window or perfect mirrored poses.
+Example 6 — Passing the first bun
+Core Subject: Miso passes one bun to Plum at the indoor picnic. The spotted berry bowl sits nearby, and three slightly different paper moons hang below the crescent window.
+Style Injection: Create an original colouring master with heavy black contours and large clean regions. Use the simple hand-inked finish of the accepted pilot.
+Geometry & Composition: Use the established garden-room layout, one low table and a broad blanket. Keep a clear giver-item-receiver path. The bun touches the giving paw naturally; avoid piling both characters' paws into one black knot. Rain appears only beyond the window. Keep the food count modest.
+Strict Restrictions (Negative Prompt): No glowing candle, gradients, extra hands, moving window, dense blanket print, tiny snack buffet, gray rain wash or copied competitor staging.
+Thirty six original scene seeds
+These are development options, not an instruction to replace the current story or insert unrelated scenes into it. Choose a seed only when it fits the book's brief. Each one still needs a page-specific action and composition plan.
+ID	Visible moment	Particular detail	Suggested composition
+01	Miso draws an outdoor picnic	The paper has a tiny place marked for Sprout	Worktable
+02	Pip tries to lift the loaded basket	One star point is gently squashed against its side	Large action close view
+03	Plum washes berries	One broad berry balances on the bowl's rim	Worktable
+04	Sprout carries a leaf tray	One berry fills most of the tray	Low viewpoint
+05	The friends pack a wagon	A cushion is packed before any of the snacks	Overhead arrangement
+06	Miso catches a blanket corner	The corner curves toward a shallow puddle	Diagonal action
+07	Plum holds an umbrella over Sprout	The smallest passenger occupies the driest spot	Side-on journey
+08	Pip shelters the bread	The umbrella fits the buns better than Pip	Object and character vignette
+09	Sprout notices a low doorway	Everyone else's attention is on the rain	Doorway reveal
+10	Miso tries the empty garden room	A crescent window echoes the picnic drawing	Simplified room cutaway
+11	Plum arranges floor cushions	A cushion leaves a clear floor-level place for Sprout	Overhead arrangement
+12	Pip hangs three paper moons	One crescent hangs at a different angle	Window nook
+13	Miso spreads the picnic blanket	One corner stays softly curled	Easy floor scene
+14	Plum passes a bun to Miso	A small plate is already waiting	Quiet two-friend scene
+15	Pip hides behind a cushion	Two points give the hiding place away	Large visual joke
+16	Plum reads near the window	Sprout's leaf bookmark is bigger than the tiny cup	Quiet two-friend scene
+17	Miso draws the picnic they had	The earlier drawing remains beside the new one	Worktable
+18	Sprout packs tomorrow's berry	The empty tray was only empty for a moment	Low viewpoint
+19	Pip runs a make-believe post office	The parcel is a folded drawing for Plum	Shop or service window
+20	Plum wraps a simple present	Pip sits on one loose ribbon end to hold it	Worktable
+21	Miso and Pip make a paper boat	The sail is cut from a rejected picnic sketch	Overhead arrangement
+22	Sprout inspects a new plant pot	A leaf bends like a little roof above the shell	Low viewpoint
+23	Plum airs a blanket by the window	A corner billows toward a waiting cushion	Window nook
+24	Miso makes a small reading nest	Three books become a broad step beside the cushion	Simplified room cutaway
+25	Pip sorts oversized buttons	One button has become a pretend steering wheel	Object vignette
+26	Plum mends a toy cushion	Miso holds the broad fabric patch flat	Quiet two-friend scene
+27	Miso and Plum ride a garden tram	Their plant travels on a saucer between them	Side-on journey
+28	Pip sets up a shadow-puppet screen	The unused star-shaped puppet looks like Pip	Simplified room cutaway; no rendered shadow
+29	Sprout waters a seed tray with Plum	A large droplet sits at the watering-can tip	Low viewpoint
+30	The friends build a blanket theatre	Pip waits at the opening holding the picture programme	Doorway reveal
+31	Miso waits for a paper windmill to turn	One leaf has lodged behind the broad blades	Quiet outdoor scene
+32	Plum serves a pretend café lunch	The smallest place setting is on a low block	Shop or service window
+33	Pip lays out art supplies for Miso	The largest crayon is longer than Pip	Overhead arrangement
+34	Sprout watches a kite from the picnic mat	The kite echoes a broad leaf silhouette	Low viewpoint; simple distant kite
+35	Miso and Plum make a memory page	A paper moon sits outside the picture frame	Two-frame memory page
+36	The friends tidy their picnic place	Tomorrow's berry has already returned to the basket	Group closing scene
+For a shadow-puppet activity, illustrate the preparation and the blank screen in the uncoloured master. Do not add a large black projected shadow merely because the subject involves shadows.
+Book continuity
+Keep a small continuity record
+For each accepted page, record scene ID, story beat, cast, temporary accessories, prop versions, room version, weather, direction of travel, composition and difficulty. Note any item that must persist into the next scene.
+For The Little Moon Picnic, keep these anchors stable:
+A simple basket, spotted berry bowl, plain blanket with a broad border and a small wagon.
+Sprout's leaf tray and tiny cup.
+Three paper moons made during preparation and used later in the room.
+Garden-room door on the left, crescent window on the rear wall, low table and bench.
+A clear progression from preparation to rain, shelter, decorating, supper and moonlight.
+The first drawing depicts an outdoor picnic; the later drawing depicts the indoor picnic.
+Do not change the window from crescent to round, silently add a fireplace or move a door merely because a later composition is difficult. Change the viewpoint or simplify the shot.
+Variety without breaking the story
+Alternate wider scenes with close actions and quiet portraits. Avoid three consecutive pages with the same cast arrangement, viewpoint and main prop. Adjacent scenes in the same room can differ through framing and action rather than a new room design.
+Use group scenes at meaningful moments. Avoid showing all four characters and the whole inventory on every page. A warm close view of one friend is useful pacing.
+Search motif
+The proposed optional motif is one tiny smiling leaf per story illustration. Add it as a consistent layout detail after the main art is accepted. Keep one recognizable leaf with a simple face; ordinary plant leaves do not count.
+Place it where it does not create a false body part or interrupt a fill boundary. Do not put it on a character's face. Use one per scene and keep its size large enough to recognize on paper. It is a secondary search detail, not a required intricate colouring area.
+Production workflow
+Stage 1 — Establish one reliable reference set
+Reuse the approved mascot sheet, story and accepted art. Establish missing turn views, recurring room geometry and a small prop set only when needed. Existing approval persists; do not make the user approve the same design again.
+For a new book, select one representative pilot that includes a recognizable face, a physical interaction and an environment boundary. A visually attractive page with no difficult contacts is not enough to establish whether the workflow can draw the rest of the book.
+Stage 2 — Plan the large shapes
+Write the event in one sentence. Establish body direction, contact and support. Choose the main silhouette, a framing shape and a quiet area. Decide which background lines stop behind the characters. Check room and prop continuity.
+Use a brief internal shape plan. Generate a separate thumbnail image only if a difficult scene genuinely needs composition exploration or the user requested options. Routine pages do not need a gallery of extra variants.
+Stage 3 — Calibrate the ink once
+Apply the line-work calibration to the pilot at actual placed size. Choose the boldest comfortable treatment that preserves the reference character and broad white regions. If numeric stroke control or a physical proof is unavailable, record that limitation rather than guessing a measurement.
+Keep the accepted pilot and ink profile stable through the batch. Do not make global brush changes in the middle of a book without revisiting already accepted pages.
+Stage 4 — Generate or draw the page
+Use the actual image tool and compact prompt. Attach the relevant references through the tool's supported mechanism. For a manual drawing workflow, use long intentional ink contours and a modest smoothing setting that preserves shape. Exact brush controls depend on the artist and application. [S10]
+For a new scene, aim first for sound staging and identity. Perfectly clean ink around a wrong pose is still a wrong drawing. If an internal exploratory sketch is used, the final master must remove all construction marks.
+Stage 5 — Inspect in order
+Story and silhouette: Is the requested event visible? Does the main pose work without decoration?
+Identity and interaction: Are the mascots correct? Do the paws, prop, gaze and support agree?
+Ink and colourability: Are contours confident, boundaries closed and white areas comfortable?
+Continuity and presentation: Are the cast count, room, prop versions, crop and output mode correct?
+Fix the largest failure first. Do not polish a border while the character has an extra limb or the action is unreadable.
+Stage 6 — Make focused repairs
+Name one defect category, specify the visible correction and repeat the important invariants. Inspect after every edit. Keep the last better version. If an edit fixes one handle but damages the face, return to the prior version and narrow the instruction.
+If the same defect persists through two focused attempts, stop repeating the same request. Simplify the contact, change the crop, correct the reference or rebuild the pose. This is a strategy-change trigger, not an arbitrary requirement to abandon requested work after a fixed number of calls.
+Use direct geometry correction where an authorized drawing workflow supports it. Thickening, sharpening or upscaling a malformed shape is not an anatomy repair.
+Stage 7 — Typeset and verify the actual deliverable
+Add the exact caption and optional search motif separately. Check final placement, spelling, margins and effective resolution. Preserve blank backs. Keep the cover and coloured preview separate from the line-art interior.
+Perform the applicable digital fill tests. Print representative pages where proofing is available and test with the intended materials and readers. Otherwise deliver the best reviewed digital stage with the missing proof identified. Do not invent a paper test, claim production verification from a screen view or create an unnecessary permission checkpoint.
+Six pilot subjects for the book
+The six examples exercise different problems: a shared work surface, Sprout's anatomy and scale, a room reveal, umbrella and wagon connections, a quiet reading pose and a food handoff. Use those differences to inspect capability. Do not claim the workflow performs well because one attractive portrait succeeded.
+Quality review
+Review what is visible
+Describe the page before reading its caption: “Miso is pressing dough while Pip watches the bowl.” If the reviewer can name only a character and a room, the action needs improvement. This is an editorial check, not a blind experiment unless the caption was actually hidden.
+Use the same viewing scale and reference pilot when comparing pages. Judge the drawing rather than the sophistication of its prompt.
+Mandatory art checks
+
+Correct mode: no intentional colour, gray fill or shading in the colouring master.
+
+The requested event, cast and important object counts are correct.
+
+Mascot silhouettes and faces match the identity reference.
+
+Pip retains five-point construction; Sprout has an attached shell, two eye stalks and no hands.
+
+Body direction, gaze, physical contact and support make the action coherent.
+
+The pose is expressive without breaking the approved anatomy.
+
+Faces and main contact points are free of accidental tangencies or black junction knots.
+
+Intended fill regions are visibly closed; hidden rear outlines do not cross foreground shapes.
+
+The actual-size composition has usable white regions and no unnecessary tiny pockets.
+
+The contours read as confident hand-swept ink, with no fake jitter, ghost strokes or mechanical repeated stamps.
+
+The particular story detail is visible; unrelated decorative filler has been removed.
+
+Room geometry, props, weather and accessories match continuity.
+
+No pseudo-writing, borrowed logo, watermark or photographed-page background.
+
+Framing and lettering placement fit the actual requested output.
+An untested requirement must remain not_tested; writing it on this checklist does not count as a pass. A failed identity, anatomy, action or fill-boundary requirement cannot be compensated for with a high aesthetic score.
+Three viewing distances
+Thumbnail: use about 160–200 pixels of page width as an initial review scale. Can the action and focal group be identified? Are the main silhouettes clear? The small face need not be individually readable at this scale.
+Actual size: inspect the intended printed dimensions, either in an actual-size display workflow or on paper. Check fill areas, captions, narrow gaps and ink weight. A print-like screen preview is not a paper proof; record which was used.
+Close view: inspect eye dots, paw contacts, cup handles, star points, shell attachments, occlusion joins and accidental duplicated edges. Normal antialiasing at a crisp contour is different from an intentionally gray region.
+Evidence of a handmade-looking result
+Before accepting a page, identify at least three visible reasons it feels drawn with intent. They can include a purposeful gesture, a confident long curve, slight surface compression, a meaningful asymmetry or a small detail that follows from the action. These are observations, not instructions to add three decorative imperfections.
+Examples: the head turns toward the book; the cushion compresses under Miso; the scarf hangs with the lean. If all the reviewer can report is “cute face, thick lines, many props,” revise the staging.
+House review rubric
+Criterion	Points	Evidence to record
+Character consistency	20	Correct visible silhouette, face and accessories against the reference
+Action and emotional clarity	20	An identifiable event supported by pose, gaze and contact
+Composition and shape hierarchy	15	Clear first read, distinct silhouettes and an intentional quiet area
+Line quality and handmade appearance	15	Confident curves, clean joins and purposeful shape differences
+Colourability	20	Broad usable regions, clean visible closure and any completed fill test
+Originality and finish	10	A particular original moment, coherent props and resolved visible defects
+Total	100	
+Use 85/100 as a subjective internal target, together with the mandatory checks. Record the defect behind each deduction. Scores compare versions within this project; they do not measure children's preferences or certify that an image was handmade.
+Verification states
+Status	Required evidence
+DRAFT	A useful candidate exists; one or more relevant art or output checks remain unresolved or untested
+ART_REVIEWED	Actual image inspected at thumbnail, actual placed size and close view; mandatory visual checks pass; required digital fill check passes if the deliverable promises digital fill compatibility
+PRINT_VERIFIED	The final assembled file has passed dimension, effective-resolution and margin checks, and an actual representative physical proof has been inspected; record the proof scope
+A reviewed digital image can be delivered as ART_REVIEWED while physical proofing is pending. Do not call it PRINT_VERIFIED. Internal review is not a claim that the user has approved the page. Any later change to a verified file requires rechecking the affected properties; a material global change requires a new proof before print verification is restored.
+Common failure families
+Visible failure	Diagnostic question	Next change
+Rigid clip-art pose	Is there a readable direction of weight, attention and contact?	Turn or lean the body toward the action; preserve the approved face
+Inflated or melted forms	Has rounding erased a functional edge or mascot feature?	Restore a purposeful silhouette and simplify the contact
+Overly mechanical drawing	Are paired and repeated shapes identical throughout?	Adjust a few meaningful shape or placement relationships
+Scratchy fake handwork	Is irregularity high-frequency noise rather than a chosen contour?	Replace noisy segments with longer confident sweeps
+Black heavy knots	Are too many contours crossing one contact?	Simplify the interaction and separate the readable boundaries
+Richness became clutter	Do small props distract from the event?	Keep the setting anchors and story detail; remove redundant inventory
+Minimalism became emptiness	Is a tiny subject stranded on a large page?	Enlarge the action and establish a broad framing shape
+Inconsistent batch	Did the reference, ink profile or face construction change?	Return to the original pilot and identity sheet
+Local edit damaged good work	Were invariants omitted or the edit scope too broad?	Restore the previous version and narrow the change
+Apparently sharp but unprintable	Was the file enlarged or only its DPI tag changed?	Inspect native pixels at final placement; obtain adequate source detail
+Repair instructions
+Use a focused edit instruction that names the defect and the geometry to preserve. These templates do not guarantee a local edit; inspect the returned result.
+Repair a leaking boundary
+“Keep the composition, cast, expression and line weight. Close the gap where [rear shape] meets [foreground shape]. The foreground outline must complete the boundary. Remove the hidden rear line through the foreground object. Do not add shading or redraw unaffected areas.”
+Repair sterile geometry
+“Keep the approved identities and closed regions. Give [head/cushion/cup] a slightly hand-swept contour and modest asymmetry. Vary the placement of [two props] deliberately. Keep the strokes smooth and confident. Do not add roughness, jitter, paper grain or sketch marks.”
+Repair crowded composition
+“Keep [main action], [cast] and [setting anchor]. Remove [named redundant props] and the small background patterns. Enlarge [important prop]. Restore a broad quiet area at [location]. Maintain the existing primary stroke weight and do not add replacement decorations.”
+Repair a mascot
+“Match [mascot] to the attached approved sheet, especially [specific silhouette, face, ears, scarf, points or shell]. Keep the current action and correct prop contact. Change only the incorrect identity features. Do not replace the whole cast with a generic cute animal style.”
+Repair a physical interaction
+“Redraw the contact between [character] and [prop]. Show [one clear connection] and a stable support surface. Separate the overlapping outlines so the reader can distinguish the paw, handle and object. Preserve the face and the rest of the scene.”
+Repair tiny colouring pockets
+“Keep the major silhouettes and story. Merge the small enclosed regions on [object] into a few broad areas. Remove unnecessary seams, parallel rims and miniature patterns. Keep the functional feature that identifies the object. Do not solve the problem by shrinking the whole drawing.”
+Restore the colouring master
+“Keep the accepted drawing's contours and object arrangement. Remove all intentional gray or coloured fills, shadows, highlights, surface texture and lighting effects. Leave clean black ink on white with smooth edges. Preserve faces as small solid black marks.”
+Repair a rigid pose
+“Keep [mascot]'s approved face, silhouette features and accessory design. Turn the head and body toward [action]. Put the weight on [surface] and make [paw or star point] visibly contact [prop]. Let the scarf or cushion respond to that movement. Keep the same cast and environment. Do not add extra limbs, decoration or texture.”
+Repair an overly heavy contact
+“Keep the accepted primary line character. Simplify the join between [paw], [handle] and [object] so each form remains readable at final size. Enlarge the inner handle opening or remove a redundant contour. Preserve closed regions and the approved face; do not thin the entire picture or add a second border.”
+Recover from edit drift
+“Use the previous accepted image as the edit target. Change only [specific visible defect]. Preserve the exact cast, their facial construction, accepted pose, key object counts, major room layout and ink treatment. Do not repeat the broader restyling that changed [identified good feature].”
+After any repair, inspect the returned image and repeat the affected mandatory checks. Compare against the last better version. A local change can accidentally alter a face, introduce an extra limb or reopen a nearby boundary.
+Handoff format
+Use this document as a directing reference, not as the image prompt. Keep a brief job record with the actual reference files, version, scene and verification evidence. Do not list a reference image that was not available to the generation call.
+Yaml
+scene_id: moon-picnic-08
+design_version: "2.0"
+mode: COLOURING_MASTER
+reader_age: "6-9"
+story_beat: Sprout carries one good berry
+cast:
+  - Sprout
+references:
+  mascot_identity: approved four-friend sheet
+  line_style: accepted pilot page
+ink_profile: accepted pilot at final placed size
+composition: low viewpoint
+difficulty: EASY
+main_action: leaf tray resting securely across the shell
+particular_detail: berry large beside Sprout
+support_surface: smooth floor
+gaze_or_head_direction: toward the berry
+setting_anchors:
+  - one chair leg
+  - floor line
+quiet_area: upper background
+invariants:
+  - approved attached shell and two-eye-stalk construction
+  - no hands
+  - berry tray returns in later picnic scenes
+caption: "Sprout carried one berry. It was a very good berry."
+production_status: DRAFT
+checks:
+  identity: not_tested
+  action_and_gesture: not_tested
+  physical_connections: not_tested
+  line_character: not_tested
+  region_closure: not_tested
+  final_size_review: not_tested
+  digital_fill: not_tested
+  native_resolution: not_tested
+  printed_proof: not_tested
+review_evidence: []
+next_required_action: inspect the generated image
+Record passed, failed, not_tested or not_applicable with a short reason when needed. Use not_applicable only when the requirement genuinely does not apply; it is not a way around an unavailable test. A physical proof may be pending for a digital art deliverable, but it remains relevant to a future print release.
+When reporting completed work, provide the requested image or file, the actual verification stage and any material unresolved defect. Keep routine notes short. Do not claim all pixels, contours or print properties were preserved without an applicable comparison or test.
+Short instruction to start a future agent
+Text
+Read the Quickstart in design.md version 2.0 and the sections needed for this
+scene. Use the attached approved Miso, Pip, Plum and Sprout identity sheet
+and the accepted line-art pilot, if supplied.
+Create [scene ID or concrete scene] in COLOURING_MASTER mode for ages 6–9.
+Make the action readable through body direction, gaze and prop contact.
+Use one particular story detail, broad white regions and confident rounded
+ink. Preserve the current book's character and room continuity.
+Produce the actual image, inspect it at the three viewing distances, and
+make focused repairs where needed. Report the stage actually verified and
+identify any untested print or digital-fill requirement.
+When the request is only to edit this guide, deliver the guide without generating extra images. Better instructions improve the process; the quality of future drawings still needs to be judged from actual outputs.
+Sources and evidence
+Reference research checked on 10 November 2026. Version 2.0 refines the production and review instructions using those references; it does not claim a new image-generation benchmark. Coverage is a targeted review of official public pages, selected rendered artwork and the supplied references. It is not an exhaustive crawl of the internet. The creative system, proportions, line widths, prop budgets, palettes, workflow and scoring rubric are house recommendations unless specifically attributed.
+Source register
+ID	Source	Evidence used
+S1	Coco Wyo official website	Collection distinctions and current product routes
+S2	Coco Wyo Bold and Easy guide	Simpler shapes, stronger outlines and larger colouring areas; not its inconsistent time-to-finish claims
+S3	Coco Wyo FAQ	Collection differences; brand-described sketch-to-tablet workflow; separation of materials and edition features
+S4	Coco Wyo Cozy Cafe	Rendered cover and a selected published coloured gallery sample; distinction between master and coloured treatment
+S5	Bobbie Goods Day to Night	Product description of a recurring-character sequence; rendered product artwork and contextual domestic setting
+S6	Bobbie Goods drawing guide	The publisher's approach to drawing characters, props and assembled scenes
+S7	Usborne First Coloring Books	Publisher description of large areas and bold outlines for younger children
+S8	Crayola Pack for a Picnic	Child-directed completion of a picture before colouring
+S9	Highlights Jumbo Book of Things to Find and Color	Colouring combined with optional discovery and prompts for ages six and above
+S10	Procreate Brush Studio Settings	How smoothing, stabilization and expression affect line appearance
+S11	KDP image formatting	Effective image resolution and placement at final size
+S12	KDP paperback submission guidelines	Print-layout and single-page export requirements
+S13	Dover cozy colouring collection	Additional category-level check; no stroke measurements or proprietary drawing method inferred
+Evidence boundaries
+The supplied uncoloured scene previews were inspected visually. The current Coco Wyo product cover and one coloured gallery asset, and the Bobbie Goods product artwork, were also inspected in a rendered browser. Other cited pages primarily supplied official text. No exact stroke measurements, market-conversion claims or developmental efficacy claims were inferred from those sources.
+Some Bobbie Goods gallery image links exposed unresolved width placeholders through text extraction; the rendered product artwork remained available for visual review. No inaccessible gallery image was treated as inspected. The supplied front-end DNA's previous CSS measurements remain that author's claims rather than newly verified facts.
+Reference assets are for comparison and study. Produce our own characters, scene layouts and lettering. Keep this file self-contained as a specification; attach the approved mascot sheet and accepted pilot when exact visual continuity is required.
