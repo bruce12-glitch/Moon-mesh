@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BOOKS, HERO_SLIDES, BookItem, HeroSlide } from '../data/moonMeshData';
 import { getNextSlideIndex } from '../utils/moonMeshLogic';
+import { HeroSlideTreat } from './HeroSlideTreat';
+import { HeroSlideJoin } from './HeroSlideJoin';
 
 interface HeroCarouselProps {
   onOpenStudio: () => void;
@@ -251,62 +253,68 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 </div>
               ) : slide.layout === 'centered' ? (
                 /* Centered Coco Wyo-inspired Banner Layout ("READY FOR a little COLORiNG TREAT?" & "COME JOIN US") */
-                <div
-                  className={`hero-centered-inner shell ${
-                    slide.id === 'coloring-treat' ? 'is-treat-slide' : 'is-join-slide'
-                  }`}
-                >
+                slide.id === 'coloring-treat' ? (
+                  <HeroSlideTreat onOpenStudio={onOpenStudio} isCurrent={isCurrent} />
+                ) : slide.id === 'come-join-us' ? (
+                  <HeroSlideJoin isCurrent={isCurrent} />
+                ) : (
                   <div
-                    className={`hero-centered-art-wrap ${
-                      slide.id === 'coloring-treat' ? 'hero-treat-art-wrap' : 'hero-join-art-wrap'
+                    className={`hero-centered-inner shell ${
+                      slide.id === 'coloring-treat' ? 'is-treat-slide' : 'is-join-slide'
                     }`}
                   >
-                    <img
-                      src={imgSrc}
-                      width={1600}
-                      height={900}
-                      alt={slide.imageAlt}
-                      referrerPolicy="no-referrer"
-                      onError={() =>
-                        setImageErrors((prev) => ({ ...prev, [slide.id]: true }))
-                      }
-                      onClick={slide.id === 'coloring-treat' ? onOpenStudio : undefined}
-                      className={`hero-centered-img ${
-                        slide.id === 'coloring-treat' ? 'hero-treat-img cursor-pointer' : 'hero-join-img'
+                    <div
+                      className={`hero-centered-art-wrap ${
+                        slide.id === 'coloring-treat' ? 'hero-treat-art-wrap' : 'hero-join-art-wrap'
                       }`}
-                    />
+                    >
+                      <img
+                        src={imgSrc}
+                        width={1600}
+                        height={900}
+                        alt={slide.imageAlt}
+                        referrerPolicy="no-referrer"
+                        onError={() =>
+                          setImageErrors((prev) => ({ ...prev, [slide.id]: true }))
+                        }
+                        onClick={slide.id === 'coloring-treat' ? onOpenStudio : undefined}
+                        className={`hero-centered-img ${
+                          slide.id === 'coloring-treat' ? 'hero-treat-img cursor-pointer' : 'hero-join-img'
+                        }`}
+                      />
+                    </div>
+                    <div
+                      className={`hero-centered-overlay-bar ${
+                        slide.id === 'coloring-treat' ? 'hero-treat-quote-only' : ''
+                      }`}
+                    >
+                      <p className="hero-centered-subtitle">{slide.subtitle}</p>
+                      {slide.id !== 'coloring-treat' && (
+                        <div className="hero-actions justify-center">
+                          <a
+                            className="button button-ink whitespace-nowrap shrink-0"
+                            href={slide.primaryCta.href}
+                            onClick={(e) => handleCtaClick(e, slide.primaryCta)}
+                            tabIndex={isCurrent ? 0 : -1}
+                          >
+                            {slide.primaryCta.label}
+                            <svg className="icon" aria-hidden="true">
+                              <use href="#arrow" />
+                            </svg>
+                          </a>
+                          <a
+                            className="button button-paper whitespace-nowrap shrink-0"
+                            href={slide.secondaryCta.href}
+                            onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
+                            tabIndex={isCurrent ? 0 : -1}
+                          >
+                            {slide.secondaryCta.label}
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div
-                    className={`hero-centered-overlay-bar ${
-                      slide.id === 'coloring-treat' ? 'hero-treat-quote-only' : ''
-                    }`}
-                  >
-                    <p className="hero-centered-subtitle">{slide.subtitle}</p>
-                    {slide.id !== 'coloring-treat' && (
-                      <div className="hero-actions justify-center">
-                        <a
-                          className="button button-ink whitespace-nowrap shrink-0"
-                          href={slide.primaryCta.href}
-                          onClick={(e) => handleCtaClick(e, slide.primaryCta)}
-                          tabIndex={isCurrent ? 0 : -1}
-                        >
-                          {slide.primaryCta.label}
-                          <svg className="icon" aria-hidden="true">
-                            <use href="#arrow" />
-                          </svg>
-                        </a>
-                        <a
-                          className="button button-paper whitespace-nowrap shrink-0"
-                          href={slide.secondaryCta.href}
-                          onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
-                          tabIndex={isCurrent ? 0 : -1}
-                        >
-                          {slide.secondaryCta.label}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )
               ) : (
                 /* Split Layout ("Make the moon your color", "READY FOR a little COLORiNG TREAT?") */
                 <>

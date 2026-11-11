@@ -2938,3 +2938,55 @@ img {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Animated Hero Slides Styles */
+.is-treat-slide {
+  background-color: #FEEBF0 !important;
+}
+
+.is-join-slide {
+  background-color: #FFF3C8 !important;
+}
+
+.hero-treat-heading {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.treat-block-line {
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.treat-script-line {
+  font-family: 'Caveat', cursive;
+  color: #D87977;
+  font-size: 1.4em;
+  margin: -0.1em 0;
+  transform: rotate(-2deg);
+}
+
+.hero-centered-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  min-height: 500px;
+}
+
+.hero-centered-art-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 30px;
+}
+
+.hero-centered-subtitle {
+  font-size: 1.2rem;
+  color: #322F37;
+  max-width: 60ch;
+  margin: 0 auto;
+}
