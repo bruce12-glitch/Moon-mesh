@@ -902,291 +902,427 @@ import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
   };
 
   function mountCutawayDiorama(mountEl) {
-    if (!mountEl) return null;
-    const isSoftwareGl = (() => {
-      const gl = document.createElement("canvas").getContext("webgl2");
-      if (!gl) return true;
-      const ext = gl.getExtension("WEBGL_debug_renderer_info");
-      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
-      const gpu = String(gl.getParameter(param));
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-      return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
-    })();
+    if (!mountEl || typeof THREE === "undefined") return null;
 
     const width = mountEl.clientWidth || 640;
     const height = mountEl.clientHeight || 420;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: !isSoftwareGl, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.NoToneMapping;
-    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(width, height);
     mountEl.replaceChildren(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xefe3f8);
+    scene.background = new THREE.Color("#241B38");
+    scene.fog = new THREE.FogExp2("#241B38", 0.022);
 
-    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
-    camera.position.set(0.35, 3.85, 7.35);
-    camera.lookAt(0, 1.15, 0.15);
+    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 80);
+    camera.position.set(0.2, 4.1, 7.8);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = !isSoftwareGl;
-    controls.dampingFactor = 0.06;
-    controls.maxPolarAngle = Math.PI * 0.47;
-    controls.minPolarAngle = Math.PI * 0.12;
-    controls.minAzimuthAngle = -Math.PI * 0.38;
-    controls.maxAzimuthAngle = Math.PI * 0.42;
-    controls.minDistance = 2.2;
-    controls.maxDistance = 10.5;
-    controls.target.set(0, 1.15, 0.15);
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.minPolarAngle = 0.22;
+    controls.minDistance = 2.4;
+    controls.maxDistance = 13.5;
+    controls.target.set(0, 1.35, -0.1);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xfbe5d8, 1.65);
-    hemiLight.position.set(0, 12, 0);
-    scene.add(hemiLight);
+    const createClayMat = (hex, opts = {}) =>
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(hex),
+        roughness: opts.roughness ?? 0.48,
+        metalness: 0.0,
+        clearcoat: opts.clearcoat ?? 0.14,
+        clearcoatRoughness: opts.clearcoatRoughness ?? 0.36,
+        reflectivity: 0.25,
+        emissive: opts.emissive ? new THREE.Color(opts.emissive) : new THREE.Color("#000000"),
+        emissiveIntensity: opts.emissiveIntensity ?? 0,
+        map: opts.map ?? null
+      });
 
-    const keyLight = new THREE.DirectionalLight(0xfffaf0, 1.55);
-    keyLight.position.set(4.5, 8.2, 6.0);
+    const eyeMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color("#231715"),
+      roughness: 0.08,
+      metalness: 0.0,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04
+    });
+    const blushMat = createClayMat("#FF8B9E", { roughness: 0.5 });
+    const catchMat = new THREE.MeshBasicMaterial({ color: "#FFFFFF" });
+    const mouthLineMat = createClayMat("#3A231E", { roughness: 0.4 });
+
+    // Procedural gingham texture
+    const createGinghamTexture = () => {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#FFF9F2";
+      ctx.fillRect(0, 0, 512, 512);
+      const step = 64;
+      for (let y = 0; y < 512; y += step) {
+        for (let x = 0; x < 512; x += step) {
+          const isEvenX = (x / step) % 2 === 0;
+          const isEvenY = (y / step) % 2 === 0;
+          if (!isEvenX && !isEvenY) {
+            ctx.fillStyle = "#F28B9C";
+            ctx.fillRect(x, y, step, step);
+          } else if (!isEvenX || !isEvenY) {
+            ctx.fillStyle = "#FBD0D9";
+            ctx.fillRect(x, y, step, step);
+          }
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2.5, 2.5);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    };
+
+    const createWoodDeckTexture = () => {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext("2d");
+      ctx.fillStyle = "#DFAD76";
+      ctx.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 8; i++) {
+        const y = i * 64;
+        ctx.fillStyle = i % 2 === 0 ? "#E3B37C" : "#D8A36C";
+        ctx.fillRect(0, y, 512, 61);
+        ctx.fillStyle = "#B8804A";
+        ctx.fillRect(0, y + 61, 512, 3);
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    };
+
+    // 3-Point Toy Studio Lighting
+    scene.add(new THREE.HemisphereLight("#FFF6EA", "#9A7BB5", 1.15));
+    const keyLight = new THREE.DirectionalLight("#FFF3DE", 1.45);
+    keyLight.position.set(5.5, 9.0, 6.5);
+    keyLight.castShadow = true;
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xfce6f2, 0.85);
-    fillLight.position.set(-4.5, 4.5, 3.5);
+    const fillLight = new THREE.DirectionalLight("#E0C8FF", 0.68);
+    fillLight.position.set(-6.0, 5.0, 4.0);
     scene.add(fillLight);
 
-    const toonData = new Uint8Array([
-      208, 194, 206, 255,
-      236, 228, 234, 255,
-      252, 249, 246, 255,
-      255, 255, 255, 255,
-    ]);
-    const toonGrad = new THREE.DataTexture(toonData, 4, 1, THREE.RGBAFormat);
-    toonGrad.minFilter = THREE.NearestFilter;
-    toonGrad.magFilter = THREE.NearestFilter;
-    toonGrad.needsUpdate = true;
+    const rimLight = new THREE.DirectionalLight("#FFD27D", 0.82);
+    rimLight.position.set(0.0, 5.5, -5.5);
+    scene.add(rimLight);
 
-    const makeToonMat = (color, map) => new THREE.MeshToonMaterial({ color, map: map || null, gradientMap: toonGrad });
-    const outlineMat = new THREE.MeshBasicMaterial({ color: 0x2c2523, side: THREE.BackSide });
-    const addInkOutline = (mesh, scale = 1.045) => {
-      const outline = new THREE.Mesh(mesh.geometry, outlineMat);
-      outline.scale.setScalar(scale);
-      mesh.add(outline);
-      return mesh;
+    // Floating Island Base
+    const islandGroup = new THREE.Group();
+    scene.add(islandGroup);
+
+    const subBase = new THREE.Mesh(new THREE.CylinderGeometry(3.45, 2.75, 0.55, 64), createClayMat("#B9929F", { roughness: 0.65 }));
+    subBase.position.y = -0.45;
+    islandGroup.add(subBase);
+
+    const meadowRim = new THREE.Mesh(new THREE.CylinderGeometry(3.65, 3.48, 0.34, 64), createClayMat("#8CC67B", { roughness: 0.56 }));
+    meadowRim.position.y = -0.08;
+    islandGroup.add(meadowRim);
+
+    const meadowLip = new THREE.Mesh(new THREE.TorusGeometry(3.52, 0.16, 20, 64), createClayMat("#9BD189", { roughness: 0.54 }));
+    meadowLip.rotation.x = Math.PI / 2;
+    meadowLip.position.y = 0.04;
+    islandGroup.add(meadowLip);
+
+    const woodDeck = new THREE.Mesh(new THREE.CylinderGeometry(3.15, 3.18, 0.14, 64), createClayMat("#FFFFFF", { map: createWoodDeckTexture(), roughness: 0.5 }));
+    woodDeck.position.y = 0.1;
+    islandGroup.add(woodDeck);
+
+    const blanketMain = new THREE.Mesh(new THREE.CylinderGeometry(2.38, 2.42, 0.06, 64), createClayMat("#FFFFFF", { map: createGinghamTexture(), roughness: 0.62, clearcoat: 0.04 }));
+    blanketMain.position.set(0, 0.18, 0.18);
+    islandGroup.add(blanketMain);
+
+    // Cloud puffs
+    const cloudMat = createClayMat("#F8F2FF", { roughness: 0.38, clearcoat: 0.2, emissive: "#4A3869", emissiveIntensity: 0.15 });
+    [
+      [-3.55, -0.18, 1.1, 0.56], [-3.15, -0.25, 1.85, 0.44], [-3.7, -0.2, 0.35, 0.48],
+      [3.55, -0.18, 1.0, 0.54], [3.15, -0.24, 1.75, 0.42], [3.7, -0.22, 0.2, 0.48],
+      [-2.7, -0.22, -2.5, 0.62], [2.6, -0.22, -2.5, 0.6], [0.0, -0.35, 3.65, 0.46]
+    ].forEach(([x, y, z, r]) => {
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), cloudMat);
+      puff.scale.set(1.22, 0.78, 1.05);
+      puff.position.set(x, y, z);
+      islandGroup.add(puff);
+    });
+
+    // Analytical Two-Circle 3D Crescent Moon
+    const moonWindowGroup = new THREE.Group();
+    scene.add(moonWindowGroup);
+
+    const moonShape = new THREE.Shape();
+    const R1 = 1.35, R2 = 1.15, d = 0.52;
+    const xInt = (R1 * R1 - R2 * R2 + d * d) / (2 * d);
+    const yInt = Math.sqrt(Math.max(0, R1 * R1 - xInt * xInt));
+    const theta1 = Math.atan2(yInt, xInt);
+    const theta2 = Math.atan2(yInt, xInt - d);
+    moonShape.absarc(0, 0, R1, theta1, Math.PI * 2 - theta1, false);
+    moonShape.absarc(d, 0, R2, Math.PI * 2 - theta2, theta2, true);
+    moonShape.closePath();
+
+    const moonGeo = new THREE.ExtrudeGeometry(moonShape, {
+      depth: 0.24, bevelEnabled: true, bevelSegments: 14, steps: 1, bevelSize: 0.14, bevelThickness: 0.18, curveSegments: 48
+    });
+    moonGeo.center();
+    const crescentMoon = new THREE.Mesh(moonGeo, createClayMat("#FFD859", { roughness: 0.3, clearcoat: 0.35, emissive: "#F5B027", emissiveIntensity: 0.28 }));
+    crescentMoon.scale.set(0.68, 0.68, 0.68);
+    crescentMoon.position.set(-1.82, 2.58, -1.45);
+    crescentMoon.rotation.z = -0.22;
+    crescentMoon.rotation.y = 0.24;
+    moonWindowGroup.add(crescentMoon);
+
+    // Arched Cottage Window
+    const windowGroup = new THREE.Group();
+    windowGroup.position.set(0.25, 1.85, -1.95);
+    moonWindowGroup.add(windowGroup);
+
+    const frameWoodMat = createClayMat("#B57642", { roughness: 0.5 });
+    const skyGlassMat = new THREE.MeshBasicMaterial({ color: "#1B254B" });
+    const skyCircle = new THREE.Mesh(new THREE.CircleGeometry(1.02, 40), skyGlassMat);
+    skyCircle.position.set(0, 0.22, -0.04);
+    windowGroup.add(skyCircle);
+    const skyRect = new THREE.Mesh(new THREE.PlaneGeometry(2.04, 1.05), skyGlassMat);
+    skyRect.position.set(0, -0.3, -0.04);
+    windowGroup.add(skyRect);
+
+    const archFrame = new THREE.Mesh(new THREE.TorusGeometry(1.04, 0.12, 20, 48, Math.PI), frameWoodMat);
+    archFrame.position.set(0, 0.22, 0);
+    windowGroup.add(archFrame);
+    [-1.04, 1.04].forEach((px) => {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.08, 20), frameWoodMat);
+      pillar.position.set(px, -0.32, 0);
+      windowGroup.add(pillar);
+    });
+    const vCross = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.08, 16), frameWoodMat);
+    vCross.position.set(0, 0.22, 0.02);
+    windowGroup.add(vCross);
+    const hCross = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.04, 16), frameWoodMat);
+    hCross.rotation.z = Math.PI / 2;
+    hCross.position.set(0, 0.2, 0.02);
+    windowGroup.add(hCross);
+    const sill = new THREE.Mesh(new THREE.BoxGeometry(2.48, 0.18, 0.34), createClayMat("#965D2E", { roughness: 0.52 }));
+    sill.position.set(0, -0.86, 0.04);
+    windowGroup.add(sill);
+
+    // Tufted Cushion & Kawaii Face helpers
+    const createTuftedCushion = (radius, height, hex, buttonHex) => {
+      const cGroup = new THREE.Group();
+      const mat = createClayMat(hex, { roughness: 0.56 });
+      cGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.85, radius * 0.85, height, 32), mat));
+      for (let i = 0; i < 10; i++) {
+        const ang = (i * Math.PI * 2) / 10;
+        const lobe = new THREE.Mesh(new THREE.SphereGeometry(height * 0.72, 20, 20), mat);
+        lobe.scale.set(1.25, 0.75, 1.35);
+        lobe.position.set(Math.cos(ang) * radius * 0.76, 0, Math.sin(ang) * radius * 0.76);
+        lobe.rotation.y = -ang;
+        cGroup.add(lobe);
+      }
+      const btn = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.12, 14, 14), createClayMat(buttonHex, { roughness: 0.5 }));
+      btn.scale.set(1, 0.45, 1); btn.position.y = height * 0.52;
+      cGroup.add(btn);
+      return cGroup;
     };
 
-    const makeBowTex = () => {
-      const c = document.createElement("canvas"); c.width = 128; c.height = 128;
-      const cx = c.getContext("2d");
-      cx.fillStyle = "#7CC0F5"; cx.fillRect(0, 0, 128, 128);
-      cx.fillStyle = "#FFFFFF";
-      for (let i = 0; i < 128; i += 22) cx.fillRect(i, 0, 8, 128);
-      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-      return t;
+    const attachKawaiiFace = (headGroup, faceZ, eyeSpacing, eyeY, noseHex) => {
+      [-1, 1].forEach((dir) => {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.086, 22, 22), eyeMat);
+        eye.scale.set(0.95, 1.12, 0.58);
+        eye.position.set(dir * eyeSpacing, eyeY, faceZ);
+        headGroup.add(eye);
+
+        const catchBig = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 12), catchMat);
+        catchBig.position.set(dir * eyeSpacing - 0.022, eyeY + 0.032, faceZ + 0.046);
+        headGroup.add(catchBig);
+
+        const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.095, 18, 18), blushMat);
+        cheek.scale.set(1.3, 0.68, 0.35);
+        cheek.position.set(dir * (eyeSpacing + 0.13), eyeY - 0.1, faceZ - 0.03);
+        cheek.rotation.y = dir * 0.25;
+        headGroup.add(cheek);
+      });
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.044, 16, 16), createClayMat(noseHex, { roughness: 0.35 }));
+      nose.scale.set(1.25, 0.85, 0.65);
+      nose.position.set(0, eyeY - 0.055, faceZ + 0.04);
+      headGroup.add(nose);
+
+      [-1, 1].forEach((dir) => {
+        const smile = new THREE.Mesh(new THREE.TorusGeometry(0.046, 0.013, 12, 24, Math.PI), mouthLineMat);
+        smile.rotation.z = Math.PI;
+        smile.position.set(dir * 0.044, eyeY - 0.085, faceZ + 0.035);
+        headGroup.add(smile);
+      });
     };
 
-    const creamMat = makeToonMat(0xfff7e6);
-    const yellowMat = makeToonMat(0xf8cf58);
-    const lavenderMat = makeToonMat(0xdfd0f5);
-    const greenMat = makeToonMat(0x9ec27e);
-    const darkGreenMat = makeToonMat(0x6e9453);
-    const coralMat = makeToonMat(0xe86f6d);
-    const strawberryCapMat = makeToonMat(0xe6585b);
-    const inkMat = new THREE.MeshBasicMaterial({ color: 0x2c2523 });
-    const whiteCatchlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const blushMat = new THREE.MeshBasicMaterial({ color: 0xf79bb4 });
-    const woodMat = makeToonMat(0xdda77b);
-    const trimWoodMat = makeToonMat(0xc98b5b);
-    const ceramicMat = makeToonMat(0xfffbf4);
-    const bowMat = makeToonMat(0xffffff, makeBowTex());
-    const bunMat = makeToonMat(0xeba65f);
-    const wallUpperMat = makeToonMat(0xf7dced);
-    const wainscotMat = makeToonMat(0xfff9f0);
-
-    const createSculptedRibbonBow = (scale = 1) => {
-      const bowGroup = new THREE.Group();
-      bowGroup.scale.setScalar(scale);
-      const wingShapeL = new THREE.Shape();
-      wingShapeL.moveTo(0, 0);
-      wingShapeL.quadraticCurveTo(-0.18, 0.16, -0.32, 0.12);
-      wingShapeL.quadraticCurveTo(-0.36, 0, -0.32, -0.12);
-      wingShapeL.quadraticCurveTo(-0.18, -0.16, 0, 0);
-      const wingShapeR = new THREE.Shape();
-      wingShapeR.moveTo(0, 0);
-      wingShapeR.quadraticCurveTo(0.18, 0.16, 0.32, 0.12);
-      wingShapeR.quadraticCurveTo(0.36, 0, 0.32, -0.12);
-      wingShapeR.quadraticCurveTo(0.18, -0.16, 0, 0);
-      const ext = { depth: 0.045, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.018, bevelThickness: 0.018 };
-      const leftWing = addInkOutline(new THREE.Mesh(new THREE.ExtrudeGeometry(wingShapeL, ext), bowMat), 1.07);
-      const rightWing = addInkOutline(new THREE.Mesh(new THREE.ExtrudeGeometry(wingShapeR, ext), bowMat), 1.07);
-      const knot = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.12, 0.085), bowMat), 1.09);
-      knot.position.z = 0.025;
-      bowGroup.add(leftWing, rightWing, knot);
-      return bowGroup;
-    };
-
-    const stageGroup = new THREE.Group();
-    const floorPlinth = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.26, 4.9), woodMat), 1.018);
-    floorPlinth.position.set(0, -0.13, 0.15);
-    const backWallUpper = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(6.8, 2.75, 0.22), wallUpperMat), 1.018);
-    backWallUpper.position.set(0, 2.52, -2.19);
-    const backWainscot = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(6.8, 1.15, 0.24), wainscotMat), 1.018);
-    backWainscot.position.set(0, 0.58, -2.18);
-    const leftWallUpper = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(0.22, 2.75, 4.9), wallUpperMat), 1.018);
-    leftWallUpper.position.set(-3.29, 2.52, 0.15);
-    const leftWainscot = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.15, 4.9), wainscotMat), 1.018);
-    leftWainscot.position.set(-3.28, 0.58, 0.15);
-    const rugMesh = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(4.9, 0.04, 3.55), makeToonMat(0xfffdf9)), 1.018);
-    rugMesh.position.set(0, 0.02, 0.35);
-    stageGroup.add(floorPlinth, backWallUpper, backWainscot, leftWallUpper, leftWainscot, rugMesh);
-    scene.add(stageGroup);
-
-    const torsoPoints = [
-      new THREE.Vector2(0.0, 0.0),
-      new THREE.Vector2(0.56, 0.02),
-      new THREE.Vector2(0.6, 0.38),
-      new THREE.Vector2(0.46, 0.86),
-      new THREE.Vector2(0.0, 0.92),
-    ];
-    const eyeGeo = new THREE.SphereGeometry(0.058, 14, 14);
-    const catchGeo = new THREE.SphereGeometry(0.022, 10, 10);
-    const cheekGeo = new THREE.SphereGeometry(0.08, 14, 14);
-    const noseGeo = new THREE.SphereGeometry(0.036, 12, 12);
-
-    // Miso
+    // Miso (1.00)
     const misoGroup = new THREE.Group();
-    misoGroup.position.set(-1.72, 0.04, 0.22);
-    misoGroup.rotation.y = 0.48;
-    const misoCushion = addInkOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.84, 0.22, 28), coralMat), 1.04);
-    misoCushion.position.y = 0.11;
-    const misoBody = addInkOutline(new THREE.Mesh(new THREE.LatheGeometry(torsoPoints, 28), creamMat), 1.045);
-    misoBody.position.y = 0.18;
-    const misoHead = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.64, 32, 28), creamMat), 1.045);
-    misoHead.scale.set(1.2, 0.95, 1.04); misoHead.position.set(0, 1.48, 0.04);
-    const earGeo = new THREE.ConeGeometry(0.24, 0.42, 18);
-    const leftEar = addInkOutline(new THREE.Mesh(earGeo, creamMat), 1.06);
-    leftEar.position.set(-0.42, 1.96, 0.02); leftEar.rotation.z = 0.28;
-    const rightEar = addInkOutline(new THREE.Mesh(earGeo, creamMat), 1.06);
-    rightEar.position.set(0.42, 1.96, 0.02); rightEar.rotation.z = -0.28;
-    const misoEarBow = createSculptedRibbonBow(0.76);
-    misoEarBow.position.set(-0.46, 1.88, 0.46); misoEarBow.rotation.set(-0.12, -0.32, 0.28);
-    const scarfRing = addInkOutline(new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.12, 16, 32), yellowMat), 1.05);
-    scarfRing.rotation.x = Math.PI / 2; scarfRing.position.set(0, 1.02, 0.04);
-    const misoEyeL = new THREE.Mesh(eyeGeo, inkMat); misoEyeL.position.set(-0.25, 1.44, 0.68);
-    const misoCatchL = new THREE.Mesh(catchGeo, whiteCatchlightMat); misoCatchL.position.set(-0.23, 1.46, 0.72);
-    const misoEyeR = new THREE.Mesh(eyeGeo, inkMat); misoEyeR.position.set(0.25, 1.44, 0.68);
-    const misoCatchR = new THREE.Mesh(catchGeo, whiteCatchlightMat); misoCatchR.position.set(0.27, 1.46, 0.72);
-    const misoCheekL = new THREE.Mesh(cheekGeo, blushMat); misoCheekL.scale.set(1.3, 0.72, 0.35); misoCheekL.position.set(-0.39, 1.35, 0.64);
-    const misoCheekR = new THREE.Mesh(cheekGeo, blushMat); misoCheekR.scale.set(1.3, 0.72, 0.35); misoCheekR.position.set(0.39, 1.35, 0.64);
-    const misoNose = new THREE.Mesh(noseGeo, coralMat); misoNose.scale.set(1.2, 0.85, 0.65); misoNose.position.set(0, 1.4, 0.71);
-    const smileL = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.016, 10, 18, Math.PI), inkMat);
-    smileL.rotation.z = Math.PI; smileL.position.set(-0.048, 1.36, 0.7);
-    const smileR = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.016, 10, 18, Math.PI), inkMat);
-    smileR.rotation.z = Math.PI; smileR.position.set(0.048, 1.36, 0.7);
-    misoGroup.add(misoCushion, misoBody, misoHead, leftEar, rightEar, misoEarBow, scarfRing, misoEyeL, misoCatchL, misoEyeR, misoCatchR, misoCheekL, misoCheekR, misoNose, smileL, smileR);
+    misoGroup.position.set(-1.38, 0.21, 0.18);
+    misoGroup.rotation.y = 0.56;
     scene.add(misoGroup);
 
-    // Plum
+    const misoCushion = createTuftedCushion(0.76, 0.22, "#F78C9B", "#FFE5EC");
+    misoCushion.position.y = 0.11;
+    misoGroup.add(misoCushion);
+
+    const misoCreamMat = createClayMat("#FFF6E5", { roughness: 0.44, clearcoat: 0.16 });
+    const misoCaramelMat = createClayMat("#E3A66B", { roughness: 0.46, clearcoat: 0.14 });
+    const innerEarPinkMat = createClayMat("#F9B4C2", { roughness: 0.5 });
+
+    const misoTorso = new THREE.Mesh(new THREE.SphereGeometry(0.58, 32, 32), misoCreamMat);
+    misoTorso.scale.set(1.04, 0.94, 0.96);
+    misoTorso.position.y = 0.66;
+    misoGroup.add(misoTorso);
+
+    const scarfMat = createClayMat("#F7BD45", { roughness: 0.52 });
+    const scarfRing = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.125, 22, 42), scarfMat);
+    scarfRing.rotation.x = Math.PI / 2 + 0.08;
+    scarfRing.position.set(0, 1.04, 0.03);
+    misoGroup.add(scarfRing);
+
+    const misoHead = new THREE.Group();
+    misoHead.position.set(0, 1.56, 0.04);
+    misoGroup.add(misoHead);
+
+    const misoHeadSphere = new THREE.Mesh(new THREE.SphereGeometry(0.68, 36, 36), misoCreamMat);
+    misoHeadSphere.scale.set(1.16, 0.95, 1.04);
+    misoHead.add(misoHeadSphere);
+
+    [-1, 1].forEach((dir) => {
+      const earGroup = new THREE.Group();
+      earGroup.position.set(dir * 0.48, 0.5, -0.02);
+      earGroup.rotation.z = -dir * 0.42;
+      const outerEar = new THREE.Mesh(new THREE.SphereGeometry(0.25, 24, 24), dir === 1 ? misoCaramelMat : misoCreamMat);
+      outerEar.scale.set(0.92, 1.22, 0.56);
+      earGroup.add(outerEar);
+      misoHead.add(earGroup);
+    });
+
+    const bowBlueMat = createClayMat("#74BEFA", { roughness: 0.36, clearcoat: 0.26 });
+    const bowKnotMat = createClayMat("#4EA0E8", { roughness: 0.36, clearcoat: 0.26 });
+    const bowGroup = new THREE.Group();
+    bowGroup.position.set(-0.44, 0.52, 0.24);
+    bowGroup.rotation.set(0.15, 0.28, 0.36);
+    bowGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.095, 18, 18), bowKnotMat));
+    [-1, 1].forEach((bDir) => {
+      const loop = new THREE.Mesh(new THREE.SphereGeometry(0.16, 22, 22), bowBlueMat);
+      loop.scale.set(1.3, 0.85, 0.58);
+      loop.position.set(bDir * 0.16, 0.02, -0.01);
+      bowGroup.add(loop);
+    });
+    misoHead.add(bowGroup);
+    attachKawaiiFace(misoHead, 0.67, 0.25, -0.03, "#F47B8E");
+
+    // Plum (0.95)
     const plumGroup = new THREE.Group();
-    plumGroup.position.set(1.72, 0.04, 0.22);
-    plumGroup.rotation.y = -0.48;
-    const plumCushion = addInkOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.76, 0.82, 0.22, 28), greenMat), 1.04);
-    plumCushion.position.y = 0.11;
-    const plumBody = addInkOutline(new THREE.Mesh(new THREE.LatheGeometry(torsoPoints, 28), lavenderMat), 1.045);
-    plumBody.scale.set(0.95, 0.95, 0.95); plumBody.position.y = 0.18;
-    const plumHead = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 28), lavenderMat), 1.045);
-    plumHead.scale.set(1.16, 0.95, 1.02); plumHead.position.set(0, 1.42, 0.04);
-    const lopEarGeo = new THREE.CapsuleGeometry(0.15, 0.54, 10, 18);
-    const plumEarL = addInkOutline(new THREE.Mesh(lopEarGeo, lavenderMat), 1.06);
-    plumEarL.position.set(-0.64, 1.15, 0.12); plumEarL.rotation.set(0.1, 0, -0.16);
-    const plumEarR = addInkOutline(new THREE.Mesh(lopEarGeo, lavenderMat), 1.06);
-    plumEarR.position.set(0.64, 1.15, 0.12); plumEarR.rotation.set(0.1, 0, 0.18);
-    const capGroup = new THREE.Group();
-    capGroup.position.set(0, 1.56, -0.04); capGroup.rotation.x = -0.28;
-    const berryCap = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.64, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.4), strawberryCapMat), 1.045);
-    berryCap.scale.set(1.14, 0.96, 1.04);
-    const capBrim = addInkOutline(new THREE.Mesh(new THREE.TorusGeometry(0.58, 0.055, 12, 32), strawberryCapMat), 1.06);
-    capBrim.rotation.x = Math.PI / 2; capBrim.scale.set(1.14, 1.04, 1); capBrim.position.y = 0.2;
-    capGroup.add(berryCap, capBrim);
-    const plumCollarBow = createSculptedRibbonBow(0.76);
-    plumCollarBow.position.set(0, 0.98, 0.47);
-    const plumEyeL = new THREE.Mesh(eyeGeo, inkMat); plumEyeL.position.set(-0.22, 1.4, 0.62);
-    const plumCatchL = new THREE.Mesh(catchGeo, whiteCatchlightMat); plumCatchL.position.set(-0.2, 1.42, 0.66);
-    const plumEyeR = new THREE.Mesh(eyeGeo, inkMat); plumEyeR.position.set(0.22, 1.4, 0.62);
-    const plumCatchR = new THREE.Mesh(catchGeo, whiteCatchlightMat); plumCatchR.position.set(0.24, 1.42, 0.66);
-    const plumCheekL = new THREE.Mesh(cheekGeo, blushMat); plumCheekL.scale.set(1.25, 0.72, 0.35); plumCheekL.position.set(-0.36, 1.31, 0.58);
-    const plumCheekR = new THREE.Mesh(cheekGeo, blushMat); plumCheekR.scale.set(1.25, 0.72, 0.35); plumCheekR.position.set(0.36, 1.31, 0.58);
-    const plumNose = new THREE.Mesh(noseGeo, inkMat); plumNose.scale.set(1.15, 0.85, 0.65); plumNose.position.set(0, 1.36, 0.65);
-    const plumSmileL = new THREE.Mesh(new THREE.TorusGeometry(0.046, 0.015, 10, 16, Math.PI), inkMat);
-    plumSmileL.rotation.z = Math.PI; plumSmileL.position.set(-0.044, 1.32, 0.64);
-    const plumSmileR = new THREE.Mesh(new THREE.TorusGeometry(0.046, 0.015, 10, 16, Math.PI), inkMat);
-    plumSmileR.rotation.z = Math.PI; plumSmileR.position.set(0.044, 1.32, 0.64);
-    plumGroup.add(plumCushion, plumBody, plumHead, plumEarL, plumEarR, capGroup, plumCollarBow, plumEyeL, plumCatchL, plumEyeR, plumCatchR, plumCheekL, plumCheekR, plumNose, plumSmileL, plumSmileR);
+    plumGroup.position.set(1.38, 0.21, 0.18);
+    plumGroup.rotation.y = -0.58;
+    plumGroup.scale.setScalar(0.95);
     scene.add(plumGroup);
 
-    // Pip
+    const plumCushion = createTuftedCushion(0.76, 0.22, "#9AD493", "#FFF5E4");
+    plumCushion.position.y = 0.11;
+    plumGroup.add(plumCushion);
+
+    const plumLavMat = createClayMat("#E4CEF7", { roughness: 0.44, clearcoat: 0.16 });
+    const berryHoodMat = createClayMat("#F24B60", { roughness: 0.36, clearcoat: 0.28 });
+
+    const plumTorso = new THREE.Mesh(new THREE.SphereGeometry(0.56, 32, 32), plumLavMat);
+    plumTorso.scale.set(1.04, 0.92, 0.96);
+    plumTorso.position.y = 0.65;
+    plumGroup.add(plumTorso);
+
+    const plumHead = new THREE.Group();
+    plumHead.position.set(0, 1.54, 0.04);
+    plumGroup.add(plumHead);
+
+    const plumHeadSphere = new THREE.Mesh(new THREE.SphereGeometry(0.66, 36, 36), plumLavMat);
+    plumHeadSphere.scale.set(1.14, 0.94, 1.02);
+    plumHead.add(plumHeadSphere);
+
+    const hoodGroup = new THREE.Group();
+    hoodGroup.rotation.x = -0.24;
+    const hoodCap = new THREE.Mesh(new THREE.SphereGeometry(0.73, 36, 28, 0, Math.PI * 2, 0, Math.PI * 0.54), berryHoodMat);
+    hoodCap.scale.set(1.14, 0.98, 1.06);
+    hoodCap.position.y = 0.05;
+    hoodGroup.add(hoodCap);
+    plumHead.add(hoodGroup);
+
+    [-1, 1].forEach((dir) => {
+      const lopEar = new THREE.Mesh(new THREE.CapsuleGeometry(0.165, 0.54, 18, 24), plumLavMat);
+      lopEar.scale.set(0.88, 1, 0.56);
+      lopEar.position.set(dir * 0.68, -0.21, 0.06);
+      lopEar.rotation.z = dir * 0.22;
+      plumHead.add(lopEar);
+    });
+    attachKawaiiFace(plumHead, 0.64, 0.24, -0.05, "#D86B8E");
+
+    // Pip (0.45)
     const pipGroup = new THREE.Group();
-    pipGroup.position.set(-1.18, 0.04, 1.18);
+    pipGroup.position.set(-0.78, 0.21, 1.18);
     pipGroup.rotation.y = 0.36;
+    scene.add(pipGroup);
+
+    const pipCushion = createTuftedCushion(0.42, 0.14, "#FAD075", "#FFF8E8");
+    pipCushion.position.y = 0.07;
+    pipGroup.add(pipCushion);
+
     const starShape = new THREE.Shape();
     for (let i = 0; i < 10; i++) {
-      const angle = (i * Math.PI) / 5 - Math.PI / 2;
-      const r = i % 2 === 0 ? 0.42 : 0.23;
-      const x = Math.cos(angle) * r; const y = -Math.sin(angle) * r;
+      const r = i % 2 === 0 ? 0.44 : 0.25;
+      const a = (i * Math.PI) / 5 - Math.PI / 2;
+      const x = Math.cos(a) * r, y = -Math.sin(a) * r;
       if (i === 0) starShape.moveTo(x, y); else starShape.lineTo(x, y);
     }
     starShape.closePath();
-    const starGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.16, bevelEnabled: true, bevelSegments: 5, steps: 1, bevelSize: 0.06, bevelThickness: 0.06 });
+    const starGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.14, bevelEnabled: true, bevelSegments: 12, steps: 1, bevelSize: 0.09, bevelThickness: 0.11 });
     starGeo.center();
-    const pipStarMesh = addInkOutline(new THREE.Mesh(starGeo, yellowMat), 1.055);
-    pipStarMesh.position.set(-0.18, 0.5, -0.06);
+    const pipStarMesh = new THREE.Mesh(starGeo, createClayMat("#FFE05D", { roughness: 0.34, clearcoat: 0.26, emissive: "#F5B82E", emissiveIntensity: 0.14 }));
+    pipStarMesh.position.y = 0.52;
     pipGroup.add(pipStarMesh);
-    scene.add(pipGroup);
 
-    // Table & Sprout
+    // Table & Sprout (0.30)
     const tableGroup = new THREE.Group();
-    tableGroup.position.set(0, 0.04, 0.25);
-    const tableTop = addInkOutline(new THREE.Mesh(new THREE.CylinderGeometry(1.02, 1.02, 0.11, 40), woodMat), 1.03);
-    tableTop.scale.set(1.12, 1, 0.9); tableTop.position.y = 0.52;
-    const sharedBun = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 18), bunMat), 1.055);
-    sharedBun.scale.set(1.18, 0.72, 1.12); sharedBun.position.set(0.04, 0.7, -0.26);
-    const sproutGroup = new THREE.Group();
-    sproutGroup.position.set(0.42, 0.58, 0.12);
-    const leafTray = addInkOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.3, 0.03, 24), greenMat), 1.05);
-    leafTray.scale.set(1.22, 1, 0.88); leafTray.position.y = 0.015;
-    const snailShell = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 20), greenMat), 1.06);
-    snailShell.scale.set(1.05, 1.05, 0.75); snailShell.position.set(0.12, 0.21, 0);
-    const sproutBerry = addInkOutline(new THREE.Mesh(new THREE.SphereGeometry(0.115, 20, 18), coralMat), 1.07);
-    sproutBerry.scale.set(0.95, 1.15, 0.95); sproutBerry.position.set(-0.22, 0.13, 0.04);
-    sproutGroup.add(leafTray, snailShell, sproutBerry);
-    tableGroup.add(tableTop, sharedBun, sproutGroup);
+    tableGroup.position.set(0, 0.21, 0.15);
     scene.add(tableGroup);
 
-    // Window
-    const windowGroup = new THREE.Group();
-    windowGroup.position.set(0, 2.48, -1.98);
-    const archOuter = addInkOutline(new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.1, 18, 40, Math.PI), trimWoodMat), 1.04);
-    const sill = addInkOutline(new THREE.Mesh(new THREE.BoxGeometry(2.48, 0.14, 0.26), trimWoodMat), 1.04);
-    sill.position.y = -0.82;
-    const skyBackdrop = new THREE.Mesh(new THREE.CircleGeometry(1.1, 36), makeToonMat(0x1f2f5c));
-    skyBackdrop.position.set(0, -0.12, -0.05);
-    windowGroup.add(archOuter, sill, skyBackdrop);
-    scene.add(windowGroup);
+    const tableTop = new THREE.Mesh(new THREE.CylinderGeometry(1.12, 1.12, 0.11, 48), createClayMat("#E6B37A", { roughness: 0.42, clearcoat: 0.2 }));
+    tableTop.position.y = 0.56;
+    tableGroup.add(tableTop);
+
+    const sproutGroup = new THREE.Group();
+    sproutGroup.position.set(0.45, 0.62, 0.05);
+    sproutGroup.rotation.y = -0.45;
+    const leafPad = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.035, 32), createClayMat("#78C268", { roughness: 0.5 }));
+    leafPad.scale.set(1.22, 1, 0.88);
+    leafPad.position.y = 0.018;
+    const shellMain = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 24), createClayMat("#C87D4B", { roughness: 0.44 }));
+    shellMain.position.set(0.06, 0.2, 0);
+    sproutGroup.add(leafPad, shellMain);
+    tableGroup.add(sproutGroup);
 
     function renderFrame(presetKey = "overview", moodKey = "afternoon", spreadPctVal = 0) {
       const exp = spreadPctVal / 100;
-      misoGroup.position.x = -1.72 - exp * 0.65;
-      plumGroup.position.x = 1.72 + exp * 0.65;
-      pipGroup.position.z = 1.18 + exp * 0.55;
-      sproutGroup.position.y = 0.58 + exp * 0.35;
+      misoGroup.position.x = -1.38 - exp * 0.55;
+      plumGroup.position.x = 1.38 + exp * 0.55;
+      pipGroup.position.z = 1.18 + exp * 0.45;
+      sproutGroup.position.y = 0.62 + exp * 0.3;
 
-      if (moodKey === "moonlight") {
-        scene.background.setHex(0x281f3d);
-        wallUpperMat.color.setHex(0xc8b5e8);
-      } else if (moodKey === "sunset") {
-        scene.background.setHex(0xfde2e9);
-        wallUpperMat.color.setHex(0xfce0c8);
+      if (moodKey === "sunset") {
+        scene.background.setHex(0x331f3d);
+      } else if (moodKey === "afternoon") {
+        scene.background.setHex(0x281e3f);
       } else {
-        scene.background.setHex(0xefe3f8);
-        wallUpperMat.color.setHex(0xf7dced);
+        scene.background.setHex(0x1f1632);
       }
 
       if (presetKey) {
