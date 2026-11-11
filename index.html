@@ -3,7 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      // Guard against browser extensions overwriting window.fetch
+      (function () {
+        try {
+          var currentFetch = window.fetch ? window.fetch.bind(window) : undefined;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function () {
+              return currentFetch;
+            },
+            set: function (nextFetch) {
+              currentFetch = nextFetch;
+            },
+          });
+        } catch (_e) {
+          // Ignore if environment disallows redefining fetch
+        }
+      })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F8EDFF" />
