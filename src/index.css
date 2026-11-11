@@ -2828,3 +2828,11 @@ img {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(-22px, 5px, 0); }
 }
+
+@keyframes hero-star-twinkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.92) rotate(0deg); }
+  50% { opacity: 0.95; transform: scale(1.08) rotate(8deg); }
+}
+.hero-cloud-slow { animation: hero-cloud-drift-slow 9s ease-in-out infinite; }
+.hero-cloud-fast { animation: hero-cloud-drift-fast 7s ease-in-out infinite; }
+.hero-star-twinkle { animation: hero-star-twinkle 3.6s ease-in-out infinite; }
