@@ -102,3 +102,12 @@ test('HERO_SLIDES first slide uses Grand Opening book showcase artwork', () => {
   assert.equal(HERO_SLIDES[0].image, '/assets/hero-book-showcase.png');
   assert.ok(HERO_SLIDES[0].badge.includes('GRAND OPENING'));
 });
+
+test('BOOKS catalog contains all four cozy coloring books with valid cover paths', () => {
+  assert.equal(BOOKS.length, 4);
+  for (const book of BOOKS) {
+    assert.ok(book.cover.startsWith('/assets/'));
+    assert.ok(book.pages.length >= 3);
+  }
+});
+
