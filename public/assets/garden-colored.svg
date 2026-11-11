@@ -26,5 +26,15 @@
       <stop offset="100%" stop-color="#F3D8E6"/>
     </linearGradient>
     <linearGradient id="meadowGround" x1="0%" y1="0%" x2="0%" y2="100%">
-</defs>
+      <stop offset="0%" stop-color="#D4EBBF"/>
+      <stop offset="55%" stop-color="#AED494"/>
+      <stop offset="100%" stop-color="#87B56C"/>
+    </linearGradient>
+    <linearGradient id="houseWallLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF6E6"/>
+      <stop offset="60%" stop-color="#F7E2C6"/>
+      <stop offset="100%" stop-color="#E5C49E"/>
+    </linearGradient>
+    <linearGradient id="houseWallRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8EC"/>
 </svg>
