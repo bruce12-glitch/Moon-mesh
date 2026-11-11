@@ -1,14 +1,11 @@
-# Build outputs
-.shots/
 node_modules/
-
-# Temporary preview files
-*.html
-!index.html
-!404.html
-*.png
-*.webp
-
-# OS files
+build/
+dist/
+coverage/
 .DS_Store
-Thumbs.db
+*.log
+.env*
+!.env.example
+
+# AI Studio temp cache / screenshots
+.aistudio/
