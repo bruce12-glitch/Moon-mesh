@@ -51,7 +51,7 @@ const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
   sprout: {
     pos: [0.35, 2.05, 2.75],
     target: [0.32, 1.05, 0.18],
-    label: 'Sprout (0.30)',
+    label: 'Sprout',
     badge: 'Sprout · Leaf Coaster, Cocoa & Coloring Book',
   },
   window: {
