@@ -132,7 +132,7 @@ export const HERO_SLIDES: HeroSlide[] = [
       'Miso put on a strawberry beret and Sprout tucked into fresh tulips just for you! Grab a warm mug and color a page right in your browser.',
     bgColor: '#FEEBF0',
     themeClass: 'slide-treat',
-    image: '/assets/hero-coloring-treat.jpg',
+    image: '/assets/hero-coloring-treat.webp',
     imageAlt:
       'Miso the cream kitten wearing a red strawberry beret with a blue striped ribbon bow, holding three tulips with Sprout the snail peeking out.',
     layout: 'centered',
@@ -147,7 +147,7 @@ export const HERO_SLIDES: HeroSlide[] = [
       'Pull up a cushion with Miso, Pip, Plum, and Sprout! Try our free interactive coloring page, print a sheet for the kitchen table, or hop into Moon Mail.',
     bgColor: '#FFF3C8',
     themeClass: 'slide-join',
-    image: '/assets/hero-come-join-us.jpg',
+    image: '/assets/hero-come-join-us.webp',
     imageAlt:
       'Miso the cream kitten, Plum the lavender bunny, Pip the golden star, and Sprout the snail hugging a giant coral-red heart that says Come Join Us.',
     layout: 'centered',
