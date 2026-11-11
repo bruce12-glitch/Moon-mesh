@@ -3639,3 +3639,708 @@ img {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 50.5%, #000 56%, #000 97%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, transparent 50.5%, #000 56%, #000 97%, transparent 100%);
 }
+
+/* ==========================================================================
+   COCO WYO-STYLE 3D BOOK STAGE SHOWCASE (HERO & BOOKSHELF)
+   ========================================================================== */
+.cocowyo-hero-stage {
+  position: relative;
+  width: 100%;
+  min-height: clamp(540px, 44vw, 640px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.cocowyo-curtain-backdrop {
+  position: absolute;
+  inset: 0 0 35% 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 85% 95% at 52% 28%, rgba(255, 255, 255, 0.94) 0%, rgba(246, 241, 234, 0.45) 100%),
+    repeating-linear-gradient(
+      90deg,
+      #fbf9f5 0px,
+      #ffffff 42px,
+      #f2ede6 78px,
+      #faf7f2 118px,
+      #ebe4db 150px,
+      #fbf9f5 190px
+    );
+}
+
+.cocowyo-wood-table {
+  position: absolute;
+  inset: 65% 0 0 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, #744929 0px, #9f6d43 5px, #b07d52 24%, #9b6940 62%, #865632 100%);
+  box-shadow: inset 0 8px 18px rgba(48, 26, 12, 0.25);
+}
+
+.cocowyo-wood-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #5d381e, #7b4e2d 50%, #5d381e);
+}
+
+.cocowyo-wood-grain {
+  position: absolute;
+  inset: 5px 0 0 0;
+  opacity: 0.36;
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 16px,
+      rgba(58, 32, 14, 0.24) 17px,
+      transparent 19px,
+      rgba(255, 226, 192, 0.14) 28px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(62, 34, 15, 0.08) 0px,
+      transparent 140px,
+      rgba(62, 34, 15, 0.12) 280px
+    );
+}
+
+.cocowyo-stage-drape {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(64px, 7.5vw, 118px);
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 18px rgba(43, 27, 25, 0.22));
+}
+
+.cocowyo-stage-drape.drape-left {
+  left: 0;
+}
+
+.cocowyo-stage-drape.drape-right {
+  right: 0;
+}
+
+.cocowyo-stage-inner {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  align-items: center;
+  gap: 28px;
+  padding-block: 26px 22px;
+  padding-inline: clamp(28px, 5vw, 72px);
+}
+
+.cocowyo-book-pedestal {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 450px;
+  padding-bottom: 18px;
+}
+
+.cocowyo-new-order-badge {
+  position: absolute;
+  top: 22px;
+  left: 2%;
+  z-index: 5;
+  animation: hero-gentle-bob 4.4s ease-in-out infinite;
+}
+
+.cocowyo-table-marker.marker-left {
+  position: absolute;
+  left: -4%;
+  bottom: 36px;
+  width: 158px;
+  height: auto;
+  z-index: 3;
+}
+
+.cocowyo-open-sign {
+  position: absolute;
+  left: 7%;
+  bottom: 8px;
+  width: 104px;
+  height: auto;
+  z-index: 5;
+}
+
+.cocowyo-3d-book-btn {
+  position: relative;
+  z-index: 4;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: inline-block;
+  margin-left: 44px;
+}
+
+.cocowyo-3d-book {
+  --spine-bg: #f6d056;
+  --spine-ink: #3b2314;
+  position: relative;
+  display: block;
+  width: clamp(290px, 28vw, 390px);
+  aspect-ratio: 4 / 3.35;
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateY(18deg) rotateX(2deg) rotateZ(-1deg);
+  transition: transform 0.42s var(--ease-smooth);
+}
+
+.cocowyo-3d-book.book-night,
+.cocowyo-3d-book.book-garden,
+.cocowyo-3d-book.book-space {
+  width: clamp(240px, 22vw, 310px);
+  aspect-ratio: 3 / 3.85;
+}
+
+.cocowyo-3d-book-btn:hover .cocowyo-3d-book {
+  transform: perspective(1200px) rotateY(12deg) rotateX(0deg) rotateZ(0deg) translateY(-6px) scale(1.02);
+}
+
+.book-table-shadow {
+  position: absolute;
+  left: -16px;
+  right: 6px;
+  bottom: -16px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(36, 18, 6, 0.52) 0%, rgba(36, 18, 6, 0.22) 55%, transparent 78%);
+  filter: blur(4px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.book-3d-spine {
+  position: absolute;
+  top: -4px;
+  bottom: 4px;
+  left: -24px;
+  width: 25px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0%, rgba(255, 255, 255, 0.3) 28%, var(--spine-bg) 62%, rgba(0, 0, 0, 0.18) 100%);
+  background-color: var(--spine-bg);
+  color: var(--spine-ink);
+  border: 2.5px solid #2b1b19;
+  border-right-width: 1.5px;
+  border-radius: 4px 0 0 4px;
+  transform-origin: right center;
+  transform: skewY(10deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 2px;
+  overflow: hidden;
+  z-index: 3;
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.spine-emblem {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.spine-brand {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: "Pacifico", cursive;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.spine-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: "Fredoka", sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 52%;
+}
+
+.spine-no {
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.book-3d-pages-top {
+  position: absolute;
+  top: -10px;
+  left: -12px;
+  right: 4px;
+  height: 11px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #ffffff 0px,
+      #ffffff 2px,
+      #e6dfd5 3px,
+      #faf6f0 4px
+    );
+  border: 2.2px solid #2b1b19;
+  border-bottom: 0;
+  border-radius: 3px 4px 0 0;
+  transform-origin: bottom right;
+  transform: skewX(64deg);
+  z-index: 2;
+}
+
+.book-3d-front {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px 10px 10px 2px;
+  border: 2.8px solid #2b1b19;
+  background: #fffdf7;
+  overflow: hidden;
+  z-index: 3;
+  box-shadow:
+    4px 0 0 #fffdf9,
+    6px 0 0 #cfc5b9,
+    12px 18px 28px rgba(38, 22, 10, 0.32);
+}
+
+.book-3d-fullbleed-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.book-3d-structured-cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--cover);
+  container-type: inline-size;
+}
+
+.book-3d-structured-cover img {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 60%;
+  background: var(--art-bg);
+  object-fit: cover;
+}
+
+.book-3d-hinge-crease {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(35, 24, 21, 0.22) 0%,
+    rgba(255, 255, 255, 0.38) 45%,
+    rgba(35, 24, 21, 0.08) 78%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Right Side of Coco Wyo Hero Stage */
+.cocowyo-stage-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 4;
+}
+
+.cocowyo-collab-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.88);
+  border: 1.5px solid rgba(43, 27, 25, 0.12);
+  margin-bottom: 10px;
+}
+
+.collab-script {
+  font-family: "Pacifico", cursive;
+  font-size: clamp(20px, 2.2vw, 27px);
+  color: #2b1b19;
+}
+
+.collab-x {
+  font-weight: 800;
+  font-size: 16px;
+  color: #6e5a54;
+}
+
+.collab-divider {
+  width: 1.5px;
+  height: 28px;
+  background: #2b1b19;
+  opacity: 0.35;
+}
+
+.collab-imprint {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-family: "Fredoka", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #2b1b19;
+}
+
+.collab-imprint small {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6e5a54;
+}
+
+.cocowyo-grand-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.grand-block-line {
+  display: block;
+  font-family: "DynaPuff", "Fredoka", system-ui, sans-serif;
+  font-size: clamp(26px, 3.1vw, 42px);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #231815;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.9);
+}
+
+.grand-script-line {
+  display: block;
+  font-family: "Pacifico", cursive;
+  font-size: clamp(34px, 4.1vw, 56px);
+  font-weight: 400;
+  line-height: 1.12;
+  color: #d84b6b;
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.92);
+}
+
+.cocowyo-stage-subtitle {
+  max-width: 44ch;
+  margin-top: 10px;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: rgba(255, 253, 249, 0.88);
+  color: #3a2b26;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.cocowyo-book-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.cocowyo-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 2px solid #2b1b19;
+  background: #fffdf8;
+  color: #2b1b19;
+  font-size: 12px;
+  font-weight: 800;
+  transition: transform 0.2s var(--ease-smooth), background-color 0.2s var(--ease-smooth);
+}
+
+.cocowyo-switch-pill:hover {
+  transform: translateY(-2px);
+  background: #fff5d6;
+}
+
+.cocowyo-switch-pill.is-active {
+  background: #2b1b19;
+  color: #fffdf8;
+  box-shadow: 0 4px 10px rgba(43, 27, 25, 0.22);
+}
+
+.switch-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+
+.cocowyo-table-celebration {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.cocowyo-ribbon-stanchions {
+  width: 156px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.cocowyo-serving-bubble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 2.5px solid #2b1b19;
+  background: #fff6d6;
+  color: #2b1b19;
+  font-family: "Fredoka", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  transform: rotate(3deg);
+  box-shadow: 0 4px 0 rgba(43, 27, 25, 0.16);
+}
+
+.cocowyo-table-marker.marker-right {
+  width: 128px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.book-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transition: transform 0.38s var(--ease-smooth);
+}
+
+.book-picnic {
+  --mat: #fdf6e6;
+  --cover: #fbe39c;
+  --cover-text: #3b2314;
+  --cover-accent: #c84648;
+  --art-bg: #fff5d6;
+  --tilt: -1.5deg;
+  --card-hover-tilt: -0.8deg;
+}
+
+.book-night {
+  --mat: #f3eef8;
+  --cover: #d4c6e7;
+  --cover-text: #342e42;
+  --cover-accent: #6c557b;
+  --art-bg: #e6d9f6;
+  --tilt: -2deg;
+  --card-hover-tilt: -1.2deg;
+}
+
+.book-garden {
+  --mat: #f0f3e9;
+  --cover: #c4d7b7;
+  --cover-text: #354831;
+  --cover-accent: #4a6641;
+  --art-bg: #eaf6d9;
+  --tilt: 1.5deg;
+  --card-hover-tilt: 1deg;
+}
+
+.book-space {
+  --mat: #fcf1e8;
+  --cover: #f2c3b1;
+  --cover-text: #563e3c;
+  --cover-accent: #9d5a58;
+  --art-bg: #ffd9c8;
+  --tilt: -1.5deg;
+  --card-hover-tilt: -1deg;
+}
+
+.book-mat {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1.5px solid rgba(50, 47, 55, 0.1);
+  background: var(--mat);
+  transition: transform 0.38s var(--ease-smooth), box-shadow 0.38s var(--ease-smooth);
+}
+
+/* Coco Wyo Tabletop Stage inside every Bookshelf Card */
+.cocowyo-shelf-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.cocowyo-shelf-curtains {
+  position: absolute;
+  inset: 0 0 28% 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.85), transparent 75%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.62) 0px,
+      rgba(255, 255, 255, 0.9) 22px,
+      rgba(235, 228, 218, 0.48) 44px,
+      rgba(255, 255, 255, 0.62) 66px
+    );
+}
+
+.cocowyo-shelf-wood {
+  position: absolute;
+  inset: 72% 0 0 0;
+  z-index: 1;
+  border-top: 3px solid #5d381e;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 9px,
+      rgba(52, 28, 12, 0.2) 10px,
+      transparent 12px
+    ),
+    linear-gradient(180deg, #8c5b36 0%, #a8744a 32%, #8e5d37 100%);
+  box-shadow: inset 0 4px 10px rgba(42, 22, 10, 0.22);
+}
+
+.shelf-mini-marker {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 54px;
+  height: 11px;
+  border-radius: 4px;
+  border: 2px solid #2b1b19;
+  background: linear-gradient(90deg, var(--marker-cap, #e86a78) 0 32%, #fffdf9 32% 100%);
+  transform: rotate(-14deg);
+  box-shadow: 0 3px 4px rgba(36, 18, 8, 0.28);
+}
+
+.book-art {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 24px 16px 32px 32px;
+}
+
+.cocowyo-3d-book-card,
+.cocowyo-3d-book-card.book-night,
+.cocowyo-3d-book-card.book-garden,
+.cocowyo-3d-book-card.book-space {
+  width: 74%;
+  max-width: 192px;
+  aspect-ratio: 3 / 3.35;
+  transform: perspective(900px) rotateY(18deg) rotateX(2deg) rotateZ(-1deg);
+}
+
+.cocowyo-3d-book-card.book-picnic {
+  width: 84%;
+  max-width: 224px;
+  aspect-ratio: 4 / 3.35;
+}
+
+.cocowyo-3d-book-card .book-3d-spine {
+  left: -19px;
+  width: 20px;
+  padding: 6px 1px;
+}
+
+.cocowyo-3d-book-card .spine-brand {
+  font-size: 8px;
+}
+
+.cocowyo-3d-book-card .spine-title {
+  font-size: 7.5px;
+}
+
+.cocowyo-3d-book-card .book-3d-pages-top {
+  top: -8px;
+  left: -9px;
+  height: 9px;
+}
+
+.cover-brand, .cover-no {
+  position: absolute;
+  z-index: 2;
+  top: 5%;
+  color: var(--cover-text);
+  font-size: 4cqw;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cover-brand { left: 7%; }
+.cover-no { right: 7%; font-size: 3.5cqw; }
+
+.cover-title {
+  position: absolute;
+  z-index: 2;
+  top: 13%;
+  left: 7%;
+  right: 5%;
+  color: var(--cover-text);
+  font: 700 12.2cqw/1.05 "DynaPuff", "Fredoka", sans-serif;
+  letter-spacing: -0.015em;
+}
+
+.cover-title em {
+  color: var(--cover-accent);
+  font-style: normal;
+}
+
+.cover-edition {
+  position: absolute;
+  z-index: 2;
+  bottom: 3%;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: #fffcf0;
+  color: var(--ink);
+  font-size: 3cqw;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
