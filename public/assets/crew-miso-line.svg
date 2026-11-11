@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="misoTitle">
+  <title id="misoTitle">Miso the kitten</title>
+  <g stroke="#241C2E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="#FFFDF7" d="M57 76C48 58 45 34 50 26c6-7 26 1 42 20Z"/>
+    <path fill="#FFFDF7" stroke-width="4" d="M59 62C54 50 53 38 56 33c3-4 12 1 20 12Z"/>
+    <path fill="#FFFDF7" d="M143 76c9-18 12-42 7-50-6-7-26 1-42 20Z"/>
+    <path fill="#FFFDF7" stroke-width="4" d="M141 62c5-12 6-24 3-29-3-4-12 1-20 12Z"/>
+    <path fill="#FFFDF7" d="M45 116c0-38 24-62 55-62s55 24 55 62c0 42-24 68-55 68s-55-26-55-68Z"/>
+    <path fill="#241C2E" stroke="none" d="M68 107c6-8 17-8 23 0 4 6 2 17-2 22-2 4-6 6-9 6s-7-2-9-6c-4-5-6-16-3-22Zm50 0c6-8 17-8 23 0 4 6 2 17-2 22-2 4-6 6-9 6s-7-2-9-6c-4-5-6-16-3-22Z"/>
+    <circle cx="78" cy="111" r="3.5" fill="#FFFDF7" stroke="none"/>
+    <circle cx="128" cy="111" r="3.5" fill="#FFFDF7" stroke="none"/>
+    <path fill="#FFFDF7" d="M90 127c4-5 16-5 20 0-2 8-7 11-10 11s-8-3-10-11Z"/>
+    <path fill="none" stroke-width="3" d="M100 138c-4 6-10 8-16 4m16-4c4 6 10 8 16 4"/>
+    <path fill="none" stroke="#241C2E" stroke-width="4" d="M61 124H49m13 11-12 3m89-14h12m-13 11 12 3"/>
+    <path fill="#FFFDF7" stroke="none" opacity=".8" d="M64 124c5-2 9 0 10 5 1 4-2 7-6 6-4-1-5-4-4-11Zm72 0c-5-2-9 0-10 5-1 4 2 7 6 6 4-1 5-4 4-11Z"/>
+    <path fill="#FFFDF7" d="M54 188c18 10 56 11 80-1l-6 16c-20 10-48 9-66-1Z"/>
+    <path fill="#FFFDF7" d="M127 190c9-7 19-5 25 5-9 6-18 5-25-5Z"/>
+    <path fill="#FFFDF7" d="M119 192c2 4 5 6 9 6 4 0 7-2 9-6Z"/>
+  </g>
+</svg>
