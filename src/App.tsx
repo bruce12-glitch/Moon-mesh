@@ -15,7 +15,9 @@ import {
 import {
   validateMoonMailEmail,
   computeBookTiltAngles,
+  getForestAudioUiState,
 } from './utils/moonMeshLogic';
+import { forestAudio } from './utils/forestAudio';
 import { HeroCarousel } from './components/HeroCarousel';
 import { ThreeMoonScene } from './components/ThreeMoonScene';
 import { ColoringStudioModal } from './components/ColoringStudioModal';
@@ -40,6 +42,22 @@ export default function App() {
   }>({ open: false, mode: 'search' });
   const [activeBookPreview, setActiveBookPreview] = useState<BookItem | null>(null);
   const [activePeekPreview, setActivePeekPreview] = useState<PeekItem | null>(null);
+
+  // Global Ambient Forest Sound state (synchronized with 3D Moon Picnic scene)
+  const [isForestSoundOn, setIsForestSoundOn] = useState<boolean>(() =>
+    forestAudio.getIsPlaying()
+  );
+
+  useEffect(() => {
+    return forestAudio.subscribe((playing) => {
+      setIsForestSoundOn(playing);
+    });
+  }, []);
+
+  const handleToggleForestSound = () => {
+    forestAudio.toggle();
+  };
+  const forestAudioUi = getForestAudioUiState(isForestSoundOn);
 
   // FAQ open item state
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
@@ -102,20 +120,24 @@ export default function App() {
     return () => observer.disconnect();
   }, [clipPausedByUser]);
 
-  // Book cover 3D pointer tilt handlers
+  // Book cover 3D pointer tilt & specular paper sheen handlers
   const handleBookPointerMove = (e: React.PointerEvent<HTMLAnchorElement>) => {
     if (e.pointerType === 'touch') return;
     const bounds = e.currentTarget.getBoundingClientRect();
     const normX = (e.clientX - bounds.left) / bounds.width - 0.5;
     const normY = (e.clientY - bounds.top) / bounds.height - 0.5;
-    const { rx, ry } = computeBookTiltAngles(normX, normY);
+    const { rx, ry } = computeBookTiltAngles(normX, normY, 5, 7);
     e.currentTarget.style.setProperty('--book-rx', rx);
     e.currentTarget.style.setProperty('--book-ry', ry);
+    e.currentTarget.style.setProperty('--sheen-x', `${Math.round((normX + 0.5) * 100)}%`);
+    e.currentTarget.style.setProperty('--sheen-y', `${Math.round((normY + 0.5) * 100)}%`);
   };
 
   const handleBookPointerLeave = (e: React.PointerEvent<HTMLAnchorElement>) => {
     e.currentTarget.style.removeProperty('--book-rx');
     e.currentTarget.style.removeProperty('--book-ry');
+    e.currentTarget.style.removeProperty('--sheen-x');
+    e.currentTarget.style.removeProperty('--sheen-y');
   };
 
   // Moon Mail submit
@@ -293,7 +315,75 @@ export default function App() {
             />
           </a>
 
-          <div className="utility-right" aria-hidden="true" />
+          <div className="utility-right">
+            <button
+              id="global-forest-audio-toggle"
+              type="button"
+              className={`header-audio-toggle ${isForestSoundOn ? 'is-playing' : 'is-muted'}`}
+              aria-pressed={isForestSoundOn}
+              aria-label={forestAudioUi.ariaLabel}
+              title={forestAudioUi.ariaLabel}
+              onClick={handleToggleForestSound}
+            >
+              <span className="header-audio-icon" aria-hidden="true">
+                {isForestSoundOn ? (
+                  <svg viewBox="0 0 24 24" className="icon">
+                    <path
+                      d="M11 5L6 9H2v6h4l5 4V5z"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M15.54 8.46a5 5 0 0 1 0 7.07"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M19.07 4.93a10 10 0 0 1 0 14.14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="icon">
+                    <path
+                      d="M11 5L6 9H2v6h4l5 4V5z"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinejoin="round"
+                    />
+                    <line
+                      x1="22"
+                      y1="9"
+                      x2="16"
+                      y2="15"
+                      stroke="currentColor"
+                      strokeWidth="2.3"
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="16"
+                      y1="9"
+                      x2="22"
+                      y2="15"
+                      stroke="currentColor"
+                      strokeWidth="2.3"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                )}
+              </span>
+              <span className="header-audio-label">{forestAudioUi.buttonLabel}</span>
+              <span className="header-audio-badge">{forestAudioUi.statusBadge}</span>
+            </button>
+          </div>
         </div>
 
         <nav id="main-nav" className="main-nav shell" aria-label="Main">
@@ -461,34 +551,16 @@ export default function App() {
                           aria-hidden="true"
                           className="book-stage-prop prop-alcohol-marker"
                         />
-                        <span
-                          className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
-                          style={
-                            {
-                              '--spine-bg': book.spineColor,
-                              '--spine-ink': book.spineTextColor,
-                            } as React.CSSProperties
-                          }
-                        >
-                          <span className="book-table-shadow" aria-hidden="true" />
-                          <span className="book-3d-spine" aria-hidden="true">
-                            <span className="spine-emblem">✦</span>
-                            <span className="spine-brand">Moon Mesh</span>
-                            <span className="spine-title">{book.title}</span>
-                            <span className="spine-no">{book.number}</span>
-                          </span>
-                          <span className="book-3d-pages-top" aria-hidden="true" />
-                          <span className="book-3d-front">
-                            <img
-                              src={book.coverImage}
-                              width={680}
-                              height={650}
-                              alt={book.title}
-                              loading="lazy"
-                              className="book-3d-fullbleed-img"
-                            />
-                            <span className="book-3d-hinge-crease" aria-hidden="true" />
-                          </span>
+                        <span className="standing-3d-book-figure">
+                          <img
+                            src="/assets/standing-3d-book.webp"
+                            width={1100}
+                            height={1040}
+                            alt={`${book.title} — 3D hardcover storybook edition`}
+                            loading="lazy"
+                            className="standing-3d-book-img"
+                          />
+                          <span className="standing-3d-book-sheen" aria-hidden="true" />
                         </span>
                       </span>
                     </a>
@@ -587,8 +659,8 @@ export default function App() {
                   isOpen={!is3DOpen}
                   embedded={true}
                   onClose={() => {}}
-                  onOpenColoringStudio={() => setIsStudioOpen(true)}
-                  onExpandFullscreen={() => setIs3DOpen(true)}
+                  isForestSoundOn={isForestSoundOn}
+                  onToggleForestSound={handleToggleForestSound}
                 />
               </div>
             </div>
@@ -1097,7 +1169,8 @@ export default function App() {
       <ThreeMoonScene
         isOpen={is3DOpen}
         onClose={() => setIs3DOpen(false)}
-        onOpenColoringStudio={() => setIsStudioOpen(true)}
+        isForestSoundOn={isForestSoundOn}
+        onToggleForestSound={handleToggleForestSound}
       />
     </>
   );
