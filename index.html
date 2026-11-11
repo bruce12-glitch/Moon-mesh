@@ -18,6 +18,46 @@
   <link rel="preload" href="assets/nunito.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="assets/fraunces.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
+
+  <div id="three-picnic-modal" class="three-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="three-modal-title" hidden>
+    <div id="three-canvas-mount" class="three-canvas-mount"></div>
+    <div class="three-top-bar">
+      <div class="three-title-badge">
+        <p class="three-kicker">Moon Mesh 3D Studio · The Little Moon Picnic</p>
+        <h2 id="three-modal-title">Miso, Pip, Plum &amp; Sprout Diorama</h2>
+      </div>
+      <div class="three-top-actions">
+        <button type="button" class="three-btn-gold" data-three-color>Color Miso’s Page</button>
+        <button type="button" class="three-btn-close" data-close-3d aria-label="Close 3D Moon Picnic Studio">Close 3D View ✕</button>
+      </div>
+    </div>
+    <div id="three-bottom-dock" class="three-bottom-dock">
+      <div class="three-dock-toggle-row">
+        <button type="button" class="three-dock-toggle" data-toggle-3d-dock aria-expanded="true">▾ Hide Controls (H)</button>
+      </div>
+      <div class="three-dock-panel">
+        <div class="three-dock-group" role="group" aria-label="Camera views">
+          <span class="three-dock-label">Camera:</span>
+          <button type="button" class="three-chip is-active" data-cam-preset="overview">Picnic Table</button>
+          <button type="button" class="three-chip" data-cam-preset="miso">Miso &amp; Bun</button>
+          <button type="button" class="three-chip" data-cam-preset="sprout">Sprout’s Berry</button>
+          <button type="button" class="three-chip" data-cam-preset="window">Moon Window</button>
+        </div>
+        <label class="three-dock-group">
+          <span class="three-dock-label">Scene Spread:</span>
+          <input type="range" min="0" max="100" value="0" data-three-spread aria-label="Scene layer spread">
+          <span class="three-spread-val" data-three-spread-val>0%</span>
+        </label>
+        <div class="three-dock-group" role="group" aria-label="Lighting mood">
+          <span class="three-dock-label">Light:</span>
+          <button type="button" class="three-chip is-active" data-light-mood="moonlight">Moonlit</button>
+          <button type="button" class="three-chip" data-light-mood="afternoon">Cozy Nook</button>
+          <button type="button" class="three-chip" data-light-mood="sunset">Berry Glow</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -63,6 +103,7 @@
       <a href="#books">Our books</a>
       <a href="#peek">Peek inside</a>
       <a href="#story">Our little world</a>
+      <button type="button" class="nav-3d-btn" data-open-3d>3D Moon Picnic</button>
       <a href="#color">Free page</a>
       <a href="#faq">FAQs</a>
       <a href="https://www.amazon.com/s?k=Moon+Mesh+coloring+books" class="amazon-nav" target="_blank" rel="noopener noreferrer">Shop on Amazon <span aria-hidden="true">↗</span></a>
@@ -93,7 +134,7 @@
 
       <div class="hero-slides-stage">
         <!-- Slide 1: Make the moon your color -->
-        <div class="hero-slide-panel layout-split is-active" role="group" aria-roledescription="slide" aria-label="1 of 4: Make the moon your color." data-hero-slide="0" data-bg="#FDF3E6" data-ambient-key="moon-color">
+        <div class="hero-slide-panel layout-split is-active" role="group" aria-roledescription="slide" aria-label="1 of 4: Make the moon your color." data-hero-slide="0" data-bg="#FAF2E9" data-ambient-key="moon-color">
           <div class="hero-art">
             <img class="hero-float-art" src="assets/color-together.webp" width="1600" height="900" fetchpriority="high" alt="Miso the kitten and Plum the rabbit share a coloring book at a little table beneath a moonlit window. Pip and Sprout keep them company.">
           </div>
@@ -112,7 +153,7 @@
         </div>
 
         <!-- Slide 2: READY FOR a little COLORING TREAT? -->
-        <div class="hero-slide-panel layout-split" role="group" aria-roledescription="slide" aria-label="2 of 4: READY FOR a little COLORING TREAT?" aria-hidden="true" data-hero-slide="1" data-bg="#FDE8EF" data-ambient-key="coloring-treat">
+        <div class="hero-slide-panel layout-split" role="group" aria-roledescription="slide" aria-label="2 of 4: READY FOR a little COLORING TREAT?" aria-hidden="true" data-hero-slide="1" data-bg="#FEDDE4" data-ambient-key="coloring-treat">
           <div class="hero-art">
             <img class="hero-float-art" src="assets/hero-coloring-treat.jpg" width="1600" height="900" loading="lazy" alt="Miso the cream kitten with a blue striped ribbon bow and Plum the lavender rabbit in a strawberry cap holding three tulips beside Sprout the snail.">
           </div>
@@ -135,7 +176,7 @@
         </div>
 
         <!-- Slide 3: COME JOIN US -->
-        <div class="hero-slide-panel layout-centered" role="group" aria-roledescription="slide" aria-label="3 of 4: COME JOIN US" aria-hidden="true" data-hero-slide="2" data-bg="#FCECA8" data-ambient-key="come-join-us">
+        <div class="hero-slide-panel layout-centered" role="group" aria-roledescription="slide" aria-label="3 of 4: COME JOIN US" aria-hidden="true" data-hero-slide="2" data-bg="#FBE69C" data-ambient-key="come-join-us">
           <div class="hero-centered-inner shell">
             <div class="hero-centered-art-wrap">
               <img class="hero-centered-img" src="assets/hero-come-join-us.jpg" width="1600" height="900" loading="lazy" alt="Miso, Pip, Plum, and Sprout hugging a giant coral-red heart that says Come Join Us on a warm butter-yellow raindrop background.">
@@ -151,7 +192,7 @@
         </div>
 
         <!-- Slide 4: The Little Moon Picnic -->
-        <div class="hero-slide-panel layout-split" role="group" aria-roledescription="slide" aria-label="4 of 4: The Little Moon Picnic." aria-hidden="true" data-hero-slide="3" data-bg="#F8EDFF" data-ambient-key="moon-color">
+        <div class="hero-slide-panel layout-split" role="group" aria-roledescription="slide" aria-label="4 of 4: The Little Moon Picnic." aria-hidden="true" data-hero-slide="3" data-bg="#F4E7FC" data-ambient-key="moon-color">
           <div class="hero-art">
             <img class="hero-float-art" src="assets/hero-moon-picnic.jpg" width="1600" height="900" loading="lazy" alt="Miso passes a warm bun to Plum at a low wooden picnic table under an arched crescent-moon window while Pip and Sprout share berries.">
           </div>
@@ -290,6 +331,26 @@
             <p id="pocket-sized-planet-details"><strong>Pocket-Sized Planet.</strong> Climb aboard Miso’s little rocket for ringed planets and twisty comets.</p>
           </div>
         </noscript>
+      </div>
+    </section>
+
+
+    <section class="three-callout" id="three-studio" aria-labelledby="three-callout-title">
+      <div class="shell">
+        <div class="three-callout-card">
+          <div>
+            <p class="eyebrow" style="color:#f5c95d"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg> Interactive 3D Story World</p>
+            <h2 id="three-callout-title" style="color:#fff4db">Step inside The Little Moon Picnic in 3D.</h2>
+            <p style="margin-top:12px;max-width:48ch;color:#e2d6f3;font-size:16px">Inspect Miso’s warm bun handoff, Plum’s cushion, Pip’s spotted berry bowl, and Sprout’s leaf tray from any camera angle under studio moonlight.</p>
+            <div class="hero-actions" style="margin-top:22px">
+              <button type="button" class="button button-yellow" data-open-3d>Launch 3D Moon Picnic <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></button>
+              <a class="button button-paper" href="#color" data-open-studio>Color Miso’s Page</a>
+            </div>
+          </div>
+          <div class="three-callout-preview">
+            <img src="assets/hero-moon-picnic.jpg" width="1376" height="768" loading="lazy" alt="Miso, Pip, Plum, and Sprout sharing an indoor picnic beneath a crescent window">
+          </div>
+        </div>
       </div>
     </section>
 

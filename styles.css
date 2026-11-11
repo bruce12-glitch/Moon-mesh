@@ -3432,3 +3432,219 @@ img {
   .hero-slide-panel .hero-art img { left: 0; width: 100%; max-height: 310px; object-fit: contain; }
   .hero-treat-heading { align-items: center; }
 }
+
+
+/* Seamless Hero Edge Feathering, Scroll Reveal & 3D Moon Picnic Studio */
+.hero-art img {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 18%, #000 97%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 18%, #000 97%, transparent 100%);
+}
+
+.hero-centered-img {
+  -webkit-mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 76%, transparent 100%);
+  mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, #000 76%, transparent 100%);
+}
+
+.main-nav button.nav-3d-btn {
+  padding: 6px 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: var(--cursor-pointer);
+  transition: color 0.2s var(--ease-smooth);
+}
+
+.main-nav button.nav-3d-btn:hover {
+  color: var(--red);
+}
+
+.three-callout {
+  padding: 28px 0 44px;
+  background: var(--paper);
+}
+
+.three-callout-card {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 52px;
+  border-radius: 24px;
+  background: #251c33;
+  color: #fff4db;
+  border: 1px solid #44355b;
+  transition: transform 0.35s var(--ease-smooth), box-shadow 0.35s var(--ease-smooth);
+}
+
+.three-callout-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(37, 28, 51, 0.16);
+}
+
+.three-callout-preview {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #52416d;
+  background: #f8edff;
+}
+
+.three-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #231c30;
+  color: #fff4db;
+}
+
+.three-canvas-mount {
+  width: 100%;
+  height: 100%;
+}
+
+.three-top-bar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.three-title-badge {
+  pointer-events: auto;
+  padding: 10px 16px;
+  border-radius: 16px;
+  border: 1px solid #4a3d5e;
+  background: rgba(34, 27, 42, 0.92);
+}
+
+.three-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f5c95d;
+}
+
+.three-title-badge h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff4db;
+}
+
+.three-top-actions {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.three-btn-gold {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: #f5c95d;
+  color: #251c2d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.three-btn-close {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #5b4d70;
+  background: rgba(34, 27, 42, 0.92);
+  color: #fff4db;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.three-bottom-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 10;
+  width: min(920px, 94vw);
+  margin-inline: auto;
+  transition: transform 0.3s var(--ease-smooth);
+}
+
+.three-bottom-dock.is-collapsed {
+  transform: translateY(calc(100% - 32px));
+}
+
+.three-dock-toggle-row {
+  display: flex;
+  justify-content: center;
+}
+
+.three-dock-toggle {
+  padding: 4px 16px;
+  border-radius: 12px 12px 0 0;
+  border: 1px solid #4a3d5e;
+  border-bottom: 0;
+  background: rgba(34, 27, 42, 0.95);
+  color: #f5c95d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.three-dock-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 20px;
+  border-radius: 16px;
+  border: 1px solid #4a3d5e;
+  background: rgba(34, 27, 42, 0.95);
+  font-size: 12px;
+}
+
+.three-dock-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.three-dock-label {
+  font-weight: 700;
+  color: #cbbce0;
+}
+
+.three-chip {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 0;
+  background: #332940;
+  color: #fff4db;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.three-chip.is-active {
+  background: #f5c95d;
+  color: #251c2d;
+}
+
+@media (max-width: 900px) {
+  .three-callout-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 28px 22px;
+  }
+  .main-nav button.nav-3d-btn {
+    font-size: 14px;
+  }
+}

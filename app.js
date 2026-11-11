@@ -735,7 +735,7 @@
       const total = slides.length;
       activeSlideIdx = ((index % total) + total) % total;
       const current = slides[activeSlideIdx];
-      const bg = current.getAttribute("data-bg") || "#FDF3E6";
+      const bg = current.getAttribute("data-bg") || "#FAF2E9";
       const ambientKey = current.getAttribute("data-ambient-key") || "moon-color";
       heroCarousel.style.backgroundColor = bg;
 
@@ -832,6 +832,235 @@
 
     renderHeroSlide(0);
     restartHeroTimer();
+  }
+
+
+  /* --------------------------------------------------- 3D Moon Picnic Modal */
+  const threeModal = $("#three-picnic-modal");
+  const threeMount = $("#three-canvas-mount");
+  const open3DBtns = $("[data-open-3d]");
+  const close3DBtn = $("[data-close-3d]");
+  const threeColorBtn = $("[data-three-color]");
+  const toggleDockBtn = $("[data-toggle-3d-dock]");
+  const bottomDock = $("#three-bottom-dock");
+  const camButtons = $("[data-cam-preset]");
+  const moodButtons = $("[data-light-mood]");
+  const spreadInput = $("[data-three-spread]");
+  const spreadVal = $("[data-three-spread-val]");
+
+  if (threeModal && threeMount) {
+    let activePreset = "overview";
+    let activeMood = "moonlight";
+    let spreadPct = 0;
+    let orbitYaw = 0;
+    let orbitPitch = 0.25;
+    let isDragging3D = false;
+    let lastX = 0;
+    let lastY = 0;
+    let raf3D = 0;
+
+    const canvas = document.createElement("canvas");
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.display = "block";
+    threeMount.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+
+    function drawDiorama() {
+      if (threeModal.hidden || !ctx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = threeMount.clientWidth || window.innerWidth;
+      const h = threeMount.clientHeight || window.innerHeight;
+      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+      }
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      const bgColors = {
+        moonlight: ["#1d162b", "#2e2444"],
+        afternoon: ["#372c4d", "#51426d"],
+        sunset: ["#331d32", "#542f49"]
+      };
+      const [bgTop, bgBot] = bgColors[activeMood] || bgColors.moonlight;
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, bgTop);
+      grad.addColorStop(1, bgBot);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      const cx = w / 2 + Math.sin(orbitYaw) * 90 + (activePreset === "miso" ? 80 : activePreset === "sprout" ? -65 : 0);
+      const cy = h * 0.54 + (orbitPitch - 0.25) * 80 + (activePreset === "window" ? 95 : 0);
+      const zoom = activePreset === "overview" ? 1 : 1.24;
+      const spread = (spreadPct / 100) * 65;
+
+      ctx.translate(cx, cy);
+      ctx.scale(zoom, zoom);
+
+      const winY = -180 - spread * 0.6;
+      ctx.fillStyle = "#324573";
+      ctx.strokeStyle = "#b98556";
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.arc(0, winY, 88, Math.PI, 0, false);
+      ctx.lineTo(88, winY + 55);
+      ctx.lineTo(-88, winY + 55);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#f5c95d";
+      ctx.beginPath();
+      ctx.arc(-22, winY - 8, 34, 0.3, Math.PI * 1.7);
+      ctx.arc(-6, winY - 8, 25, Math.PI * 1.6, 0.4, true);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#fffdf7";
+      ctx.strokeStyle = "#cbbce0";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.ellipse(0, 82, 290, 92, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      const misoX = -145 - spread;
+      ctx.fillStyle = "#d87977";
+      ctx.beginPath();
+      ctx.ellipse(misoX, 82, 62, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fff4db";
+      ctx.strokeStyle = "#2c2523";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.ellipse(misoX, 34, 48, 52, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(misoX, -32, 54, 44, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#f5c95d";
+      ctx.fillRect(misoX - 38, -2, 76, 16);
+
+      const plumX = 145 + spread;
+      ctx.fillStyle = "#9db780";
+      ctx.beginPath();
+      ctx.ellipse(plumX, 82, 62, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#cbbce0";
+      ctx.beginPath();
+      ctx.ellipse(plumX, 36, 46, 50, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(plumX, -28, 50, 42, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#b98556";
+      ctx.beginPath();
+      ctx.ellipse(0, 38, 125, 42, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#9db780";
+      ctx.beginPath();
+      ctx.arc(46, 20 - spread * 0.4, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#d87977";
+      ctx.beginPath();
+      ctx.arc(18, 26 - spread * 0.4, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      const pipX = -95 - spread * 0.5;
+      const pipY = 92 + spread * 0.4;
+      ctx.fillStyle = "#f5c95d";
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 === 0 ? 32 : 16;
+        const a = (i * Math.PI) / 5 - Math.PI / 2;
+        const px = pipX + Math.cos(a) * r;
+        const py = pipY + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function open3DModal() {
+      threeModal.hidden = false;
+      drawDiorama();
+    }
+
+    function close3DModal() {
+      threeModal.hidden = true;
+      cancelAnimationFrame(raf3D);
+    }
+
+    open3DBtns.forEach((btn) => btn.addEventListener("click", open3DModal));
+    if (close3DBtn) close3DBtn.addEventListener("click", close3DModal);
+    if (threeColorBtn) {
+      threeColorBtn.addEventListener("click", () => {
+        close3DModal();
+        const openStudioBtn = $("#open-studio");
+        if (openStudioBtn) openStudioBtn.click();
+      });
+    }
+    if (toggleDockBtn && bottomDock) {
+      toggleDockBtn.addEventListener("click", () => {
+        const collapsed = bottomDock.classList.toggle("is-collapsed");
+        toggleDockBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        toggleDockBtn.textContent = collapsed ? "▴ Show Controls (H)" : "▾ Hide Controls (H)";
+      });
+    }
+    camButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activePreset = btn.getAttribute("data-cam-preset") || "overview";
+        camButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+        drawDiorama();
+      });
+    });
+    moodButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeMood = btn.getAttribute("data-light-mood") || "moonlight";
+        moodButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+        drawDiorama();
+      });
+    });
+    if (spreadInput) {
+      spreadInput.addEventListener("input", () => {
+        spreadPct = Number(spreadInput.value) || 0;
+        if (spreadVal) spreadVal.textContent = spreadPct + "%";
+        drawDiorama();
+      });
+    }
+    canvas.addEventListener("pointerdown", (e) => {
+      isDragging3D = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+    window.addEventListener("pointermove", (e) => {
+      if (!isDragging3D || threeModal.hidden) return;
+      orbitYaw += (e.clientX - lastX) * 0.008;
+      orbitPitch = Math.max(-0.4, Math.min(0.8, orbitPitch + (e.clientY - lastY) * 0.006));
+      lastX = e.clientX;
+      lastY = e.clientY;
+      drawDiorama();
+    });
+    window.addEventListener("pointerup", () => {
+      isDragging3D = false;
+    });
+    window.addEventListener("resize", () => {
+      if (!threeModal.hidden) drawDiorama();
+    });
   }
 
   syncSaved();
