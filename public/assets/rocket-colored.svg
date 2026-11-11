@@ -48,4 +48,38 @@
     <linearGradient id="gradGold" x1="15%" y1="8%" x2="88%" y2="92%">
       <stop offset="0%" stop-color="#FFF099"/>
       <stop offset="48%" stop-color="#F6D056"/>
+      <stop offset="82%" stop-color="#E5AA2E"/>
+      <stop offset="100%" stop-color="#C9861B"/>
+    </linearGradient>
+    <linearGradient id="gradCream" x1="18%" y1="6%" x2="85%" y2="94%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="52%" stop-color="#FFF3D9"/>
+      <stop offset="84%" stop-color="#F2D7B4"/>
+      <stop offset="100%" stop-color="#DFB98F"/>
+    </linearGradient>
+    <linearGradient id="gradPink" x1="15%" y1="10%" x2="85%" y2="92%">
+      <stop offset="0%" stop-color="#FFD0CF"/>
+      <stop offset="52%" stop-color="#F59E9D"/>
+      <stop offset="86%" stop-color="#DF7376"/>
+      <stop offset="100%" stop-color="#C4545A"/>
+    </linearGradient>
+    <linearGradient id="gradCoral" x1="14%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFACA3"/>
+      <stop offset="50%" stop-color="#E87D74"/>
+      <stop offset="85%" stop-color="#C9564E"/>
+      <stop offset="100%" stop-color="#A83C36"/>
+    </linearGradient>
+    <linearGradient id="gradSage" x1="15%" y1="8%" x2="86%" y2="94%">
+      <stop offset="0%" stop-color="#C6E0B4"/>
+      <stop offset="50%" stop-color="#94B57E"/>
+      <stop offset="85%" stop-color="#6D8F58"/>
+      <stop offset="100%" stop-color="#527040"/>
+    </linearGradient>
+    <linearGradient id="gradMint" x1="15%" y1="10%" x2="85%" y2="92%">
+      <stop offset="0%" stop-color="#EBF7E3"/>
+      <stop offset="54%" stop-color="#C8DEC0"/>
+      <stop offset="86%" stop-color="#9EBD93"/>
+      <stop offset="100%" stop-color="#7E9E73"/>
+    </linearGradient>
+    <linearGradient id="gradSky" x1="18%" y1="8%" x2="84%" y2="92%">
 </svg>
