@@ -46,3 +46,64 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const handleGoTo = useCallback((index: number) => {
     setActiveIndex(index);
   }, []);
+
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((prev) => getNextSlideIndex(prev, totalSlides, 1));
+    }, 7000);
+    return () => window.clearInterval(timer);
+  }, [isAutoPlaying, totalSlides]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      setIsAutoPlaying(false);
+      handleNext();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setIsAutoPlaying(false);
+      handlePrev();
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(deltaX) > 45) {
+      setIsAutoPlaying(false);
+      if (deltaX < 0) handleNext();
+      else handlePrev();
+    }
+    setTouchStartX(null);
+  };
+
+  const handleCtaClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    cta: HeroSlide['primaryCta']
+  ) => {
+    if (cta.action === 'open-3d') {
+      e.preventDefault();
+      onOpen3DScene();
+    } else if (cta.action === 'open-studio') {
+      e.preventDefault();
+      onOpenStudio();
+    } else if (cta.action === 'preview-book') {
+      e.preventDefault();
+      onPreviewBook(activeShowcaseBook);
+    }
+  };
+
+  const getFallbackImage = (slide: HeroSlide) => {
+    if (imageErrors[slide.id]) {
+      if (slide.id === 'coloring-treat') return '/assets/hero-coloring-treat.jpg';
+      if (slide.id === 'come-join-us') return '/assets/hero-come-join-us.jpg';
+      if (slide.id === 'book-showcase') return '/assets/the-little-moon-picnic-book.png';
+}
