@@ -26,14 +26,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [showcaseBookIndex, setShowcaseBookIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const heroRef = useRef<HTMLElement | null>(null);
 
   const totalSlides = HERO_SLIDES.length;
   const activeSlide = HERO_SLIDES[activeIndex];
-  const activeShowcaseBook = BOOKS[showcaseBookIndex] || BOOKS[0];
+  const activeShowcaseBook = BOOKS[0];
 
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => getNextSlideIndex(prev, totalSlides, 1));
@@ -221,13 +220,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               }`}
             >
               {slide.layout === 'book-showcase' ? (
-                /* Provided Coco Wyo-Style Full-Bleed Book Showcase Stage + Interactive Book Switcher */
+                /* Provided Coco Wyo-Style Full-Bleed Book Showcase Stage for The Little Moon Picnic */
                 <div className="cocowyo-showcase-banner-wrap">
                   <h1 id={isCurrent ? 'hero-title' : undefined} className="sr-only">
                     Moon Mesh — {activeShowcaseBook.stageTagline} {activeShowcaseBook.title}
                   </h1>
 
-                  {/* Main Full-Bleed Stage Artwork (User's Provided Book Showcase Image) */}
+                  {/* Main Full-Bleed Stage Artwork (The Little Moon Picnic Showcase Image) */}
                   <div className="cocowyo-banner-figure">
                     <img
                       src={imgSrc}
@@ -245,102 +244,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                       className="cocowyo-banner-book-hotspot"
                       aria-label={`Peek inside ${activeShowcaseBook.title}`}
                       onClick={() => onPreviewBook(activeShowcaseBook)}
-                    >
-                      {/* When user switches to Books #2, #3, or #4, display that book standing in 3D on the tabletop */}
-                      {showcaseBookIndex > 0 && (
-                        <div
-                          className={`cocowyo-3d-book cocowyo-overlay-book ${activeShowcaseBook.themeClass}`}
-                          style={
-                            {
-                              '--spine-bg': activeShowcaseBook.spineColor,
-                              '--spine-ink': activeShowcaseBook.spineTextColor,
-                            } as React.CSSProperties
-                          }
-                        >
-                          <span className="book-table-shadow" aria-hidden="true" />
-                          <span className="book-3d-spine" aria-hidden="true">
-                            <span className="spine-emblem">✦</span>
-                            <span className="spine-brand">Moon Mesh</span>
-                            <span className="spine-title">{activeShowcaseBook.title}</span>
-                            <span className="spine-no">{activeShowcaseBook.number}</span>
-                          </span>
-                          <span className="book-3d-pages-top" aria-hidden="true" />
-                          <span className="book-3d-front">
-                            <span className="book-3d-structured-cover">
-                              <span className="cover-brand">Moon Mesh</span>
-                              <span className="cover-no">{activeShowcaseBook.number}</span>
-                              <span className="cover-title">
-                                {activeShowcaseBook.titleTop}
-                                <br />
-                                <em>{activeShowcaseBook.titleEm}</em>
-                              </span>
-                              <img
-                                src={activeShowcaseBook.coverImage}
-                                width={680}
-                                height={680}
-                                alt={activeShowcaseBook.title}
-                              />
-                              <span className="cover-edition">A coloring adventure</span>
-                            </span>
-                            <span className="book-3d-hinge-crease" aria-hidden="true" />
-                          </span>
-                        </div>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Interactive Tabletop Control Dock Underneath the Showcase Stage */}
-                  <div className="cocowyo-showcase-dock shell">
-                    <div
-                      className="cocowyo-book-switcher"
-                      role="group"
-                      aria-label="Showcase a Moon Mesh book on the stage"
-                    >
-                      {BOOKS.map((b, bIdx) => {
-                        const isSelected = bIdx === showcaseBookIndex;
-                        return (
-                          <button
-                            key={b.id}
-                            type="button"
-                            aria-pressed={isSelected}
-                            className={`cocowyo-switch-pill ${isSelected ? 'is-active' : ''}`}
-                            onClick={() => {
-                              setIsAutoPlaying(false);
-                              setShowcaseBookIndex(bIdx);
-                            }}
-                          >
-                            <span
-                              className="switch-dot"
-                              style={{ backgroundColor: b.spineColor }}
-                              aria-hidden="true"
-                            />
-                            <span>{b.title}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="cocowyo-dock-actions">
-                      <a
-                        className="button button-ink whitespace-nowrap shrink-0"
-                        href={slide.primaryCta.href}
-                        onClick={(e) => handleCtaClick(e, slide.primaryCta)}
-                        tabIndex={isCurrent ? 0 : -1}
-                      >
-                        {slide.primaryCta.label}: {activeShowcaseBook.title}
-                        <svg className="icon" aria-hidden="true">
-                          <use href="#arrow" />
-                        </svg>
-                      </a>
-                      <a
-                        className="button button-paper whitespace-nowrap shrink-0"
-                        href={slide.secondaryCta.href}
-                        onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
-                        tabIndex={isCurrent ? 0 : -1}
-                      >
-                        {slide.secondaryCta.label}
-                      </a>
-                    </div>
+                    />
                   </div>
                 </div>
               ) : slide.layout === 'centered' ? (
