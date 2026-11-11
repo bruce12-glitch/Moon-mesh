@@ -1,236 +1,174 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import {
+  dampValue,
+  DioramaMoodId,
+  DIORAMA_LIGHT_MOODS,
+  getDioramaLightMood,
+  getForestAudioUiState,
+} from '../utils/moonMeshLogic';
+import { forestAudio } from '../utils/forestAudio';
 
 interface ThreeMoonSceneProps {
-  mode?: 'embedded' | 'modal';
   isOpen?: boolean;
-  embedded?: boolean;
   onClose?: () => void;
-  onOpenColoringStudio?: () => void;
-  onExpandFullscreen?: () => void;
-  onOpenModal?: () => void;
-  onCloseModal?: () => void;
-  onOpenColoring?: () => void;
+  embedded?: boolean;
+  isForestSoundOn?: boolean;
+  onToggleForestSound?: () => void;
 }
 
-type FocusTargetKey = 'room' | 'miso' | 'plum' | 'pip' | 'sprout' | 'window';
+type CameraPresetId = 'overview' | 'miso' | 'plum' | 'pip' | 'sprout' | 'window';
 
 interface CameraPreset {
-  pos: [number, number, number];
-  target: [number, number, number];
+  id: CameraPresetId;
   label: string;
   badge: string;
+  position: [number, number, number];
+  target: [number, number, number];
+  storyCaption: string;
 }
 
-const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
-  room: {
-    pos: [0.2, 4.1, 7.8],
-    target: [0, 1.35, -0.1],
+const CAMERA_PRESETS: CameraPreset[] = [
+  {
+    id: 'overview',
     label: 'Full Picnic',
-    badge: 'The Little Moon Picnic',
+    badge: '✦',
+    position: [0, 3.85, 11.1],
+    target: [0, 0.25, 0],
+    storyCaption: 'Welcome to the Moonlit Forest Clearing — click any friend to say hello!',
   },
-  miso: {
-    pos: [-1.45, 2.55, 3.85],
-    target: [-1.35, 1.45, 0.05],
-    label: 'Miso',
-    badge: 'Miso the Kitten',
+  {
+    id: 'miso',
+    label: 'Miso & Buns',
+    badge: '🐱',
+    position: [-2.15, 2.1, 6.2],
+    target: [-1.15, 0.45, 0.2],
+    storyCaption: 'Miso wrapped up in a golden knit scarf and offered Plum a warm honey bun!',
   },
-  plum: {
-    pos: [1.55, 2.55, 3.85],
-    target: [1.35, 1.45, 0.05],
-    label: 'Plum',
-    badge: 'Plum the Rabbit',
+  {
+    id: 'plum',
+    label: 'Plum & Berries',
+    badge: '🐰',
+    position: [2.25, 2.1, 6.2],
+    target: [1.15, 0.45, 0.15],
+    storyCaption: 'Plum brought fresh forest strawberries and sweet blueberries in a polka-dot bowl!',
   },
-  pip: {
-    pos: [-0.95, 1.65, 3.35],
-    target: [-0.82, 0.68, 1.15],
-    label: 'Pip',
-    badge: 'Pip the Star',
+  {
+    id: 'pip',
+    label: 'Pip Star',
+    badge: '⭐',
+    position: [-3.1, 1.75, 6.35],
+    target: [-2.15, -0.1, 1.3],
+    storyCaption: 'Pip the Star is glowing beside the gingham blanket and counting paper moons!',
   },
-  sprout: {
-    pos: [0.35, 2.05, 2.75],
-    target: [0.32, 1.05, 0.18],
-    label: 'Sprout',
-    badge: 'Sprout the Snail',
+  {
+    id: 'sprout',
+    label: 'Sprout & Tea',
+    badge: '🐌',
+    position: [2.75, 1.55, 5.8],
+    target: [1.7, -0.25, 1.55],
+    storyCaption: 'Sprout the Snail is keeping the blossom teacup cozy and warm!',
   },
-  window: {
-    pos: [0.0, 3.45, 5.5],
-    target: [0, 2.35, -1.2],
+  {
+    id: 'window',
     label: 'Moon Window',
-    badge: 'Moonlit Window',
+    badge: '🌙',
+    position: [1.8, 2.75, 7.2],
+    target: [1.85, 1.15, -1.6],
+    storyCaption: 'Through the golden crescent window, the silver moon shines over the pine hills.',
   },
-};
+];
 
 export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
-  mode,
   isOpen = true,
-  embedded = false,
   onClose,
-  onOpenColoringStudio,
-  onExpandFullscreen,
-  onOpenModal,
-  onCloseModal,
-  onOpenColoring,
+  embedded = false,
+  isForestSoundOn,
+  onToggleForestSound,
 }) => {
-  const effectiveMode: 'embedded' | 'modal' = mode ?? (embedded ? 'embedded' : 'modal');
-  const handleOpenModal = onOpenModal ?? onExpandFullscreen;
-  const handleCloseModal = onCloseModal ?? onClose;
-  const handleOpenColoring = onOpenColoring ?? onOpenColoringStudio;
-
   const mountRef = useRef<HTMLDivElement | null>(null);
-  const [activeFocus, setActiveFocus] = useState<FocusTargetKey>('room');
-  const [webglError, setWebglError] = useState<boolean>(false);
-  const [isForestSoundOn, setIsForestSoundOn] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [activePreset, setActivePreset] = useState<CameraPresetId>('overview');
+  const [lightingMood, setLightingMood] = useState<DioramaMoodId>('moonlit-night');
+  const [storyBanner, setStoryBanner] = useState<string>(CAMERA_PRESETS[0].storyCaption);
+  const [internalAudioPlaying, setInternalAudioPlaying] = useState<boolean>(() =>
+    forestAudio.getIsPlaying()
+  );
 
-  const focusRef = useRef<FocusTargetKey>('room');
-  const isUserDraggingRef = useRef<boolean>(false);
-  const audioCleanupRef = useRef<(() => void) | null>(null);
-
-  const stopForestAmbience = () => {
-    if (audioCleanupRef.current) {
-      audioCleanupRef.current();
-      audioCleanupRef.current = null;
-    }
-  };
-
-  const startForestAmbience = () => {
-    stopForestAmbience();
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtx) return;
-
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') {
-        void ctx.resume();
-      }
-
-      const masterGain = ctx.createGain();
-      masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-      masterGain.gain.exponentialRampToValueAtTime(0.24, ctx.currentTime + 1.2);
-      masterGain.connect(ctx.destination);
-
-      // 1. Soft Night Forest Breeze (filtered pink/brown noise modulated by slow LFO)
-      const bufferSize = ctx.sampleRate * 4;
-      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
-      let lastOut = 0.0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        output[i] = (lastOut + 0.02 * white) / 1.02;
-        lastOut = output[i];
-        output[i] *= 1.8;
-      }
-
-      const breezeSource = ctx.createBufferSource();
-      breezeSource.buffer = noiseBuffer;
-      breezeSource.loop = true;
-
-      const breezeFilter = ctx.createBiquadFilter();
-      breezeFilter.type = 'bandpass';
-      breezeFilter.frequency.value = 420;
-      breezeFilter.Q.value = 0.85;
-
-      const breezeLfo = ctx.createOscillator();
-      breezeLfo.type = 'sine';
-      breezeLfo.frequency.value = 0.14;
-      const breezeLfoGain = ctx.createGain();
-      breezeLfoGain.gain.value = 180;
-      breezeLfo.connect(breezeLfoGain);
-      breezeLfoGain.connect(breezeFilter.frequency);
-
-      const breezeGain = ctx.createGain();
-      breezeGain.gain.value = 0.22;
-
-      breezeSource.connect(breezeFilter);
-      breezeFilter.connect(breezeGain);
-      breezeGain.connect(masterGain);
-      breezeSource.start();
-      breezeLfo.start();
-
-      // 2. Gentle Forest Crickets & Cozy Moonlit Chimes Interval
-      const chimeNotes = [349.23, 440.0, 523.25, 587.33, 659.25, 783.99]; // Warm Fmaj9 pentatonic
-      const chirpTimer = window.setInterval(() => {
-        if (ctx.state !== 'running') return;
-        const now = ctx.currentTime;
-
-        // Soft cricket trill (3 tiny high sine pulses)
-        for (let c = 0; c < 3; c++) {
-          const tStart = now + c * 0.065;
-          const osc = ctx.createOscillator();
-          const g = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(3950 + (c % 2) * 120, tStart);
-          g.gain.setValueAtTime(0.0001, tStart);
-          g.gain.linearRampToValueAtTime(0.018, tStart + 0.015);
-          g.gain.exponentialRampToValueAtTime(0.0001, tStart + 0.05);
-          osc.connect(g);
-          g.connect(masterGain);
-          osc.start(tStart);
-          osc.stop(tStart + 0.055);
-        }
-
-        // Occasional soft distant wooden wind chime / owl call
-        if (Math.random() > 0.35) {
-          const noteFreq = chimeNotes[Math.floor(Math.random() * chimeNotes.length)];
-          const chimeOsc = ctx.createOscillator();
-          const chimeGain = ctx.createGain();
-          chimeOsc.type = 'sine';
-          chimeOsc.frequency.setValueAtTime(noteFreq, now + 0.35);
-          chimeGain.gain.setValueAtTime(0.0001, now + 0.35);
-          chimeGain.gain.linearRampToValueAtTime(0.045, now + 0.45);
-          chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
-          chimeOsc.connect(chimeGain);
-          chimeGain.connect(masterGain);
-          chimeOsc.start(now + 0.35);
-          chimeOsc.stop(now + 2.5);
-        }
-      }, 2800);
-
-      audioCleanupRef.current = () => {
-        window.clearInterval(chirpTimer);
-        try {
-          breezeSource.stop();
-          breezeLfo.stop();
-          void ctx.close();
-        } catch {
-          // Ignore close errors
-        }
-      };
-    } catch {
-      // Ignore Web Audio API restrictions if blocked
-    }
-  };
-
-  const handleToggleForestSound = () => {
-    setIsForestSoundOn((prev) => {
-      const next = !prev;
-      if (next) {
-        startForestAmbience();
-      } else {
-        stopForestAmbience();
-      }
-      return next;
-    });
-  };
+  const isAudioPlaying =
+    typeof isForestSoundOn === 'boolean' ? isForestSoundOn : internalAudioPlaying;
 
   useEffect(() => {
-    return () => {
-      stopForestAmbience();
-    };
+    return forestAudio.subscribe((playing) => {
+      setInternalAudioPlaying(playing);
+    });
   }, []);
 
-  const handleSelectFocus = (key: FocusTargetKey) => {
-    focusRef.current = key;
-    setActiveFocus(key);
-  };
+  const autoRotateRef = useRef(autoRotate);
+  useEffect(() => {
+    autoRotateRef.current = autoRotate;
+  }, [autoRotate]);
+
+  const activePresetRef = useRef<CameraPresetId>(activePreset);
+  useEffect(() => {
+    activePresetRef.current = activePreset;
+  }, [activePreset]);
+
+  const lightingMoodRef = useRef<DioramaMoodId>(lightingMood);
+  useEffect(() => {
+    lightingMoodRef.current = lightingMood;
+  }, [lightingMood]);
+
+  // Trigger character hop animation when clicked or selected via preset
+  const hopTimersRef = useRef<Record<string, number>>({
+    miso: 0,
+    plum: 0,
+    pip: 0,
+    sprout: 0,
+    heart: 0,
+  });
+
+  const handleToggleAudio = useCallback(() => {
+    if (onToggleForestSound) {
+      onToggleForestSound();
+    } else {
+      forestAudio.toggle();
+    }
+  }, [onToggleForestSound]);
+
+  const handleSelectPreset = useCallback((presetId: CameraPresetId) => {
+    setActivePreset(presetId);
+    const found = CAMERA_PRESETS.find((p) => p.id === presetId);
+    if (found) {
+      setStoryBanner(found.storyCaption);
+    }
+    if (presetId === 'overview') {
+      setAutoRotate(true);
+    } else {
+      setAutoRotate(false);
+      if (presetId in hopTimersRef.current) {
+        hopTimersRef.current[presetId] = 1.0;
+        hopTimersRef.current.heart = 1.0;
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    if (effectiveMode === 'modal' && !isOpen) return;
+    if ((!isOpen && !embedded) || !mountRef.current) return;
+
     const container = mountRef.current;
-    if (!container) return;
+    const width = container.clientWidth || 960;
+    const height = container.clientHeight || 600;
+
+    const scene = new THREE.Scene();
+    const initialMood = getDioramaLightMood(lightingMoodRef.current);
+    scene.fog = new THREE.FogExp2(initialMood.fogColor, 0.015);
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 120);
+    camera.position.set(0, 3.85, 11.1);
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -240,204 +178,100 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
         powerPreference: 'high-performance',
       });
     } catch {
-      setWebglError(true);
+      setIsLoaded(true);
       return;
     }
 
-    const width = container.clientWidth || 860;
-    const height = container.clientHeight || 540;
+    const gl = renderer.getContext();
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    const rendererStr = debugInfo
+      ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || ''
+      : '';
+    const isSoftwareGl = /SwiftShader|llvmpipe|Software/i.test(String(rendererStr));
+
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !isSoftwareGl;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.12;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // Rich PBR Studio Environment for subtle ceramic, wood, and golden reflections
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const roomEnv = new RoomEnvironment();
+    const envTarget = pmremGenerator.fromScene(roomEnv, 0.04);
+    scene.environment = envTarget.texture;
+    scene.environmentIntensity = 0.48;
+    roomEnv.dispose();
+    pmremGenerator.dispose();
+
+    // Dynamic Sky Backdrop Generator matching Lighting Mood
+    const skyCanvas = document.createElement('canvas');
+    skyCanvas.width = 512;
+    skyCanvas.height = 512;
+    const skyCtx = skyCanvas.getContext('2d');
+    const skyTex = new THREE.CanvasTexture(skyCanvas);
+    skyTex.colorSpace = THREE.SRGBColorSpace;
+
+    const paintSkyTexture = (moodId: DioramaMoodId) => {
+      const m = getDioramaLightMood(moodId);
+      if (!skyCtx) return;
+      const grad = skyCtx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0.0, m.skyTop);
+      grad.addColorStop(0.42, m.skyMid);
+      grad.addColorStop(0.76, m.skyHorizon);
+      grad.addColorStop(1.0, m.skyBottom);
+      skyCtx.fillStyle = grad;
+      skyCtx.fillRect(0, 0, 512, 512);
+
+      // Soft warm moonbeam glow in upper right
+      const radial = skyCtx.createRadialGradient(365, 135, 12, 365, 135, 240);
+      radial.addColorStop(0, 'rgba(255, 244, 196, 0.42)');
+      radial.addColorStop(0.55, 'rgba(255, 210, 232, 0.16)');
+      radial.addColorStop(1, 'rgba(55, 90, 158, 0)');
+      skyCtx.fillStyle = radial;
+      skyCtx.fillRect(0, 0, 512, 512);
+      skyTex.needsUpdate = true;
+    };
+
+    paintSkyTexture(lightingMoodRef.current);
+    scene.background = skyTex;
 
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // Rich cozy storybook twilight sky backdrop so the golden moon, cream cat & lanterns pop
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#241B38');
-    scene.fog = new THREE.FogExp2('#241B38', 0.022);
-
-    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 80);
-    camera.position.set(...CAMERA_PRESETS.room.pos);
-
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.07;
-    controls.maxPolarAngle = Math.PI / 2 - 0.02;
-    controls.minPolarAngle = 0.22;
-    controls.minDistance = 2.4;
-    controls.maxDistance = 13.5;
-    controls.target.set(...CAMERA_PRESETS.room.target);
+    controls.dampingFactor = 0.06;
+    controls.maxPolarAngle = Math.PI / 2 + 0.06;
+    controls.minPolarAngle = 0.24;
+    controls.minDistance = 4.2;
+    controls.maxDistance = 16.5;
+    controls.target.set(0, 0.25, 0);
 
-    const onStart = () => {
-      isUserDraggingRef.current = true;
-    };
-    const onEnd = () => {
-      setTimeout(() => {
-        isUserDraggingRef.current = false;
-      }, 2800);
-    };
-    controls.addEventListener('start', onStart);
-    controls.addEventListener('end', onEnd);
-
-    // =========================================================================
-    // TOY-STUDIO SOFT CLAY & VINYL PBR MATERIALS
-    // =========================================================================
-    const createClayMat = (
-      hex: string,
-      opts: {
-        roughness?: number;
-        clearcoat?: number;
-        clearcoatRoughness?: number;
-        emissive?: string;
-        emissiveIntensity?: number;
-        map?: THREE.Texture;
-      } = {}
-    ) => {
-      return new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(hex),
-        roughness: opts.roughness ?? 0.48,
-        metalness: 0.0,
-        clearcoat: opts.clearcoat ?? 0.14,
-        clearcoatRoughness: opts.clearcoatRoughness ?? 0.36,
-        reflectivity: 0.25,
-        emissive: opts.emissive ? new THREE.Color(opts.emissive) : new THREE.Color('#000000'),
-        emissiveIntensity: opts.emissiveIntensity ?? 0,
-        map: opts.map ?? null,
-      });
-    };
-
-    const createEyeMat = () =>
-      new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color('#231715'),
-        roughness: 0.08,
-        metalness: 0.0,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.04,
-      });
-
-    // Procedural gingham picnic blanket texture
-    const createGinghamTexture = () => {
-      const c = document.createElement('canvas');
-      c.width = 512;
-      c.height = 512;
-      const ctx = c.getContext('2d')!;
-      ctx.fillStyle = '#FFF9F2';
-      ctx.fillRect(0, 0, 512, 512);
-
-      const step = 64;
-      for (let y = 0; y < 512; y += step) {
-        for (let x = 0; x < 512; x += step) {
-          const isEvenX = (x / step) % 2 === 0;
-          const isEvenY = (y / step) % 2 === 0;
-          if (!isEvenX && !isEvenY) {
-            ctx.fillStyle = '#F28B9C';
-            ctx.fillRect(x, y, step, step);
-          } else if (!isEvenX || !isEvenY) {
-            ctx.fillStyle = '#FBD0D9';
-            ctx.fillRect(x, y, step, step);
-          }
-        }
+    const onStartInteraction = () => {
+      if (activePresetRef.current === 'overview') {
+        setAutoRotate(false);
       }
-      const tex = new THREE.CanvasTexture(c);
-      tex.wrapS = THREE.RepeatWrapping;
-      tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(2.5, 2.5);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
     };
+    controls.addEventListener('start', onStartInteraction);
 
-    // Procedural honey-oak plank texture
-    const createWoodDeckTexture = () => {
-      const c = document.createElement('canvas');
-      c.width = 512;
-      c.height = 512;
-      const ctx = c.getContext('2d')!;
-      ctx.fillStyle = '#DFAD76';
-      ctx.fillRect(0, 0, 512, 512);
-      for (let i = 0; i < 8; i++) {
-        const y = i * 64;
-        ctx.fillStyle = i % 2 === 0 ? '#E3B37C' : '#D8A36C';
-        ctx.fillRect(0, y, 512, 61);
-        ctx.fillStyle = '#B8804A';
-        ctx.fillRect(0, y + 61, 512, 3);
-      }
-      const tex = new THREE.CanvasTexture(c);
-      tex.wrapS = THREE.RepeatWrapping;
-      tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(2, 2);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
-    };
+    // --- LIGHTING ---
+    const ambientLight = new THREE.HemisphereLight(0xfff7e8, 0x3b2d54, 1.35);
+    scene.add(ambientLight);
 
-    // Procedural open coloring book spread texture
-    const createColoringSpreadTexture = () => {
-      const c = document.createElement('canvas');
-      c.width = 512;
-      c.height = 256;
-      const ctx = c.getContext('2d')!;
-      ctx.fillStyle = '#FFFDF9';
-      ctx.fillRect(0, 0, 512, 256);
-      ctx.strokeStyle = '#D9C5B2';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(256, 0);
-      ctx.lineTo(256, 256);
-      ctx.stroke();
-
-      // Left page: colored strawberry + star
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#3A231E';
-      ctx.fillStyle = '#FF6B7B';
-      ctx.beginPath();
-      ctx.arc(128, 134, 48, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = '#6DC07A';
-      ctx.beginPath();
-      ctx.ellipse(128, 86, 28, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Right page: golden moon & clouds
-      ctx.fillStyle = '#FFD86B';
-      ctx.beginPath();
-      ctx.arc(376, 120, 44, 0.3, Math.PI * 1.65);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = '#BDE3FF';
-      ctx.beginPath();
-      ctx.arc(390, 174, 24, 0, Math.PI * 2);
-      ctx.arc(416, 174, 18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      const tex = new THREE.CanvasTexture(c);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
-    };
-
-    // =========================================================================
-    // 3-POINT TOY-STUDIO LIGHTING RIG
-    // =========================================================================
-    const hemiLight = new THREE.HemisphereLight('#FFF6EA', '#9A7BB5', 1.15);
-    scene.add(hemiLight);
-
-    const keyLight = new THREE.DirectionalLight('#FFF3DE', 1.45);
-    keyLight.position.set(5.5, 9.0, 6.5);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 2048;
-    keyLight.shadow.mapSize.height = 2048;
-    keyLight.shadow.camera.near = 1.0;
-    keyLight.shadow.camera.far = 24;
-    const d = 4.8;
+    const keyLight = new THREE.DirectionalLight(
+      initialMood.keyLightColor,
+      initialMood.keyLightIntensity
+    );
+    keyLight.position.set(5.5, 9.5, 6.5);
+    keyLight.castShadow = !isSoftwareGl;
+    keyLight.shadow.mapSize.width = isSoftwareGl ? 512 : 2048;
+    keyLight.shadow.mapSize.height = isSoftwareGl ? 512 : 2048;
+    keyLight.shadow.camera.near = 0.5;
+    keyLight.shadow.camera.far = 25;
+    const d = 6.5;
     keyLight.shadow.camera.left = -d;
     keyLight.shadow.camera.right = d;
     keyLight.shadow.camera.top = d;
@@ -445,1590 +279,1443 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     keyLight.shadow.bias = -0.0005;
     scene.add(keyLight);
 
-    // Soft lavender fill light from the left
-    const fillLight = new THREE.DirectionalLight('#E0C8FF', 0.68);
-    fillLight.position.set(-6.0, 5.0, 4.0);
+    const fillLight = new THREE.DirectionalLight(
+      initialMood.fillLightColor,
+      initialMood.fillLightIntensity
+    );
+    fillLight.position.set(-6.5, 4.2, 4.0);
     scene.add(fillLight);
 
-    // Warm golden rim light from the moon arch behind
-    const rimLight = new THREE.DirectionalLight('#FFD27D', 0.82);
-    rimLight.position.set(0.0, 5.5, -5.5);
+    const rimLight = new THREE.DirectionalLight(0x9ec5ff, 1.15);
+    rimLight.position.set(0, 5.5, -7.5);
     scene.add(rimLight);
 
-    // =========================================================================
-    // MASTER DIORAMA GROUP & INTERACTIVE TARGETS
-    // =========================================================================
-    const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
+    const moonGlowLight = new THREE.PointLight(0xffd56b, initialMood.moonGlowIntensity, 10);
+    moonGlowLight.position.set(1.85, 1.4, -1.3);
+    scene.add(moonGlowLight);
 
-    const interactiveMeshes: { mesh: THREE.Object3D; focus: FocusTargetKey; name: string }[] = [];
-    const registerInteractive = (root: THREE.Object3D, focus: FocusTargetKey, name: string) => {
-      root.traverse((child) => {
-        if ((child as THREE.Mesh).isMesh) {
-          child.userData = { focus, name };
-          interactiveMeshes.push({ mesh: child, focus, name });
-        }
-      });
-    };
+    const tableWarmLight = new THREE.PointLight(0xffb86c, 1.45, 5.5);
+    tableWarmLight.position.set(0, 0.55, 0.9);
+    scene.add(tableWarmLight);
 
-    // =========================================================================
-    // 1. FLOATING STORYBOOK ISLAND BASE, CLOUDS, MEADOW & PICNIC BLANKET
-    // =========================================================================
-    const islandGroup = new THREE.Group();
-    worldGroup.add(islandGroup);
-
-    // Terracotta & lavender-clay tiered island base
-    const subBase = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.45, 2.75, 0.55, 64),
-      createClayMat('#B9929F', { roughness: 0.65 })
-    );
-    subBase.position.y = -0.45;
-    subBase.receiveShadow = true;
-    islandGroup.add(subBase);
-
-    // Lush sage-green rounded meadow rim
-    const meadowRim = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.65, 3.48, 0.34, 64),
-      createClayMat('#8CC67B', { roughness: 0.56 })
-    );
-    meadowRim.position.y = -0.08;
-    meadowRim.receiveShadow = true;
-    islandGroup.add(meadowRim);
-
-    const meadowLip = new THREE.Mesh(
-      new THREE.TorusGeometry(3.52, 0.16, 20, 64),
-      createClayMat('#9BD189', { roughness: 0.54 })
-    );
-    meadowLip.rotation.x = Math.PI / 2;
-    meadowLip.position.y = 0.04;
-    meadowLip.receiveShadow = true;
-    islandGroup.add(meadowLip);
-
-    // Warm honey-oak circular wooden deck inset
-    const woodDeck = new THREE.Mesh(
-      new THREE.CylinderGeometry(3.15, 3.18, 0.14, 64),
-      createClayMat('#FFFFFF', { map: createWoodDeckTexture(), roughness: 0.5 })
-    );
-    woodDeck.position.y = 0.1;
-    woodDeck.receiveShadow = true;
-    islandGroup.add(woodDeck);
-
-    // Plush gingham picnic blanket with cream trim border
-    const blanketMain = new THREE.Mesh(
-      new THREE.CylinderGeometry(2.38, 2.42, 0.06, 64),
-      createClayMat('#FFFFFF', { map: createGinghamTexture(), roughness: 0.62, clearcoat: 0.04 })
-    );
-    blanketMain.position.set(0, 0.18, 0.18);
-    blanketMain.receiveShadow = true;
-    islandGroup.add(blanketMain);
-
-    const blanketTrim = new THREE.Mesh(
-      new THREE.TorusGeometry(2.4, 0.045, 16, 64),
-      createClayMat('#FFF5E4', { roughness: 0.6 })
-    );
-    blanketTrim.rotation.x = Math.PI / 2;
-    blanketTrim.position.set(0, 0.19, 0.18);
-    islandGroup.add(blanketTrim);
-
-    // Floating 3D Cloud Ring cradling the island
-    const cloudMat = createClayMat('#F8F2FF', {
-      roughness: 0.38,
-      clearcoat: 0.2,
-      emissive: '#4A3869',
-      emissiveIntensity: 0.15,
-    });
-    const cloudPositions: [number, number, number, number][] = [
-      [-3.55, -0.18, 1.1, 0.56],
-      [-3.15, -0.25, 1.85, 0.44],
-      [-3.7, -0.2, 0.35, 0.48],
-      [3.55, -0.18, 1.0, 0.54],
-      [3.15, -0.24, 1.75, 0.42],
-      [3.7, -0.22, 0.2, 0.48],
-      [-2.7, -0.22, -2.5, 0.62],
-      [-2.0, -0.28, -3.0, 0.5],
-      [2.6, -0.22, -2.5, 0.6],
-      [1.9, -0.26, -3.0, 0.48],
-      [0.0, -0.35, 3.65, 0.46],
-      [-0.65, -0.38, 3.55, 0.38],
-      [0.65, -0.38, 3.55, 0.38],
-    ];
-    const cloudsGroup = new THREE.Group();
-    cloudPositions.forEach(([x, y, z, r]) => {
-      const puff = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), cloudMat);
-      puff.scale.set(1.22, 0.78, 1.05);
-      puff.position.set(x, y, z);
-      puff.receiveShadow = true;
-      cloudsGroup.add(puff);
-    });
-    islandGroup.add(cloudsGroup);
-
-    // Cute 3D Garden Toadstool Mushrooms & Bushes along the meadow rim
-    const addMushroom = (x: number, z: number, scale = 1, rotY = 0) => {
-      const mGroup = new THREE.Group();
-      const stem = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.11 * scale, 0.15 * scale, 0.26 * scale, 20),
-        createClayMat('#FFF5E6', { roughness: 0.5 })
-      );
-      stem.position.y = 0.13 * scale;
-      stem.castShadow = true;
-      mGroup.add(stem);
-
-      const cap = new THREE.Mesh(
-        new THREE.SphereGeometry(0.25 * scale, 24, 20, 0, Math.PI * 2, 0, Math.PI * 0.58),
-        createClayMat('#F25C69', { roughness: 0.38, clearcoat: 0.25 })
-      );
-      cap.position.y = 0.22 * scale;
-      cap.castShadow = true;
-      mGroup.add(cap);
-
-      const spotMat = createClayMat('#FFFDF9', { roughness: 0.4 });
-      [
-        [0, 0.23, 0.11],
-        [0.14, 0.18, 0.12],
-        [-0.14, 0.18, 0.11],
-        [0.08, 0.19, -0.14],
-        [-0.09, 0.19, -0.12],
-      ].forEach(([sx, sy, sz]) => {
-        const spot = new THREE.Mesh(new THREE.SphereGeometry(0.042 * scale, 12, 12), spotMat);
-        spot.position.set(sx * scale, (0.22 + sy * 0.5) * scale, sz * scale);
-        mGroup.add(spot);
-      });
-
-      mGroup.position.set(x, 0.12, z);
-      mGroup.rotation.y = rotY;
-      islandGroup.add(mGroup);
-    };
-    addMushroom(-3.05, 0.85, 1.0, 0.3);
-    addMushroom(-3.25, 1.25, 0.72, -0.4);
-    addMushroom(3.08, 0.75, 0.92, -0.2);
-
-    // Sculpted Shrubs with Pastel Blossoms
-    const bushMat = createClayMat('#6EBA68', { roughness: 0.55 });
-    const flowerPinkMat = createClayMat('#FF9EB5', { roughness: 0.4 });
-    const flowerYellowMat = createClayMat('#FFD86B', { roughness: 0.4 });
-    [
-      [-2.85, 0.24, -1.65, 0.4],
-      [-2.4, 0.2, -2.1, 0.32],
-      [2.85, 0.24, -1.65, 0.4],
-      [2.4, 0.2, -2.1, 0.32],
-    ].forEach(([bx, by, bz, br], idx) => {
-      const bush = new THREE.Mesh(new THREE.SphereGeometry(br, 24, 24), bushMat);
-      bush.scale.set(1.15, 0.82, 1.05);
-      bush.position.set(bx, by, bz);
-      bush.castShadow = true;
-      islandGroup.add(bush);
-
-      const blossom = new THREE.Mesh(
-        new THREE.SphereGeometry(0.075, 14, 14),
-        idx % 2 === 0 ? flowerPinkMat : flowerYellowMat
-      );
-      blossom.position.set(bx + 0.1, by + br * 0.75, bz + 0.12);
-      islandGroup.add(blossom);
+    // --- STORYBOOK INK OUTLINE & CONTACT SHADOW HELPERS ---
+    const outlineMat = new THREE.MeshBasicMaterial({
+      color: 0x3d2219,
+      side: THREE.BackSide,
     });
 
-    // =========================================================================
-    // 2. TRUE SCULPTED 3D CRESCENT MOON, COTTAGE WINDOW & GLOWING LANTERNS
-    // =========================================================================
-    const moonWindowGroup = new THREE.Group();
-    worldGroup.add(moonWindowGroup);
-
-    // True 3D Sculpted Crescent Moon created with exact two-circle intersection arcs & ExtrudeGeometry
-    const createCrescentMoonMesh = () => {
-      const shape = new THREE.Shape();
-      const R1 = 1.35;
-      const R2 = 1.15;
-      const d = 0.52;
-      const xInt = (R1 * R1 - R2 * R2 + d * d) / (2 * d);
-      const yInt = Math.sqrt(Math.max(0, R1 * R1 - xInt * xInt));
-      const theta1 = Math.atan2(yInt, xInt);
-      const theta2 = Math.atan2(yInt, xInt - d);
-
-      // Outer circular arc from top horn through left belly to bottom horn
-      shape.absarc(0, 0, R1, theta1, Math.PI * 2 - theta1, false);
-      // Inner circular arc back from bottom horn through inner hollow to top horn
-      shape.absarc(d, 0, R2, Math.PI * 2 - theta2, theta2, true);
-      shape.closePath();
-
-      const extrudeSettings: THREE.ExtrudeGeometryOptions = {
-        depth: 0.24,
-        bevelEnabled: true,
-        bevelSegments: 14,
-        steps: 1,
-        bevelSize: 0.14,
-        bevelThickness: 0.18,
-        curveSegments: 48,
-      };
-      const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-      geo.center();
-      const mat = createClayMat('#FFD859', {
-        roughness: 0.3,
-        clearcoat: 0.35,
-        emissive: '#F5B027',
-        emissiveIntensity: 0.28,
-      });
+    const addToonMesh = (
+      geo: THREE.BufferGeometry,
+      mat: THREE.Material,
+      parent: THREE.Object3D,
+      outlineThickness = 0.032,
+      castShadow = true,
+      receiveShadow = true
+    ) => {
+      const group = new THREE.Group();
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      return mesh;
+      mesh.castShadow = castShadow && !isSoftwareGl;
+      mesh.receiveShadow = receiveShadow && !isSoftwareGl;
+      group.add(mesh);
+
+      if (outlineThickness > 0) {
+        const outline = new THREE.Mesh(geo, outlineMat);
+        outline.scale.setScalar(1 + outlineThickness);
+        group.add(outline);
+      }
+      parent.add(group);
+      return group;
     };
 
-    const crescentMoon = createCrescentMoonMesh();
-    // Nestled in the upper-left twilight sky beside the cottage window, 100% inside the frame
-    crescentMoon.scale.set(0.68, 0.68, 0.68);
-    crescentMoon.position.set(-1.82, 2.58, -1.45);
-    crescentMoon.rotation.z = -0.22;
-    crescentMoon.rotation.y = 0.24;
-    moonWindowGroup.add(crescentMoon);
+    // Soft radial contact shadow texture for grounding characters and props
+    const shadowCanvas = document.createElement('canvas');
+    shadowCanvas.width = 128;
+    shadowCanvas.height = 128;
+    const shadowCtx = shadowCanvas.getContext('2d');
+    if (shadowCtx) {
+      const grad = shadowCtx.createRadialGradient(64, 64, 6, 64, 64, 60);
+      grad.addColorStop(0, 'rgba(42, 24, 28, 0.46)');
+      grad.addColorStop(0.55, 'rgba(42, 24, 28, 0.20)');
+      grad.addColorStop(1, 'rgba(42, 24, 28, 0)');
+      shadowCtx.fillStyle = grad;
+      shadowCtx.fillRect(0, 0, 128, 128);
+    }
+    const contactShadowTex = new THREE.CanvasTexture(shadowCanvas);
 
-    // Cozy Arched Cottage Window Frame at the back of the deck
-    const windowGroup = new THREE.Group();
-    windowGroup.position.set(0.25, 1.85, -1.95);
-    moonWindowGroup.add(windowGroup);
+    const addContactShadow = (
+      parent: THREE.Object3D,
+      x: number,
+      y: number,
+      z: number,
+      radiusX: number,
+      radiusZ: number,
+      opacity = 0.78
+    ) => {
+      const mat = new THREE.MeshBasicMaterial({
+        map: contactShadowTex,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+      });
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(radiusX * 2, radiusZ * 2), mat);
+      plane.rotation.x = -Math.PI / 2;
+      plane.position.set(x, y, z);
+      parent.add(plane);
+      return plane;
+    };
 
-    const frameWoodMat = createClayMat('#B57642', { roughness: 0.5 });
-    const sillWoodMat = createClayMat('#965D2E', { roughness: 0.52 });
-
-    // Night sky glass backing inside the arched window
-    const skyGlassMat = new THREE.MeshBasicMaterial({ color: '#1B254B' });
-    const skyCircle = new THREE.Mesh(new THREE.CircleGeometry(1.02, 40), skyGlassMat);
-    skyCircle.position.set(0, 0.22, -0.04);
-    windowGroup.add(skyCircle);
-
-    const skyRect = new THREE.Mesh(new THREE.PlaneGeometry(2.04, 1.05), skyGlassMat);
-    skyRect.position.set(0, -0.3, -0.04);
-    windowGroup.add(skyRect);
-
-    // Little glowing stars & mini crescent inside the cottage window pane
-    const paneStarMat = new THREE.MeshBasicMaterial({ color: '#FFE885' });
-    [
-      [-0.45, 0.55],
-      [0.48, 0.62],
-      [-0.58, -0.25],
-      [0.52, -0.18],
-      [-0.22, 0.22],
-      [0.32, 0.28],
-    ].forEach(([sx, sy], idx) => {
-      const dot = new THREE.Mesh(
-        new THREE.SphereGeometry(idx % 2 === 0 ? 0.042 : 0.028, 12, 12),
-        paneStarMat
-      );
-      dot.position.set(sx, sy, -0.01);
-      windowGroup.add(dot);
+    // --- SHARED MATERIALS ---
+    const matMisoCream = new THREE.MeshStandardMaterial({
+      color: 0xfff5e4,
+      roughness: 0.58,
+      metalness: 0.02,
     });
-
-    // Arched upper frame
-    const archFrame = new THREE.Mesh(
-      new THREE.TorusGeometry(1.04, 0.12, 20, 48, Math.PI),
-      frameWoodMat
-    );
-    archFrame.position.set(0, 0.22, 0);
-    archFrame.castShadow = true;
-    windowGroup.add(archFrame);
-
-    // Side pillars
-    [-1.04, 1.04].forEach((px) => {
-      const pillar = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.12, 0.12, 1.08, 20),
-        frameWoodMat
-      );
-      pillar.position.set(px, -0.32, 0);
-      pillar.castShadow = true;
-      windowGroup.add(pillar);
+    const matMisoEarPink = new THREE.MeshStandardMaterial({
+      color: 0xffa5b8,
+      roughness: 0.55,
     });
-
-    // Window crossbars
-    const vCross = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.08, 16), frameWoodMat);
-    vCross.position.set(0, 0.22, 0.02);
-    windowGroup.add(vCross);
-
-    const hCross = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.04, 16), frameWoodMat);
-    hCross.rotation.z = Math.PI / 2;
-    hCross.position.set(0, 0.2, 0.02);
-    windowGroup.add(hCross);
-
-    // Chunky wooden window sill
-    const sill = new THREE.Mesh(new THREE.BoxGeometry(2.48, 0.18, 0.34), sillWoodMat);
-    sill.position.set(0, -0.86, 0.04);
-    sill.castShadow = true;
-    sill.receiveShadow = true;
-    windowGroup.add(sill);
-
-    // Hanging Warm Paper Lanterns + Floating 3D Star Pillows in the sky
-    const lanterns: THREE.Group[] = [];
-    const lanternCapMat = createClayMat('#8E552B', { roughness: 0.5 });
-    const lanternBodyMat = createClayMat('#FFF3C4', {
+    const matScarfGold = new THREE.MeshStandardMaterial({
+      color: 0xffbe3b,
+      roughness: 0.65,
+    });
+    const matPlumLavender = new THREE.MeshStandardMaterial({
+      color: 0xd9a1f7,
+      roughness: 0.56,
+      metalness: 0.02,
+    });
+    const matBerryRed = new THREE.MeshStandardMaterial({
+      color: 0xf25252,
+      roughness: 0.45,
+    });
+    const matBlueberry = new THREE.MeshStandardMaterial({
+      color: 0x4f64c4,
+      roughness: 0.38,
+      metalness: 0.08,
+    });
+    const matPipGold = new THREE.MeshStandardMaterial({
+      color: 0xffd23f,
+      roughness: 0.36,
+      emissive: 0xffa600,
+      emissiveIntensity: 0.22,
+    });
+    const matSproutBody = new THREE.MeshStandardMaterial({
+      color: 0xfff0c2,
+      roughness: 0.55,
+    });
+    const matSproutShell = new THREE.MeshStandardMaterial({
+      color: 0x8cc952,
+      roughness: 0.5,
+    });
+    const matSproutSpiral = new THREE.MeshStandardMaterial({
+      color: 0x5c9433,
+      roughness: 0.55,
+    });
+    const matDarkInk = new THREE.MeshStandardMaterial({
+      color: 0x3b2219,
       roughness: 0.3,
-      emissive: '#FFB838',
-      emissiveIntensity: 0.55,
     });
-    const lanternRibMat = createClayMat('#E89A3C', {
-      roughness: 0.4,
-      emissive: '#E89A3C',
+    const matBlush = new THREE.MeshBasicMaterial({
+      color: 0xff859d,
+      transparent: true,
+      opacity: 0.8,
+    });
+    const matWoodTable = new THREE.MeshStandardMaterial({
+      color: 0xf49342,
+      roughness: 0.5,
+      metalness: 0.05,
+    });
+    const matBunWarm = new THREE.MeshStandardMaterial({
+      color: 0xffb84d,
+      roughness: 0.42,
+    });
+    const matBunTop = new THREE.MeshStandardMaterial({
+      color: 0xe68325,
+      roughness: 0.38,
+    });
+    const matGoldFrame = new THREE.MeshStandardMaterial({
+      color: 0xffb72b,
+      roughness: 0.32,
+      metalness: 0.22,
+      emissive: 0xff9900,
+      emissiveIntensity: 0.14,
+    });
+    const matLeafGreen = new THREE.MeshStandardMaterial({
+      color: 0x6ec25a,
+      roughness: 0.62,
+    });
+    const matPineDark = new THREE.MeshStandardMaterial({
+      color: 0x3c8d5a,
+      roughness: 0.65,
+    });
+    const matPineLight = new THREE.MeshStandardMaterial({
+      color: 0x5eb56e,
+      roughness: 0.62,
+    });
+    const matIslandGrass = new THREE.MeshStandardMaterial({
+      color: 0x68b85e,
+      roughness: 0.78,
+    });
+    const matIslandSoil = new THREE.MeshStandardMaterial({
+      color: 0x8c583a,
+      roughness: 0.85,
+    });
+    const matRibbonBlue = new THREE.MeshStandardMaterial({
+      color: 0x8cc8f8,
+      roughness: 0.48,
+    });
+    const matHeartCoral = new THREE.MeshStandardMaterial({
+      color: 0xff5c77,
+      roughness: 0.35,
+      emissive: 0xff3b5c,
       emissiveIntensity: 0.25,
     });
 
-    const createHangingLantern = (x: number, y: number, z: number, cordLen: number) => {
-      const lGroup = new THREE.Group();
-      lGroup.position.set(x, y, z);
+    // --- MAIN DIORAMA GROUP ---
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
 
-      const cord = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.015, 0.015, cordLen, 10),
-        lanternCapMat
-      );
-      cord.position.y = cordLen / 2 + 0.22;
-      lGroup.add(cord);
-
-      const globe = new THREE.Mesh(new THREE.SphereGeometry(0.24, 24, 24), lanternBodyMat);
-      globe.scale.set(0.95, 1.18, 0.95);
-      lGroup.add(globe);
-
-      // Decorative paper ribs
-      [-0.1, 0, 0.1].forEach((ry) => {
-        const rib = new THREE.Mesh(
-          new THREE.TorusGeometry(0.225 * Math.cos(ry * 2.2), 0.01, 10, 28),
-          lanternRibMat
-        );
-        rib.rotation.x = Math.PI / 2;
-        rib.position.y = ry;
-        lGroup.add(rib);
-      });
-
-      const topCap = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.11, 0.13, 0.055, 18),
-        lanternCapMat
-      );
-      topCap.position.y = 0.26;
-      lGroup.add(topCap);
-
-      const botCap = topCap.clone();
-      botCap.position.y = -0.26;
-      lGroup.add(botCap);
-
-      // Tassel
-      const tassel = new THREE.Mesh(
-        new THREE.ConeGeometry(0.04, 0.14, 12),
-        createClayMat('#F26678', { roughness: 0.5 })
-      );
-      tassel.position.y = -0.35;
-      lGroup.add(tassel);
-
-      const ptLight = new THREE.PointLight('#FFCC66', 0.65, 5.5);
-      lGroup.add(ptLight);
-
-      moonWindowGroup.add(lGroup);
-      lanterns.push(lGroup);
-    };
-
-    createHangingLantern(-2.15, 3.05, -0.95, 0.75);
-    createHangingLantern(0.05, 3.35, -1.25, 0.65);
-    createHangingLantern(2.05, 3.05, -0.95, 0.75);
-
-    // Floating 3D Star Pillows in the twilight sky
-    const skyStarMat = createClayMat('#FFE47A', {
-      roughness: 0.32,
-      emissive: '#FFBF38',
-      emissiveIntensity: 0.45,
-    });
-    const floatingSkyStars: THREE.Mesh[] = [];
-    [
-      [-3.1, 3.4, -1.8, 0.16],
-      [2.85, 3.55, -1.7, 0.15],
-      [-1.85, 3.85, -2.2, 0.11],
-      [1.45, 3.8, -2.1, 0.12],
-      [3.2, 2.2, -1.4, 0.11],
-      [-3.25, 2.1, -1.3, 0.12],
-    ].forEach(([sx, sy, sz, sr]) => {
-      const starOct = new THREE.Mesh(new THREE.OctahedronGeometry(sr, 1), skyStarMat);
-      starOct.scale.set(1, 1, 0.55);
-      starOct.position.set(sx, sy, sz);
-      moonWindowGroup.add(starOct);
-      floatingSkyStars.push(starOct);
-    });
-
-    registerInteractive(
-      moonWindowGroup,
-      'window',
-      'Moon Window'
-    );
-
-    // =========================================================================
-    // 3. LOW ROUND OAK PICNIC TABLE, TREATS, CRAYONS & COLORING BOOK
-    // =========================================================================
-    const tableGroup = new THREE.Group();
-    tableGroup.position.set(0, 0.21, 0.15);
-    worldGroup.add(tableGroup);
-
-    const tableTopMat = createClayMat('#E6B37A', { roughness: 0.42, clearcoat: 0.2 });
-    const tableLegMat = createClayMat('#C68B53', { roughness: 0.5 });
-
-    // Beveled oak tabletop
-    const tableTop = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.12, 1.12, 0.11, 48),
-      tableTopMat
-    );
-    tableTop.position.y = 0.56;
-    tableTop.castShadow = true;
-    tableTop.receiveShadow = true;
-    tableGroup.add(tableTop);
-
-    const tableRim = new THREE.Mesh(
-      new THREE.TorusGeometry(1.1, 0.055, 16, 48),
-      tableTopMat
-    );
-    tableRim.rotation.x = Math.PI / 2;
-    tableRim.position.y = 0.56;
-    tableGroup.add(tableRim);
-
-    // 4 splayed rounded wooden legs
-    for (let i = 0; i < 4; i++) {
-      const angle = (i * Math.PI) / 2 + Math.PI / 4;
-      const leg = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.09, 0.075, 0.54, 20),
-        tableLegMat
-      );
-      leg.position.set(Math.cos(angle) * 0.72, 0.27, Math.sin(angle) * 0.72);
-      leg.rotation.z = -Math.cos(angle) * 0.1;
-      leg.rotation.x = Math.sin(angle) * 0.1;
-      leg.castShadow = true;
-      tableGroup.add(leg);
-    }
-
-    // Open Coloring Book on the table
-    const bookGroup = new THREE.Group();
-    bookGroup.position.set(-0.08, 0.63, 0.36);
-    bookGroup.rotation.y = 0.06;
-
-    const bookCover = new THREE.Mesh(
-      new THREE.BoxGeometry(0.76, 0.03, 0.52),
-      createClayMat('#F0788C', { roughness: 0.5 })
-    );
-    bookCover.castShadow = true;
-    bookGroup.add(bookCover);
-
-    const bookSpread = new THREE.Mesh(
-      new THREE.BoxGeometry(0.71, 0.035, 0.47),
-      createClayMat('#FFFFFF', { map: createColoringSpreadTexture(), roughness: 0.55 })
-    );
-    bookSpread.position.y = 0.018;
-    bookGroup.add(bookSpread);
-    tableGroup.add(bookGroup);
-
-    // Ceramic Crayon Cup with 5 Pastel Wax Crayons
-    const crayonCupGroup = new THREE.Group();
-    crayonCupGroup.position.set(-0.28, 0.62, -0.2);
-
-    const cupMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.12, 0.1, 0.22, 24),
-      createClayMat('#FFF8EE', { roughness: 0.3, clearcoat: 0.4 })
-    );
-    cupMesh.position.y = 0.11;
-    cupMesh.castShadow = true;
-    crayonCupGroup.add(cupMesh);
-
-    const crayonData: [string, number, number, number, number][] = [
-      ['#FF6B7B', -0.04, 0.02, 0.16, 0.08],
-      ['#FFD154', 0.04, 0.03, -0.14, 0.1],
-      ['#6BC88B', 0.0, -0.04, 0.06, -0.14],
-      ['#72BAFC', -0.03, -0.02, -0.1, -0.08],
-      ['#B98EFF', 0.03, 0.0, 0.12, 0.06],
-    ];
-    crayonData.forEach(([cHex, cx, cz, rx, rz]) => {
-      const cStick = new THREE.Group();
-      const body = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.026, 0.026, 0.22, 14),
-        createClayMat(cHex, { roughness: 0.4 })
-      );
-      const tip = new THREE.Mesh(
-        new THREE.ConeGeometry(0.026, 0.065, 14),
-        createClayMat(cHex, { roughness: 0.35 })
-      );
-      tip.position.y = 0.14;
-      cStick.add(body, tip);
-      cStick.position.set(cx, 0.18, cz);
-      cStick.rotation.set(rx, 0, rz);
-      crayonCupGroup.add(cStick);
-    });
-    tableGroup.add(crayonCupGroup);
-
-    // Warm Pink Cocoa Mug with Whipped Cream & Heart Topping
-    const mugGroup = new THREE.Group();
-    mugGroup.position.set(-0.52, 0.62, 0.08);
-
-    const mugBody = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.13, 0.115, 0.24, 24),
-      createClayMat('#F4798B', { roughness: 0.32, clearcoat: 0.45 })
-    );
-    mugBody.position.y = 0.12;
-    mugBody.castShadow = true;
-    mugGroup.add(mugBody);
-
-    const mugHandle = new THREE.Mesh(
-      new THREE.TorusGeometry(0.065, 0.022, 12, 20, Math.PI),
-      createClayMat('#F4798B', { roughness: 0.32 })
-    );
-    mugHandle.rotation.z = -Math.PI / 2;
-    mugHandle.position.set(-0.12, 0.12, 0);
-    mugGroup.add(mugHandle);
-
-    const whip = new THREE.Mesh(
-      new THREE.SphereGeometry(0.105, 18, 18),
-      createClayMat('#FFFBF4', { roughness: 0.4 })
-    );
-    whip.scale.set(1, 0.72, 1);
-    whip.position.y = 0.24;
-    mugGroup.add(whip);
-    tableGroup.add(mugGroup);
-
-    // Glazed Swirled Cinnamon Bun on a Cream Plate
-    const plateGroup = new THREE.Group();
-    plateGroup.position.set(-0.02, 0.62, -0.32);
-
-    const plate = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.24, 0.19, 0.035, 28),
-      createClayMat('#FFFDF9', { roughness: 0.3, clearcoat: 0.4 })
-    );
-    plate.position.y = 0.018;
-    plateGroup.add(plate);
-
-    const bun = new THREE.Mesh(
-      new THREE.SphereGeometry(0.16, 24, 20),
-      createClayMat('#E59446', { roughness: 0.38, clearcoat: 0.28 })
-    );
-    bun.scale.set(1.15, 0.68, 1.15);
-    bun.position.y = 0.1;
-    plateGroup.add(bun);
-
-    const icing = new THREE.Mesh(
-      new THREE.TorusGeometry(0.065, 0.026, 12, 24),
-      createClayMat('#FFFDF9', { roughness: 0.25, clearcoat: 0.6 })
-    );
-    icing.rotation.x = Math.PI / 2;
-    icing.position.y = 0.19;
-    plateGroup.add(icing);
-    tableGroup.add(plateGroup);
-
-    // =========================================================================
-    // 4. SPROUT THE SNAIL (0.30 SCALE) ON LEAF COASTER
-    // =========================================================================
-    const sproutGroup = new THREE.Group();
-    sproutGroup.position.set(0.45, 0.62, 0.05);
-    sproutGroup.rotation.y = -0.45;
-    tableGroup.add(sproutGroup);
-
-    const leafMat = createClayMat('#78C268', { roughness: 0.5 });
-    const leafPad = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.34, 0.035, 32), leafMat);
-    leafPad.scale.set(1.22, 1, 0.88);
-    leafPad.position.y = 0.018;
-    leafPad.castShadow = true;
-    sproutGroup.add(leafPad);
-
-    const snailMintMat = createClayMat('#B5E69C', { roughness: 0.42, clearcoat: 0.22 });
-    const snailFoot = new THREE.Mesh(new THREE.CapsuleGeometry(0.075, 0.2, 16, 20), snailMintMat);
-    snailFoot.rotation.z = Math.PI / 2;
-    snailFoot.position.set(-0.02, 0.09, 0);
-    snailFoot.castShadow = true;
-    sproutGroup.add(snailFoot);
-
-    const snailHead = new THREE.Mesh(new THREE.SphereGeometry(0.1, 20, 20), snailMintMat);
-    snailHead.position.set(-0.14, 0.15, 0);
-    sproutGroup.add(snailHead);
-
-    // Spiraled Cinnamon-Caramel Snail Shell
-    const shellGroup = new THREE.Group();
-    shellGroup.position.set(0.06, 0.2, 0);
-
-    const shellMain = new THREE.Mesh(
-      new THREE.SphereGeometry(0.16, 24, 24),
-      createClayMat('#C87D4B', { roughness: 0.44, clearcoat: 0.2 })
-    );
-    shellMain.scale.set(1.05, 1.05, 0.78);
-    shellMain.castShadow = true;
-    shellGroup.add(shellMain);
-
-    const swirlMat = createClayMat('#8E4F29', { roughness: 0.5 });
-    [0.085, 0.04].forEach((sr, idx) => {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(sr, 0.015, 12, 24), swirlMat);
-      ring.position.z = 0.125 + idx * 0.005;
-      shellGroup.add(ring);
-
-      const ringBack = ring.clone();
-      ringBack.position.z = -(0.125 + idx * 0.005);
-      shellGroup.add(ringBack);
-    });
-    sproutGroup.add(shellGroup);
-
-    // Eye stalks & glossy eyes
-    const eyeMat = createEyeMat();
-    const blushMat = createClayMat('#FF8B9E', { roughness: 0.5 });
-    [-0.045, 0.045].forEach((ez) => {
-      const stalk = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.014, 0.018, 0.1, 10),
-        snailMintMat
-      );
-      stalk.position.set(-0.18, 0.25, ez);
-      stalk.rotation.z = 0.25;
-      sproutGroup.add(stalk);
-
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.024, 14, 14), eyeMat);
-      eye.position.set(-0.2, 0.3, ez);
-      sproutGroup.add(eye);
-
-      const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.02, 10, 10), blushMat);
-      cheek.position.set(-0.22, 0.14, ez * 1.3);
-      sproutGroup.add(cheek);
-    });
-
-    // Petite strawberry beside Sprout
-    const miniBerry = new THREE.Mesh(
-      new THREE.ConeGeometry(0.08, 0.14, 18),
-      createClayMat('#F2495E', { roughness: 0.35, clearcoat: 0.3 })
-    );
-    miniBerry.rotation.x = Math.PI;
-    miniBerry.position.set(-0.22, 0.1, 0.24);
-    sproutGroup.add(miniBerry);
-
-    registerInteractive(
-      sproutGroup,
-      'sprout',
-      'Sprout'
-    );
-
-    // =========================================================================
-    // HELPER: CREATE TUFTED PLUSH FLOOR CUSHION
-    // =========================================================================
-    const createTuftedCushion = (radius: number, height: number, hex: string, buttonHex: string) => {
-      const cGroup = new THREE.Group();
-      const mat = createClayMat(hex, { roughness: 0.56 });
-      const core = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * 0.85, radius * 0.85, height, 32),
-        mat
-      );
-      core.castShadow = true;
-      core.receiveShadow = true;
-      cGroup.add(core);
-
-      const lobes = 10;
-      for (let i = 0; i < lobes; i++) {
-        const ang = (i * Math.PI * 2) / lobes;
-        const lobe = new THREE.Mesh(new THREE.SphereGeometry(height * 0.72, 20, 20), mat);
-        lobe.scale.set(1.25, 0.75, 1.35);
-        lobe.position.set(Math.cos(ang) * radius * 0.76, 0, Math.sin(ang) * radius * 0.76);
-        lobe.rotation.y = -ang;
-        lobe.castShadow = true;
-        lobe.receiveShadow = true;
-        cGroup.add(lobe);
-      }
-
-      const btn = new THREE.Mesh(
-        new THREE.SphereGeometry(radius * 0.12, 14, 14),
-        createClayMat(buttonHex, { roughness: 0.5 })
-      );
-      btn.scale.set(1, 0.45, 1);
-      btn.position.y = height * 0.52;
-      cGroup.add(btn);
-
-      return cGroup;
-    };
-
-    // =========================================================================
-    // HELPER: ADD EXPRESSIVE FLUSH KAWAII FACE (EYES, CATCHLIGHTS, NOSE, W-MOUTH)
-    // =========================================================================
-    const attachKawaiiFace = (
-      headGroup: THREE.Group,
-      faceZ: number,
-      eyeSpacing: number,
-      eyeY: number,
-      noseHex = '#F47B8E'
-    ) => {
-      const catchMat = new THREE.MeshBasicMaterial({ color: '#FFFFFF' });
-      const mouthLineMat = createClayMat('#3A231E', { roughness: 0.4 });
-
-      [-1, 1].forEach((dir) => {
-        // Large glossy oval kawaii eye
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.086, 22, 22), eyeMat);
-        eye.scale.set(0.95, 1.12, 0.58);
-        eye.position.set(dir * eyeSpacing, eyeY, faceZ);
-        headGroup.add(eye);
-
-        // Big upper-left white catchlight
-        const catchBig = new THREE.Mesh(new THREE.SphereGeometry(0.028, 12, 12), catchMat);
-        catchBig.position.set(dir * eyeSpacing - 0.022, eyeY + 0.032, faceZ + 0.046);
-        headGroup.add(catchBig);
-
-        // Tiny lower-right white catchlight
-        const catchSmall = new THREE.Mesh(new THREE.SphereGeometry(0.013, 10, 10), catchMat);
-        catchSmall.position.set(dir * eyeSpacing + 0.022, eyeY - 0.026, faceZ + 0.045);
-        headGroup.add(catchSmall);
-
-        // Soft rosy cheek oval
-        const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.095, 18, 18), blushMat);
-        cheek.scale.set(1.3, 0.68, 0.35);
-        cheek.position.set(dir * (eyeSpacing + 0.13), eyeY - 0.1, faceZ - 0.03);
-        cheek.rotation.y = dir * 0.25;
-        headGroup.add(cheek);
-      });
-
-      // Tiny button nose flush on the face
-      const nose = new THREE.Mesh(
-        new THREE.SphereGeometry(0.044, 16, 16),
-        createClayMat(noseHex, { roughness: 0.35 })
-      );
-      nose.scale.set(1.25, 0.85, 0.65);
-      nose.position.set(0, eyeY - 0.055, faceZ + 0.04);
-      headGroup.add(nose);
-
-      // Cute curved 'w' cat/bunny mouth right below the nose
-      [-1, 1].forEach((dir) => {
-        const smile = new THREE.Mesh(
-          new THREE.TorusGeometry(0.046, 0.013, 12, 24, Math.PI),
-          mouthLineMat
-        );
-        smile.rotation.z = Math.PI;
-        smile.position.set(dir * 0.044, eyeY - 0.085, faceZ + 0.035);
-        headGroup.add(smile);
+    // Interactive click targets registry
+    const interactiveTargets: Array<{ mesh: THREE.Object3D; presetId: CameraPresetId }> = [];
+    const registerInteractive = (root: THREE.Object3D, presetId: CameraPresetId) => {
+      root.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          interactiveTargets.push({ mesh: child, presetId });
+        }
       });
     };
 
-    // =========================================================================
-    // 5. MISO THE CREAM KITTEN (1.00 HERO SCALE)
-    // =========================================================================
-    const misoGroup = new THREE.Group();
-    misoGroup.position.set(-1.38, 0.21, 0.18);
-    misoGroup.rotation.y = 0.56;
-    worldGroup.add(misoGroup);
-
-    // Tufted Coral-Pink Floor Cushion
-    const misoCushion = createTuftedCushion(0.76, 0.22, '#F78C9B', '#FFE5EC');
-    misoCushion.position.y = 0.11;
-    misoGroup.add(misoCushion);
-
-    const misoCreamMat = createClayMat('#FFF6E5', { roughness: 0.44, clearcoat: 0.16 });
-    const misoCaramelMat = createClayMat('#E3A66B', { roughness: 0.46, clearcoat: 0.14 });
-    const innerEarPinkMat = createClayMat('#F9B4C2', { roughness: 0.5 });
-
-    // Plump teardrop torso
-    const misoTorso = new THREE.Mesh(new THREE.SphereGeometry(0.58, 32, 32), misoCreamMat);
-    misoTorso.scale.set(1.04, 0.94, 0.96);
-    misoTorso.position.y = 0.66;
-    misoTorso.castShadow = true;
-    misoTorso.receiveShadow = true;
-    misoGroup.add(misoTorso);
-
-    // Seated lower paws with pink toe beans
-    [-0.27, 0.27].forEach((fx) => {
-      const foot = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), misoCreamMat);
-      foot.scale.set(1.0, 0.72, 1.25);
-      foot.position.set(fx, 0.34, 0.46);
-      foot.castShadow = true;
-      misoGroup.add(foot);
-
-      const pad = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 12), innerEarPinkMat);
-      pad.scale.set(1.1, 0.8, 0.4);
-      pad.position.set(fx, 0.33, 0.64);
-      misoGroup.add(pad);
-    });
-
-    // Knitted Golden-Mustard Scarf around neck
-    const scarfMat = createClayMat('#F7BD45', { roughness: 0.52 });
-    const scarfRing = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.125, 22, 42), scarfMat);
-    scarfRing.rotation.x = Math.PI / 2 + 0.08;
-    scarfRing.position.set(0, 1.04, 0.03);
-    scarfRing.castShadow = true;
-    misoGroup.add(scarfRing);
-
-    const scarfKnot = new THREE.Mesh(new THREE.SphereGeometry(0.14, 18, 18), scarfMat);
-    scarfKnot.position.set(0.22, 0.98, 0.42);
-    misoGroup.add(scarfKnot);
-
-    const scarfTail = new THREE.Mesh(new THREE.CapsuleGeometry(0.095, 0.24, 14, 18), scarfMat);
-    scarfTail.position.set(0.25, 0.78, 0.47);
-    scarfTail.rotation.z = -0.14;
-    scarfTail.rotation.x = -0.12;
-    scarfTail.castShadow = true;
-    misoGroup.add(scarfTail);
-
-    // Plump Kawaii Cat Head
-    const misoHead = new THREE.Group();
-    misoHead.position.set(0, 1.56, 0.04);
-    misoGroup.add(misoHead);
-
-    const misoHeadSphere = new THREE.Mesh(new THREE.SphereGeometry(0.68, 36, 36), misoCreamMat);
-    misoHeadSphere.scale.set(1.16, 0.95, 1.04);
-    misoHeadSphere.castShadow = true;
-    misoHeadSphere.receiveShadow = true;
-    misoHead.add(misoHeadSphere);
-
-    // Cute cream fluff tuft on top of head
-    const headTuft = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), misoCreamMat);
-    headTuft.scale.set(1.2, 0.7, 0.8);
-    headTuft.position.set(0.02, 0.62, 0.15);
-    misoHead.add(headTuft);
-
-    // Sculpted Rounded Cat Ears (Left ear cream, Right ear honey-caramel tip)
-    [-1, 1].forEach((dir) => {
-      const earGroup = new THREE.Group();
-      earGroup.position.set(dir * 0.48, 0.5, -0.02);
-      earGroup.rotation.z = -dir * 0.42;
-      earGroup.rotation.x = 0.08;
-
-      const outerEar = new THREE.Mesh(
-        new THREE.SphereGeometry(0.25, 24, 24),
-        dir === 1 ? misoCaramelMat : misoCreamMat
-      );
-      outerEar.scale.set(0.92, 1.22, 0.56);
-      outerEar.castShadow = true;
-      earGroup.add(outerEar);
-
-      const innerEar = new THREE.Mesh(new THREE.SphereGeometry(0.15, 18, 18), innerEarPinkMat);
-      innerEar.scale.set(0.82, 1.05, 0.35);
-      innerEar.position.set(0, -0.02, 0.1);
-      earGroup.add(innerEar);
-
-      misoHead.add(earGroup);
-    });
-
-    // Signature Sky-Blue Puffy Ribbon Bow by Miso's Left Ear (clean geometry, zero clipping)
-    const bowBlueMat = createClayMat('#74BEFA', { roughness: 0.36, clearcoat: 0.26 });
-    const bowKnotMat = createClayMat('#4EA0E8', { roughness: 0.36, clearcoat: 0.26 });
-    const bowGroup = new THREE.Group();
-    bowGroup.position.set(-0.44, 0.52, 0.24);
-    bowGroup.rotation.set(0.15, 0.28, 0.36);
-
-    const bowCenter = new THREE.Mesh(new THREE.SphereGeometry(0.095, 18, 18), bowKnotMat);
-    bowCenter.scale.set(1, 0.9, 0.82);
-    bowGroup.add(bowCenter);
-
-    [-1, 1].forEach((bDir) => {
-      const loop = new THREE.Mesh(new THREE.SphereGeometry(0.16, 22, 22), bowBlueMat);
-      loop.scale.set(1.3, 0.85, 0.58);
-      loop.position.set(bDir * 0.16, 0.02, -0.01);
-      loop.rotation.z = bDir * 0.2;
-      bowGroup.add(loop);
-
-      const tail = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.11, 10, 14), bowBlueMat);
-      tail.position.set(bDir * 0.08, -0.14, 0.02);
-      tail.rotation.z = bDir * 0.38;
-      bowGroup.add(tail);
-    });
-    misoHead.add(bowGroup);
-
-    // Expressive Flush Kawaii Face on Miso
-    attachKawaiiFace(misoHead, 0.67, 0.25, -0.03, '#F47B8E');
-
-    // 3 Delicate Cat Whiskers on each cheek
-    const whiskerMat = createClayMat('#4A3228', { roughness: 0.4 });
-    [-1, 1].forEach((dir) => {
-      [-0.04, -0.08, -0.12].forEach((wy, idx) => {
-        const whisker = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.009, 0.009, 0.15, 8),
-          whiskerMat
-        );
-        whisker.rotation.z = Math.PI / 2 + dir * (idx - 1) * 0.14;
-        whisker.rotation.y = -dir * 0.32;
-        whisker.position.set(dir * 0.56, wy, 0.53);
-        misoHead.add(whisker);
-      });
-    });
-
-    // Miso's Paws (Right paw offering a warm glazed cinnamon bun, Left paw waving)
-    const misoArmR = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.125, 0.32, 16, 20),
-      misoCreamMat
-    );
-    misoArmR.position.set(0.42, 0.8, 0.36);
-    misoArmR.rotation.set(-0.78, -0.25, -0.45);
-    misoArmR.castShadow = true;
-    misoGroup.add(misoArmR);
-
-    const misoHandBun = new THREE.Mesh(
-      new THREE.SphereGeometry(0.13, 18, 18),
-      createClayMat('#E59446', { roughness: 0.38, clearcoat: 0.28 })
-    );
-    misoHandBun.scale.set(1.15, 0.72, 1.15);
-    misoHandBun.position.set(0.5, 0.88, 0.55);
-    misoGroup.add(misoHandBun);
-
-    const misoHandBunIcing = new THREE.Mesh(
-      new THREE.TorusGeometry(0.05, 0.02, 10, 18),
-      createClayMat('#FFFDF9', { roughness: 0.25 })
-    );
-    misoHandBunIcing.rotation.x = Math.PI / 2;
-    misoHandBunIcing.position.set(0.5, 0.96, 0.55);
-    misoGroup.add(misoHandBunIcing);
-
-    const misoArmL = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.125, 0.3, 16, 20),
-      misoCreamMat
-    );
-    misoArmL.position.set(-0.46, 0.78, 0.28);
-    misoArmL.rotation.set(-0.55, 0.2, 0.45);
-    misoArmL.castShadow = true;
-    misoGroup.add(misoArmL);
-
-    // Curled Cat Tail with Caramel Tip
-    const tailCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.25, 0.45, -0.42),
-      new THREE.Vector3(-0.62, 0.62, -0.48),
-      new THREE.Vector3(-0.78, 0.96, -0.25),
-      new THREE.Vector3(-0.68, 1.22, -0.08),
-    ]);
-    const misoTail = new THREE.Mesh(
-      new THREE.TubeGeometry(tailCurve, 24, 0.095, 16, false),
-      misoCreamMat
-    );
-    misoTail.castShadow = true;
-    misoGroup.add(misoTail);
-
-    const misoTailTip = new THREE.Mesh(
-      new THREE.SphereGeometry(0.105, 16, 16),
-      misoCaramelMat
-    );
-    misoTailTip.position.set(-0.68, 1.22, -0.08);
-    misoGroup.add(misoTailTip);
-
-    registerInteractive(
-      misoGroup,
-      'miso',
-      'Miso'
-    );
-
-    // =========================================================================
-    // 6. PLUM THE RABBIT IN STRAWBERRY HOOD (0.95 SCALE)
-    // =========================================================================
-    const plumGroup = new THREE.Group();
-    plumGroup.position.set(1.38, 0.21, 0.18);
-    plumGroup.rotation.y = -0.58;
-    plumGroup.scale.setScalar(0.95);
-    worldGroup.add(plumGroup);
-
-    // Tufted Sage-Mint Floor Cushion
-    const plumCushion = createTuftedCushion(0.76, 0.22, '#9AD493', '#FFF5E4');
-    plumCushion.position.y = 0.11;
-    plumGroup.add(plumCushion);
-
-    const plumLavMat = createClayMat('#E4CEF7', { roughness: 0.44, clearcoat: 0.16 });
-    const berryHoodMat = createClayMat('#F24B60', { roughness: 0.36, clearcoat: 0.28 });
-    const hoodTrimMat = createClayMat('#FFF6E8', { roughness: 0.52 });
-
-    // Plump Lavender Bunny Torso
-    const plumTorso = new THREE.Mesh(new THREE.SphereGeometry(0.56, 32, 32), plumLavMat);
-    plumTorso.scale.set(1.04, 0.92, 0.96);
-    plumTorso.position.y = 0.65;
-    plumTorso.castShadow = true;
-    plumTorso.receiveShadow = true;
-    plumGroup.add(plumTorso);
-
-    // Soft Cream Belly Patch
-    const plumBelly = new THREE.Mesh(
-      new THREE.SphereGeometry(0.38, 24, 24),
-      createClayMat('#FFF8EE', { roughness: 0.48 })
-    );
-    plumBelly.scale.set(0.92, 0.88, 0.35);
-    plumBelly.position.set(0, 0.62, 0.44);
-    plumGroup.add(plumBelly);
-
-    // Seated Bunny Paws
-    [-0.26, 0.26].forEach((fx) => {
-      const foot = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), plumLavMat);
-      foot.scale.set(1.0, 0.72, 1.25);
-      foot.position.set(fx, 0.34, 0.45);
-      foot.castShadow = true;
-      plumGroup.add(foot);
-    });
-
-    // Sky-Blue Collar Bow at Neck
-    const collarBow = new THREE.Group();
-    collarBow.position.set(0, 1.03, 0.48);
-    const cKnot = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), bowKnotMat);
-    collarBow.add(cKnot);
-    [-1, 1].forEach((bDir) => {
-      const cLoop = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 18), bowBlueMat);
-      cLoop.scale.set(1.25, 0.82, 0.52);
-      cLoop.position.set(bDir * 0.13, 0, 0);
-      cLoop.rotation.z = bDir * 0.18;
-      collarBow.add(cLoop);
-    });
-    plumGroup.add(collarBow);
-
-    // Plum's Head & Tilted-Back Strawberry Hood with Cream Trim Rim
-    const plumHead = new THREE.Group();
-    plumHead.position.set(0, 1.54, 0.04);
-    plumGroup.add(plumHead);
-
-    const plumHeadSphere = new THREE.Mesh(new THREE.SphereGeometry(0.66, 36, 36), plumLavMat);
-    plumHeadSphere.scale.set(1.14, 0.94, 1.02);
-    plumHeadSphere.castShadow = true;
-    plumHeadSphere.receiveShadow = true;
-    plumHead.add(plumHeadSphere);
-
-    // Cute lavender fluff tuft on Plum's forehead inside the hood opening
-    const plumTuft = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), plumLavMat);
-    plumTuft.scale.set(1.25, 0.75, 0.65);
-    plumTuft.position.set(0, 0.34, 0.58);
-    plumHead.add(plumTuft);
-
-    // Sculpted 3D Strawberry Hood (tilted back slightly so Plum's face is 100% open and cute)
-    const hoodGroup = new THREE.Group();
-    hoodGroup.rotation.x = -0.24;
-    plumHead.add(hoodGroup);
-
-    const hoodCap = new THREE.Mesh(
-      new THREE.SphereGeometry(0.73, 36, 28, 0, Math.PI * 2, 0, Math.PI * 0.54),
-      berryHoodMat
-    );
-    hoodCap.scale.set(1.14, 0.98, 1.06);
-    hoodCap.position.y = 0.05;
-    hoodCap.castShadow = true;
-    hoodGroup.add(hoodCap);
-
-    // Golden Strawberry Seeds on the Hood
-    const seedMat = createClayMat('#FFE074', { roughness: 0.35 });
-    [
-      [-0.45, 0.42, 0.45],
-      [0.45, 0.42, 0.45],
-      [0.0, 0.52, 0.48],
-      [-0.25, 0.58, 0.35],
-      [0.25, 0.58, 0.35],
-      [-0.62, 0.32, 0.15],
-      [0.62, 0.32, 0.15],
-      [-0.38, 0.45, -0.45],
-      [0.38, 0.45, -0.45],
-    ].forEach(([sx, sy, sz]) => {
-      const seed = new THREE.Mesh(new THREE.CapsuleGeometry(0.018, 0.032, 8, 8), seedMat);
-      seed.position.set(sx, sy, sz);
-      seed.lookAt(0, 0, 0);
-      hoodGroup.add(seed);
-    });
-
-    // 6-Leaf Green Strawberry Calyx Crown & Stem on Top of Hood
-    const calyxGroup = new THREE.Group();
-    calyxGroup.position.set(0, 0.74, 0);
-    for (let i = 0; i < 6; i++) {
-      const ang = (i * Math.PI * 2) / 6;
-      const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), leafMat);
-      leaf.scale.set(0.62, 0.22, 1.55);
-      leaf.position.set(Math.cos(ang) * 0.2, 0.01, Math.sin(ang) * 0.2);
-      leaf.rotation.y = -ang + Math.PI / 2;
-      leaf.rotation.x = 0.2;
-      calyxGroup.add(leaf);
-    }
-    const hoodStem = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.038, 0.05, 0.16, 14),
-      createClayMat('#559E49', { roughness: 0.5 })
-    );
-    hoodStem.position.y = 0.09;
-    hoodStem.rotation.z = 0.15;
-    calyxGroup.add(hoodStem);
-    hoodGroup.add(calyxGroup);
-
-    // Long Floppy Lop Bunny Ears Framing Plum's Cheeks
-    [-1, 1].forEach((dir) => {
-      const lopGroup = new THREE.Group();
-      lopGroup.position.set(dir * 0.68, 0.05, 0.06);
-      lopGroup.rotation.z = dir * 0.22;
-      lopGroup.rotation.x = 0.12;
-
-      const lopEar = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.165, 0.54, 18, 24),
-        plumLavMat
-      );
-      lopEar.scale.set(0.88, 1, 0.56);
-      lopEar.position.y = -0.26;
-      lopEar.castShadow = true;
-      lopGroup.add(lopEar);
-
-      const lopInner = new THREE.Mesh(
-        new THREE.CapsuleGeometry(0.095, 0.38, 14, 18),
-        innerEarPinkMat
-      );
-      lopInner.scale.set(0.8, 1, 0.35);
-      lopInner.position.set(0, -0.26, 0.06);
-      lopGroup.add(lopInner);
-
-      plumHead.add(lopGroup);
-    });
-
-    // Expressive Flush Kawaii Face on Plum
-    attachKawaiiFace(plumHead, 0.64, 0.24, -0.05, '#D86B8E');
-
-    // Plum's Paws Holding a Fresh Bouquet of 3 Tulips (Coral, Sunny Yellow, Lavender)
-    const plumArmL = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.12, 0.3, 16, 20),
-      plumLavMat
-    );
-    plumArmL.position.set(-0.38, 0.78, 0.36);
-    plumArmL.rotation.set(-0.75, 0.32, 0.45);
-    plumArmL.castShadow = true;
-    plumGroup.add(plumArmL);
-
-    const plumArmR = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.12, 0.28, 16, 20),
-      plumLavMat
-    );
-    plumArmR.position.set(0.38, 0.76, 0.34);
-    plumArmR.rotation.set(-0.65, -0.25, -0.42);
-    plumArmR.castShadow = true;
-    plumGroup.add(plumArmR);
-
-    const bouquetGroup = new THREE.Group();
-    bouquetGroup.position.set(-0.44, 0.88, 0.52);
-    bouquetGroup.rotation.set(0.16, 0.2, 0.24);
-    const tulipSpecs: [string, number, number, number, number][] = [
-      ['#FF6E7E', -0.08, 0.22, 0.0, 0.22],
-      ['#FFD654', 0.0, 0.26, 0.05, 0.0],
-      ['#BA8CFF', 0.08, 0.21, -0.02, -0.22],
-    ];
-    tulipSpecs.forEach(([tHex, tx, ty, tz, rotZ]) => {
-      const stem = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.018, 0.018, 0.32, 10),
-        leafMat
-      );
-      stem.position.set(tx * 0.5, 0.06, tz);
-      stem.rotation.z = rotZ * 0.5;
-      bouquetGroup.add(stem);
-
-      const cup = new THREE.Mesh(
-        new THREE.SphereGeometry(0.082, 18, 18),
-        createClayMat(tHex, { roughness: 0.36, clearcoat: 0.25 })
-      );
-      cup.scale.set(0.92, 1.25, 0.92);
-      cup.position.set(tx, ty, tz);
-      cup.rotation.z = rotZ;
-      bouquetGroup.add(cup);
-    });
-    plumGroup.add(bouquetGroup);
-
-    // Cotton-ball Bunny Tail
-    const bunnyTail = new THREE.Mesh(
-      new THREE.SphereGeometry(0.18, 18, 18),
-      createClayMat('#FFF8EE', { roughness: 0.52 })
-    );
-    bunnyTail.position.set(0, 0.45, -0.52);
-    plumGroup.add(bunnyTail);
-
-    registerInteractive(
-      plumGroup,
-      'plum',
-      'Plum'
-    );
-
-    // =========================================================================
-    // 7. PIP THE PLUMP STAR (0.45 SCALE) & POLKA-DOT STRAWBERRY BOWL
-    // =========================================================================
-    const pipGroup = new THREE.Group();
-    pipGroup.position.set(-0.78, 0.21, 1.18);
-    pipGroup.rotation.y = 0.36;
-    worldGroup.add(pipGroup);
-
-    // Mini Tufted Honey Cushion for Pip
-    const pipCushion = createTuftedCushion(0.42, 0.14, '#FAD075', '#FFF8E8');
-    pipCushion.position.y = 0.07;
-    pipGroup.add(pipCushion);
-
-    // Extruded Beveled 5-Point Star Body
-    const createStarMesh = () => {
-      const starShape = new THREE.Shape();
-      const pts = 5;
-      const outerR = 0.44;
-      const innerR = 0.25;
-      for (let i = 0; i < pts * 2; i++) {
-        const r = i % 2 === 0 ? outerR : innerR;
-        const a = (i * Math.PI) / pts - Math.PI / 2;
-        const x = Math.cos(a) * r;
-        const y = -Math.sin(a) * r;
-        if (i === 0) starShape.moveTo(x, y);
-        else starShape.lineTo(x, y);
-      }
-      starShape.closePath();
-
-      const extrudeOpts: THREE.ExtrudeGeometryOptions = {
-        depth: 0.14,
-        bevelEnabled: true,
-        bevelSegments: 12,
-        steps: 1,
-        bevelSize: 0.09,
-        bevelThickness: 0.11,
-      };
-      const geo = new THREE.ExtrudeGeometry(starShape, extrudeOpts);
-      geo.center();
-      const mesh = new THREE.Mesh(
-        geo,
-        createClayMat('#FFE05D', {
-          roughness: 0.34,
-          clearcoat: 0.26,
-          emissive: '#F5B82E',
-          emissiveIntensity: 0.14,
-        })
-      );
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      return mesh;
-    };
-
-    const pipBody = createStarMesh();
-    pipBody.position.y = 0.52;
-    pipGroup.add(pipBody);
-
-    // Pip's Glossy Eyes, Catchlights, Smile & Rosy Cheeks
-    const catchMat = new THREE.MeshBasicMaterial({ color: '#FFFFFF' });
-    [-0.1, 0.1].forEach((ex) => {
-      const pEye = new THREE.Mesh(new THREE.SphereGeometry(0.036, 16, 16), eyeMat);
-      pEye.position.set(ex, 0.55, 0.17);
-      pipGroup.add(pEye);
-
-      const pCatch = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 10), catchMat);
-      pCatch.position.set(ex - 0.01, 0.565, 0.198);
-      pipGroup.add(pCatch);
-
-      const pCheek = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), blushMat);
-      pCheek.scale.set(1.2, 0.75, 0.4);
-      pCheek.position.set(ex * 1.65, 0.49, 0.165);
-      pipGroup.add(pCheek);
-    });
-
-    const pipSmile = new THREE.Mesh(
-      new THREE.TorusGeometry(0.032, 0.009, 10, 20, Math.PI),
-      createClayMat('#3A231E', { roughness: 0.4 })
-    );
-    pipSmile.rotation.z = Math.PI;
-    pipSmile.position.set(0, 0.51, 0.175);
-    pipGroup.add(pipSmile);
-
-    // Polka-Dot Ceramic Berry Bowl Filled with 6 Plump Strawberries beside Pip
-    const bowlGroup = new THREE.Group();
-    bowlGroup.position.set(0.55, 0.02, 0.14);
-
-    const bowlOuter = new THREE.Mesh(
-      new THREE.SphereGeometry(0.28, 28, 20, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.55),
-      createClayMat('#D68CF5', { roughness: 0.3, clearcoat: 0.45 })
-    );
-    bowlOuter.position.y = 0.25;
-    bowlOuter.castShadow = true;
-    bowlGroup.add(bowlOuter);
-
-    const bowlRim = new THREE.Mesh(
-      new THREE.TorusGeometry(0.275, 0.024, 14, 32),
-      createClayMat('#FFFDF9', { roughness: 0.3 })
-    );
-    bowlRim.rotation.x = Math.PI / 2;
-    bowlRim.position.y = 0.28;
-    bowlGroup.add(bowlRim);
-
-    const dotMat = createClayMat('#FFFDF9', { roughness: 0.35 });
-    for (let i = 0; i < 8; i++) {
-      const a = (i * Math.PI * 2) / 8;
-      const dot = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 10), dotMat);
-      dot.position.set(Math.cos(a) * 0.265, 0.17, Math.sin(a) * 0.265);
-      bowlGroup.add(dot);
-    }
-
-    [
-      [0, 0.29, 0],
-      [-0.12, 0.26, 0.08],
-      [0.12, 0.26, 0.08],
-      [-0.08, 0.26, -0.11],
-      [0.09, 0.26, -0.1],
-      [0, 0.34, 0.04],
-    ].forEach(([bx, by, bz], idx) => {
-      const b = new THREE.Mesh(
-        new THREE.ConeGeometry(0.085, 0.15, 16),
-        createClayMat('#F2495E', { roughness: 0.34, clearcoat: 0.3 })
-      );
-      b.rotation.set(Math.PI + (idx % 2) * 0.2, idx * 0.5, (idx % 3 - 1) * 0.2);
-      b.position.set(bx, by, bz);
-      bowlGroup.add(b);
-
-      const bLeaf = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 10), leafMat);
-      bLeaf.scale.set(1.2, 0.3, 1.2);
-      bLeaf.position.set(bx, by + 0.06, bz);
-      bowlGroup.add(bLeaf);
-    });
-    pipGroup.add(bowlGroup);
-
-    registerInteractive(
-      pipGroup,
-      'pip',
-      'Pip'
-    );
-
-    // =========================================================================
-    // 8. RAYCASTER CLICK & HOVER INTERACTION
-    // =========================================================================
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    let downX = 0;
-    let downY = 0;
-
-    const updatePointer = (e: PointerEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    };
-
-    const onPointerDown = (e: PointerEvent) => {
-      downX = e.clientX;
-      downY = e.clientY;
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      updatePointer(e);
-      raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(
-        interactiveMeshes.map((m) => m.mesh),
-        false
-      );
-      if (hits.length > 0) {
-        const data = hits[0].object.userData as { focus: FocusTargetKey; name: string };
-        if (data?.name) {
-          renderer.domElement.style.cursor = 'pointer';
-          return;
+    // 1. FLOATING STORYBOOK ISLAND BASE
+    const islandGroup = new THREE.Group();
+    worldGroup.add(islandGroup);
+
+    const grassTopGeo = new THREE.CylinderGeometry(4.75, 4.95, 0.56, 48);
+    addToonMesh(grassTopGeo, matIslandGrass, islandGroup, 0.015, false, true).position.y = -0.98;
+
+    const soilBaseGeo = new THREE.CylinderGeometry(4.65, 3.35, 1.15, 40);
+    addToonMesh(soilBaseGeo, matIslandSoil, islandGroup, 0.018, false, true).position.y = -1.72;
+
+    // 2. COZY RED-AND-CREAM GINGHAM PICNIC BLANKET
+    const ginghamCanvas = document.createElement('canvas');
+    ginghamCanvas.width = 512;
+    ginghamCanvas.height = 512;
+    const gCtx = ginghamCanvas.getContext('2d');
+    if (gCtx) {
+      const cells = 8;
+      const step = 512 / cells;
+      for (let r = 0; r < cells; r++) {
+        for (let c = 0; c < cells; c++) {
+          const isEvenR = r % 2 === 0;
+          const isEvenC = c % 2 === 0;
+          if (isEvenR && isEvenC) {
+            gCtx.fillStyle = '#FFF5E8';
+          } else if (!isEvenR && !isEvenC) {
+            gCtx.fillStyle = '#E85D75';
+          } else {
+            gCtx.fillStyle = '#F7A1B2';
+          }
+          gCtx.fillRect(c * step, r * step, step, step);
         }
       }
-      renderer.domElement.style.cursor = 'grab';
+      gCtx.strokeStyle = 'rgba(180, 50, 75, 0.16)';
+      gCtx.lineWidth = 2;
+      for (let i = 0; i <= 512; i += 16) {
+        gCtx.beginPath();
+        gCtx.moveTo(i, 0);
+        gCtx.lineTo(i, 512);
+        gCtx.stroke();
+        gCtx.beginPath();
+        gCtx.moveTo(0, i);
+        gCtx.lineTo(512, i);
+        gCtx.stroke();
+      }
+    }
+    const ginghamTex = new THREE.CanvasTexture(ginghamCanvas);
+    ginghamTex.wrapS = THREE.RepeatWrapping;
+    ginghamTex.wrapT = THREE.RepeatWrapping;
+    ginghamTex.repeat.set(2.2, 1.8);
+    ginghamTex.colorSpace = THREE.SRGBColorSpace;
+
+    const matBlanket = new THREE.MeshStandardMaterial({
+      map: ginghamTex,
+      roughness: 0.72,
+    });
+
+    const blanketGeo = new THREE.CylinderGeometry(3.85, 3.95, 0.14, 48);
+    const blanketMesh = addToonMesh(blanketGeo, matBlanket, islandGroup, 0.015, true, true);
+    blanketMesh.scale.set(1.06, 1, 0.84);
+    blanketMesh.position.set(0, -0.66, 0.35);
+
+    const floorY = -0.58;
+
+    // 3. STORYBOOK FOREST PINE & BLOSSOM TREES AROUND BACK PERIMETER
+    const createStorybookTree = (
+      x: number,
+      z: number,
+      scale: number,
+      isBlossom = false
+    ) => {
+      const treeGroup = new THREE.Group();
+      treeGroup.position.set(x, floorY - 0.1, z);
+      treeGroup.scale.setScalar(scale);
+
+      addContactShadow(worldGroup, x, floorY - 0.1, z, 0.65 * scale, 0.65 * scale, 0.55);
+
+      const trunkGeo = new THREE.CylinderGeometry(0.16, 0.24, 0.85, 12);
+      addToonMesh(trunkGeo, matIslandSoil, treeGroup, 0.04).position.y = 0.38;
+
+      if (isBlossom) {
+        // Rounded pastel sakura/evening puff foliage
+        const puffPositions: [number, number, number, number][] = [
+          [0, 1.15, 0, 0.62],
+          [-0.36, 0.98, 0.18, 0.44],
+          [0.38, 1.0, -0.12, 0.46],
+          [0, 1.52, -0.05, 0.45],
+        ];
+        const blossomMat = new THREE.MeshStandardMaterial({
+          color: 0xffa6c1,
+          roughness: 0.6,
+        });
+        puffPositions.forEach(([px, py, pz, r]) => {
+          const puffGeo = new THREE.SphereGeometry(r, 18, 16);
+          addToonMesh(puffGeo, blossomMat, treeGroup, 0.035).position.set(px, py, pz);
+        });
+      } else {
+        // Tiered storybook pine cones
+        const tier1 = new THREE.ConeGeometry(0.82, 1.05, 16);
+        addToonMesh(tier1, matPineDark, treeGroup, 0.032).position.y = 1.02;
+        const tier2 = new THREE.ConeGeometry(0.66, 0.92, 16);
+        addToonMesh(tier2, matPineLight, treeGroup, 0.032).position.y = 1.56;
+        const tier3 = new THREE.ConeGeometry(0.46, 0.75, 16);
+        addToonMesh(tier3, matLeafGreen, treeGroup, 0.035).position.y = 2.04;
+      }
+
+      worldGroup.add(treeGroup);
+      return treeGroup;
+    };
+
+    createStorybookTree(-3.45, -2.15, 1.05, false);
+    createStorybookTree(-2.35, -2.95, 0.86, true);
+    createStorybookTree(-0.85, -3.25, 0.92, false);
+    createStorybookTree(3.55, -1.95, 0.98, false);
+    createStorybookTree(2.85, -2.85, 0.78, true);
+
+    // 4. CRESCENT MOON WINDOW BACKDROP (Matching the Book Cover!)
+    const windowGroup = new THREE.Group();
+    windowGroup.position.set(1.85, 1.25, -1.65);
+    windowGroup.rotation.y = -0.22;
+    worldGroup.add(windowGroup);
+
+    const outerRingGeo = new THREE.TorusGeometry(1.48, 0.14, 20, 48);
+    addToonMesh(outerRingGeo, matGoldFrame, windowGroup, 0.035);
+
+    const nightSkyMat = new THREE.MeshBasicMaterial({ color: 0x1e3566 });
+    const skyDiscGeo = new THREE.CircleGeometry(1.4, 40);
+    const skyDisc = new THREE.Mesh(skyDiscGeo, nightSkyMat);
+    skyDisc.position.z = -0.06;
+    windowGroup.add(skyDisc);
+
+    // Lush green bush visible inside the bottom-right of the crescent window (just like the book cover!)
+    const windowBushGroup = new THREE.Group();
+    windowBushGroup.position.set(0.42, -0.68, -0.02);
+    windowGroup.add(windowBushGroup);
+    [
+      [0, 0, 0, 0.42],
+      [-0.35, -0.15, 0.02, 0.32],
+      [0.32, 0.12, 0.02, 0.34],
+    ].forEach(([bx, by, bz, br]) => {
+      const bGeo = new THREE.SphereGeometry(br, 16, 14);
+      bGeo.scale(1, 0.85, 0.35);
+      addToonMesh(bGeo, matLeafGreen, windowBushGroup, 0.03);
+      windowBushGroup.children[windowBushGroup.children.length - 1].position.set(bx, by, bz);
+    });
+
+    // Window crossbars
+    const barHorizGeo = new THREE.CylinderGeometry(0.055, 0.055, 2.75, 12);
+    const barHoriz = addToonMesh(barHorizGeo, matGoldFrame, windowGroup, 0.035);
+    barHoriz.rotation.z = Math.PI / 2;
+    barHoriz.position.set(0, -0.12, 0.02);
+
+    const barVertGeo = new THREE.CylinderGeometry(0.055, 0.055, 2.75, 12);
+    const barVert = addToonMesh(barVertGeo, matGoldFrame, windowGroup, 0.035);
+    barVert.position.set(0.18, 0, 0.02);
+
+    // Sculpted Golden Crescent inside the window
+    const moonCrescentGroup = new THREE.Group();
+    moonCrescentGroup.position.set(-0.35, 0.25, 0.05);
+    windowGroup.add(moonCrescentGroup);
+
+    const crescentCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.48, 0.72, 0),
+      new THREE.Vector3(-0.18, 0.48, 0),
+      new THREE.Vector3(-0.42, 0.0, 0),
+      new THREE.Vector3(-0.18, -0.48, 0),
+      new THREE.Vector3(0.48, -0.72, 0),
+    ]);
+    const crescentGeo = new THREE.TubeGeometry(crescentCurve, 28, 0.18, 14, false);
+    addToonMesh(crescentGeo, matPipGold, moonCrescentGroup, 0.035);
+
+    // Hanging small crescent moon inside upper-right pane of the window
+    const miniMoonCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.16, 0.22, 0),
+      new THREE.Vector3(-0.06, 0.12, 0),
+      new THREE.Vector3(-0.12, 0.0, 0),
+      new THREE.Vector3(-0.06, -0.12, 0),
+      new THREE.Vector3(0.16, -0.22, 0),
+    ]);
+    const miniMoonGeo = new THREE.TubeGeometry(miniMoonCurve, 16, 0.065, 10, false);
+    const miniMoonMesh = addToonMesh(miniMoonGeo, matPipGold, windowGroup, 0.04);
+    miniMoonMesh.position.set(0.62, 0.48, 0.04);
+
+    registerInteractive(windowGroup, 'window');
+
+    // 5. PAPER MOON & STAR BUNTING GARLAND (Upper-Left Signature Detail from the Book Cover!)
+    const garlandGroup = new THREE.Group();
+    garlandGroup.position.set(-1.95, 2.05, -0.85);
+    garlandGroup.rotation.y = 0.22;
+    worldGroup.add(garlandGroup);
+
+    const cordCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-1.35, 0.32, 0),
+      new THREE.Vector3(-0.65, 0.05, 0.08),
+      new THREE.Vector3(0.0, -0.06, 0.12),
+      new THREE.Vector3(0.65, 0.06, 0.08),
+      new THREE.Vector3(1.35, 0.35, 0),
+    ]);
+    const cordGeo = new THREE.TubeGeometry(cordCurve, 32, 0.022, 8, false);
+    addToonMesh(cordGeo, matDarkInk, garlandGroup, 0);
+
+    // Cute bows at both ends of the garland string
+    [-1.35, 1.35].forEach((endX, idx) => {
+      const bowEnd = new THREE.Group();
+      bowEnd.position.set(endX, idx === 0 ? 0.32 : 0.35, 0);
+      garlandGroup.add(bowEnd);
+      const loopGeo = new THREE.TorusGeometry(0.09, 0.025, 8, 16);
+      const leftL = new THREE.Mesh(loopGeo, matDarkInk);
+      leftL.position.set(-0.08, 0.02, 0);
+      leftL.rotation.z = 0.4;
+      const rightL = new THREE.Mesh(loopGeo, matDarkInk);
+      rightL.position.set(0.08, 0.02, 0);
+      rightL.rotation.z = -0.4;
+      bowEnd.add(leftL, rightL);
+    });
+
+    // 3 dangling golden paper crescent moons along the garland cord
+    const paperMoonPendulums: THREE.Group[] = [];
+    const moonHangCoords: [number, number, number][] = [
+      [-0.78, 0.08, 0.92],
+      [0.0, -0.05, 1.05],
+      [0.78, 0.09, 0.88],
+    ];
+    moonHangCoords.forEach(([hx, hy, scale]) => {
+      const pendulum = new THREE.Group();
+      pendulum.position.set(hx, hy, 0.1);
+      garlandGroup.add(pendulum);
+
+      const stringGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.28, 6);
+      const strMesh = new THREE.Mesh(stringGeo, matDarkInk);
+      strMesh.position.y = -0.14;
+      pendulum.add(strMesh);
+
+      const pCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.14 * scale, -0.16 * scale, 0),
+        new THREE.Vector3(-0.08 * scale, -0.24 * scale, 0),
+        new THREE.Vector3(-0.14 * scale, -0.38 * scale, 0),
+        new THREE.Vector3(-0.04 * scale, -0.52 * scale, 0),
+        new THREE.Vector3(0.18 * scale, -0.48 * scale, 0),
+      ]);
+      const pMoonGeo = new THREE.TubeGeometry(pCurve, 18, 0.072 * scale, 12, false);
+      addToonMesh(pMoonGeo, matPipGold, pendulum, 0.045);
+      paperMoonPendulums.push(pendulum);
+    });
+
+    // 6. LOW ROUND WOODEN PICNIC TABLE & COZY FEAST
+    const tableGroup = new THREE.Group();
+    tableGroup.position.set(0, floorY + 0.23, 0.88);
+    worldGroup.add(tableGroup);
+
+    addContactShadow(worldGroup, 0, floorY + 0.015, 0.88, 1.38, 1.05, 0.85);
+
+    const tableTopGeo = new THREE.CylinderGeometry(1.24, 1.24, 0.14, 36);
+    const tableTop = addToonMesh(tableTopGeo, matWoodTable, tableGroup, 0.03);
+    tableTop.scale.set(1.12, 1, 0.86);
+    tableTop.position.y = 0.18;
+
+    const legPositions = [
+      [-0.86, 0, 0.46],
+      [0.86, 0, 0.46],
+      [-0.86, 0, -0.46],
+      [0.86, 0, -0.46],
+    ];
+    legPositions.forEach(([lx, ly, lz]) => {
+      const legGeo = new THREE.CylinderGeometry(0.11, 0.09, 0.34, 14);
+      const leg = addToonMesh(legGeo, matWoodTable, tableGroup, 0.04);
+      leg.position.set(lx, ly, lz);
+    });
+
+    // Polka-dot Ceramic Berry Bowl (Left of Table)
+    const bowlGroup = new THREE.Group();
+    bowlGroup.position.set(-0.42, 0.26, 0.06);
+    tableGroup.add(bowlGroup);
+
+    const bowlCanvas = document.createElement('canvas');
+    bowlCanvas.width = 256;
+    bowlCanvas.height = 128;
+    const bCtx = bowlCanvas.getContext('2d');
+    if (bCtx) {
+      bCtx.fillStyle = '#FFF9EC';
+      bCtx.fillRect(0, 0, 256, 128);
+      bCtx.fillStyle = '#FF7E95';
+      for (let x = 20; x < 256; x += 42) {
+        for (let y = 28; y < 110; y += 38) {
+          bCtx.beginPath();
+          bCtx.arc(x + ((y % 2) * 16), y, 8, 0, Math.PI * 2);
+          bCtx.fill();
+        }
+      }
+    }
+    const bowlTex = new THREE.CanvasTexture(bowlCanvas);
+    bowlTex.colorSpace = THREE.SRGBColorSpace;
+    const matBowl = new THREE.MeshStandardMaterial({ map: bowlTex, roughness: 0.32 });
+
+    const bowlGeo = new THREE.SphereGeometry(0.4, 24, 16, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.55);
+    const bowlMesh = addToonMesh(bowlGeo, matBowl, bowlGroup, 0.038);
+    bowlMesh.position.y = 0.24;
+
+    // Strawberries AND Blueberries inside the bowl (matching the book cover!)
+    const strawberryOffsets: [number, number, number][] = [
+      [-0.12, 0.24, 0.04],
+      [0.06, 0.28, -0.06],
+      [-0.02, 0.33, 0.02],
+    ];
+    strawberryOffsets.forEach(([bx, by, bz]) => {
+      const sGeo = new THREE.ConeGeometry(0.115, 0.2, 12);
+      const sMesh = addToonMesh(sGeo, matBerryRed, bowlGroup, 0.04);
+      sMesh.position.set(bx, by, bz);
+      sMesh.rotation.set(bx * 1.4, 0, -bz * 1.4);
+
+      // Tiny green calyx leaf on each strawberry
+      const leafCap = new THREE.ConeGeometry(0.065, 0.04, 6);
+      const capMesh = new THREE.Mesh(leafCap, matLeafGreen);
+      capMesh.position.set(bx, by + 0.08, bz);
+      bowlGroup.add(capMesh);
+    });
+
+    const blueberryOffsets: [number, number, number][] = [
+      [0.14, 0.24, 0.1],
+      [-0.14, 0.23, -0.11],
+      [0.02, 0.23, 0.16],
+      [0.16, 0.22, -0.08],
+    ];
+    blueberryOffsets.forEach(([bx, by, bz]) => {
+      const bbGeo = new THREE.SphereGeometry(0.095, 14, 14);
+      const bbMesh = addToonMesh(bbGeo, matBlueberry, bowlGroup, 0.04);
+      bbMesh.position.set(bx, by, bz);
+    });
+
+    // Plate of Golden Steamed Honey Buns (Right of Table)
+    const plateGroup = new THREE.Group();
+    plateGroup.position.set(0.46, 0.26, 0.06);
+    tableGroup.add(plateGroup);
+
+    const plateMat = new THREE.MeshStandardMaterial({ color: 0xfffdf7, roughness: 0.28 });
+    const plateGeo = new THREE.CylinderGeometry(0.44, 0.36, 0.06, 24);
+    addToonMesh(plateGeo, plateMat, plateGroup, 0.035);
+
+    const createHoneyBun = (parent: THREE.Object3D, x: number, y: number, z: number, scale = 1) => {
+      const bunGroup = new THREE.Group();
+      bunGroup.position.set(x, y, z);
+      bunGroup.scale.setScalar(scale);
+      parent.add(bunGroup);
+
+      const bunGeo = new THREE.SphereGeometry(0.24, 20, 16);
+      bunGeo.scale(1.18, 0.78, 1.18);
+      addToonMesh(bunGeo, matBunWarm, bunGroup, 0.04);
+
+      const glazeGeo = new THREE.SphereGeometry(0.17, 16, 12);
+      glazeGeo.scale(1.12, 0.42, 1.12);
+      const glaze = new THREE.Mesh(glazeGeo, matBunTop);
+      glaze.position.y = 0.11;
+      bunGroup.add(glaze);
+      return bunGroup;
+    };
+
+    createHoneyBun(plateGroup, 0, 0.14, 0, 1.05);
+
+    // Cozy Blossom Teacup on the Picnic Blanket near Sprout
+    const teacupGroup = new THREE.Group();
+    teacupGroup.position.set(1.22, floorY + 0.16, 1.56);
+    worldGroup.add(teacupGroup);
+
+    const cupGeo = new THREE.CylinderGeometry(0.2, 0.16, 0.3, 20);
+    addToonMesh(cupGeo, plateMat, teacupGroup, 0.04);
+
+    // Pink blossom emblem on the front of the teacup
+    const cupFlowerGeo = new THREE.CircleGeometry(0.065, 12);
+    const cupFlower = new THREE.Mesh(cupFlowerGeo, matBlush);
+    cupFlower.position.set(0, 0.0, 0.185);
+    teacupGroup.add(cupFlower);
+
+    const teaLiquidMat = new THREE.MeshStandardMaterial({ color: 0xd9822b, roughness: 0.18 });
+    const teaGeo = new THREE.CircleGeometry(0.17, 16);
+    const teaMesh = new THREE.Mesh(teaGeo, teaLiquidMat);
+    teaMesh.rotation.x = -Math.PI / 2;
+    teaMesh.position.y = 0.142;
+    teacupGroup.add(teaMesh);
+
+    // 7. CHARACTER 1: MISO THE CREAM KITTEN (Left of Table, Sharing a Warm Bun)
+    const misoBaseY = floorY + 0.56;
+    const misoGroup = new THREE.Group();
+    misoGroup.position.set(-1.32, misoBaseY, 0.18);
+    misoGroup.rotation.y = 0.42;
+    worldGroup.add(misoGroup);
+
+    addContactShadow(worldGroup, -1.32, floorY + 0.015, 0.18, 0.92, 0.85, 0.82);
+
+    const misoBodyGeo = new THREE.SphereGeometry(0.68, 28, 24);
+    misoBodyGeo.scale(0.96, 1.06, 0.9);
+    addToonMesh(misoBodyGeo, matMisoCream, misoGroup, 0.032);
+
+    const misoFootGeo = new THREE.SphereGeometry(0.22, 16, 16);
+    misoFootGeo.scale(1.1, 0.72, 1.3);
+    const misoFootL = addToonMesh(misoFootGeo, matMisoCream, misoGroup, 0.038);
+    misoFootL.position.set(-0.34, -0.5, 0.45);
+    const misoFootR = addToonMesh(misoFootGeo, matMisoCream, misoGroup, 0.038);
+    misoFootR.position.set(0.34, -0.5, 0.45);
+
+    const misoHeadGroup = new THREE.Group();
+    misoHeadGroup.position.set(0, 0.86, 0.05);
+    misoGroup.add(misoHeadGroup);
+
+    const misoHeadGeo = new THREE.SphereGeometry(0.76, 32, 28);
+    misoHeadGeo.scale(1.16, 0.96, 1.0);
+    addToonMesh(misoHeadGeo, matMisoCream, misoHeadGroup, 0.03);
+
+    // Cat Ears
+    const earGeo = new THREE.ConeGeometry(0.32, 0.52, 16);
+    const earInnerGeo = new THREE.ConeGeometry(0.18, 0.34, 12);
+
+    const earLGroup = new THREE.Group();
+    earLGroup.position.set(-0.56, 0.62, 0);
+    earLGroup.rotation.z = 0.38;
+    addToonMesh(earGeo, matMisoCream, earLGroup, 0.038);
+    const earLInner = new THREE.Mesh(earInnerGeo, matMisoEarPink);
+    earLInner.position.set(0, -0.02, 0.14);
+    earLGroup.add(earLInner);
+    misoHeadGroup.add(earLGroup);
+
+    const earRGroup = new THREE.Group();
+    earRGroup.position.set(0.56, 0.62, 0);
+    earRGroup.rotation.z = -0.38;
+    addToonMesh(earGeo, matMisoCream, earRGroup, 0.038);
+    const earRInner = new THREE.Mesh(earInnerGeo, matMisoEarPink);
+    earRInner.position.set(0, -0.02, 0.14);
+    earRGroup.add(earRInner);
+    misoHeadGroup.add(earRGroup);
+
+    // Pastel Blue Bow on Miso's Left Ear
+    const bowGroup = new THREE.Group();
+    bowGroup.position.set(-0.38, 0.68, 0.34);
+    bowGroup.rotation.set(0.15, 0.2, 0.32);
+    misoHeadGroup.add(bowGroup);
+
+    const bowCenterGeo = new THREE.SphereGeometry(0.1, 14, 14);
+    addToonMesh(bowCenterGeo, matRibbonBlue, bowGroup, 0.045);
+
+    const bowWingGeo = new THREE.ConeGeometry(0.18, 0.32, 14);
+    bowWingGeo.scale(1, 1, 0.52);
+    const bowWingL = addToonMesh(bowWingGeo, matRibbonBlue, bowGroup, 0.045);
+    bowWingL.rotation.z = -Math.PI / 2;
+    bowWingL.position.x = -0.18;
+    const bowWingR = addToonMesh(bowWingGeo, matRibbonBlue, bowGroup, 0.045);
+    bowWingR.rotation.z = Math.PI / 2;
+    bowWingR.position.x = 0.18;
+
+    // Miso Face (Eyes, Blush, W-Smile)
+    const eyeGeo = new THREE.SphereGeometry(0.068, 16, 16);
+    const eyeHighlightGeo = new THREE.SphereGeometry(0.024, 10, 10);
+    const matEyeWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    const misoEyeL = new THREE.Mesh(eyeGeo, matDarkInk);
+    misoEyeL.position.set(-0.31, 0.02, 0.73);
+    const misoHlL = new THREE.Mesh(eyeHighlightGeo, matEyeWhite);
+    misoHlL.position.set(-0.29, 0.05, 0.785);
+
+    const misoEyeR = new THREE.Mesh(eyeGeo, matDarkInk);
+    misoEyeR.position.set(0.31, 0.02, 0.73);
+    const misoHlR = new THREE.Mesh(eyeHighlightGeo, matEyeWhite);
+    misoHlR.position.set(0.33, 0.05, 0.785);
+    misoHeadGroup.add(misoEyeL, misoHlL, misoEyeR, misoHlR);
+
+    const cheekGeo = new THREE.CircleGeometry(0.115, 16);
+    const misoCheekL = new THREE.Mesh(cheekGeo, matBlush);
+    misoCheekL.position.set(-0.48, -0.1, 0.69);
+    misoCheekL.rotation.y = -0.35;
+    const misoCheekR = new THREE.Mesh(cheekGeo, matBlush);
+    misoCheekR.position.set(0.48, -0.1, 0.69);
+    misoCheekR.rotation.y = 0.35;
+    misoHeadGroup.add(misoCheekL, misoCheekR);
+
+    const mouthArcGeo = new THREE.TorusGeometry(0.062, 0.02, 10, 18, Math.PI);
+    const mouthL = new THREE.Mesh(mouthArcGeo, matDarkInk);
+    mouthL.rotation.x = Math.PI;
+    mouthL.position.set(-0.06, -0.05, 0.75);
+    const mouthR = new THREE.Mesh(mouthArcGeo, matDarkInk);
+    mouthR.rotation.x = Math.PI;
+    mouthR.position.set(0.06, -0.05, 0.75);
+    misoHeadGroup.add(mouthL, mouthR);
+
+    // Cozy Golden Scarf & Tail
+    const scarfGeo = new THREE.TorusGeometry(0.56, 0.16, 18, 36);
+    const scarf = addToonMesh(scarfGeo, matScarfGold, misoGroup, 0.035);
+    scarf.rotation.x = Math.PI / 2 + 0.08;
+    scarf.position.set(0, 0.42, 0.05);
+
+    const scarfTailGeo = new THREE.BoxGeometry(0.24, 0.46, 0.12);
+    const scarfTail = addToonMesh(scarfTailGeo, matScarfGold, misoGroup, 0.04);
+    scarfTail.position.set(-0.48, 0.2, 0.44);
+    scarfTail.rotation.set(0.18, 0.2, 0.32);
+
+    // Miso's Arms Offering a Warm Steamed Bun Toward Plum
+    const pawGeo = new THREE.CapsuleGeometry(0.15, 0.38, 12, 16);
+    const misoArmL = addToonMesh(pawGeo, matMisoCream, misoGroup, 0.038);
+    misoArmL.position.set(0.18, 0.14, 0.56);
+    misoArmL.rotation.set(1.15, 0, -0.45);
+
+    const misoArmR = addToonMesh(pawGeo, matMisoCream, misoGroup, 0.038);
+    misoArmR.position.set(0.54, 0.18, 0.48);
+    misoArmR.rotation.set(1.15, 0, 0.25);
+
+    const sharedBunGroup = createHoneyBun(misoGroup, 0.48, 0.22, 0.76, 0.86);
+
+    const tailCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -0.35, -0.55),
+      new THREE.Vector3(-0.35, -0.2, -0.85),
+      new THREE.Vector3(-0.55, 0.18, -0.75),
+    ]);
+    const tailGeo = new THREE.TubeGeometry(tailCurve, 16, 0.12, 12, false);
+    addToonMesh(tailGeo, matMisoCream, misoGroup, 0.04);
+
+    registerInteractive(misoGroup, 'miso');
+
+    // 8. CHARACTER 2: PLUM THE LAVENDER LOP-EARED BUNNY (Right of Table)
+    // Authentic rounded lavender bunny head + long lop ears + dainty strawberry leaf crown!
+    const plumBaseY = floorY + 0.54;
+    const plumGroup = new THREE.Group();
+    plumGroup.position.set(1.32, plumBaseY, 0.14);
+    plumGroup.rotation.y = -0.48;
+    worldGroup.add(plumGroup);
+
+    addContactShadow(worldGroup, 1.32, floorY + 0.015, 0.14, 0.9, 0.84, 0.82);
+
+    const plumBodyGeo = new THREE.SphereGeometry(0.65, 28, 24);
+    plumBodyGeo.scale(0.95, 1.04, 0.9);
+    addToonMesh(plumBodyGeo, matPlumLavender, plumGroup, 0.032);
+
+    const plumFootL = addToonMesh(misoFootGeo, matPlumLavender, plumGroup, 0.038);
+    plumFootL.position.set(-0.32, -0.48, 0.44);
+    const plumFootR = addToonMesh(misoFootGeo, matPlumLavender, plumGroup, 0.038);
+    plumFootR.position.set(0.32, -0.48, 0.44);
+
+    const plumHeadGroup = new THREE.Group();
+    plumHeadGroup.position.set(0, 0.82, 0.05);
+    plumGroup.add(plumHeadGroup);
+
+    const plumHeadGeo = new THREE.SphereGeometry(0.72, 32, 28);
+    plumHeadGeo.scale(1.14, 0.95, 0.98);
+    addToonMesh(plumHeadGeo, matPlumLavender, plumHeadGroup, 0.03);
+
+    // Dainty Strawberry-Blossom Leaf Crown perched neatly on top of Plum's head (no oversized helmet!)
+    const crownGroup = new THREE.Group();
+    crownGroup.position.set(0, 0.68, 0.04);
+    plumHeadGroup.add(crownGroup);
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 2;
+      const leafGeo = new THREE.ConeGeometry(0.11, 0.26, 8);
+      leafGeo.scale(1, 1, 0.38);
+      const leaf = addToonMesh(leafGeo, matLeafGreen, crownGroup, 0.04);
+      leaf.position.set(Math.cos(angle) * 0.14, 0.02, Math.sin(angle) * 0.14);
+      leaf.rotation.x = Math.PI / 2;
+      leaf.rotation.z = -angle - Math.PI / 2;
+    }
+    const crownBerryGeo = new THREE.SphereGeometry(0.11, 14, 14);
+    const crownBerry = addToonMesh(crownBerryGeo, matBerryRed, crownGroup, 0.04);
+    crownBerry.position.y = 0.08;
+
+    // Long Floppy Lop Bunny Ears Framing Plum's Face (Just Like the Book Cover!)
+    const lopEarGeo = new THREE.CapsuleGeometry(0.21, 0.66, 14, 20);
+    lopEarGeo.scale(0.88, 1, 0.5);
+    const lopEarL = addToonMesh(lopEarGeo, matPlumLavender, plumHeadGroup, 0.034);
+    lopEarL.position.set(-0.74, -0.02, 0.06);
+    lopEarL.rotation.set(0.08, 0, -0.34);
+
+    const lopEarR = addToonMesh(lopEarGeo, matPlumLavender, plumHeadGroup, 0.034);
+    lopEarR.position.set(0.74, -0.02, 0.06);
+    lopEarR.rotation.set(0.08, 0, 0.34);
+
+    // Plum Eyes, Blush, and Smile
+    const plumEyeL = new THREE.Mesh(eyeGeo, matDarkInk);
+    plumEyeL.position.set(-0.28, -0.02, 0.69);
+    const plumHlL = new THREE.Mesh(eyeHighlightGeo, matEyeWhite);
+    plumHlL.position.set(-0.26, 0.01, 0.745);
+
+    const plumEyeR = new THREE.Mesh(eyeGeo, matDarkInk);
+    plumEyeR.position.set(0.28, -0.02, 0.69);
+    const plumHlR = new THREE.Mesh(eyeHighlightGeo, matEyeWhite);
+    plumHlR.position.set(0.3, 0.01, 0.745);
+    plumHeadGroup.add(plumEyeL, plumHlL, plumEyeR, plumHlR);
+
+    const plumCheekL = new THREE.Mesh(cheekGeo, matBlush);
+    plumCheekL.position.set(-0.44, -0.14, 0.65);
+    plumCheekL.rotation.y = -0.32;
+    const plumCheekR = new THREE.Mesh(cheekGeo, matBlush);
+    plumCheekR.position.set(0.44, -0.14, 0.65);
+    plumCheekR.rotation.y = 0.32;
+    plumHeadGroup.add(plumCheekL, plumCheekR);
+
+    const plumMouthL = new THREE.Mesh(mouthArcGeo, matDarkInk);
+    plumMouthL.rotation.x = Math.PI;
+    plumMouthL.position.set(-0.055, -0.09, 0.71);
+    const plumMouthR = new THREE.Mesh(mouthArcGeo, matDarkInk);
+    plumMouthR.rotation.x = Math.PI;
+    plumMouthR.position.set(0.055, -0.09, 0.71);
+    plumHeadGroup.add(plumMouthL, plumMouthR);
+
+    // Plum's Paws Reaching Happily for the Shared Warm Bun
+    const plumArmL = addToonMesh(pawGeo, matPlumLavender, plumGroup, 0.038);
+    plumArmL.position.set(-0.42, 0.16, 0.48);
+    plumArmL.rotation.set(1.18, 0, -0.32);
+
+    const plumArmR = addToonMesh(pawGeo, matPlumLavender, plumGroup, 0.038);
+    plumArmR.position.set(0.24, 0.12, 0.5);
+    plumArmR.rotation.set(1.1, 0, 0.38);
+
+    // Fluffy Bunny Cotton Tail
+    const bunnyTailGeo = new THREE.SphereGeometry(0.22, 16, 16);
+    const bunnyTail = addToonMesh(bunnyTailGeo, matMisoCream, plumGroup, 0.04);
+    bunnyTail.position.set(0, -0.36, -0.62);
+
+    registerInteractive(plumGroup, 'plum');
+
+    // 9. SCULPTED 3D FLOATING HEART (♥) BETWEEN MISO & PLUM (Book Cover Centerpiece!)
+    const heartGroup = new THREE.Group();
+    heartGroup.position.set(0.02, floorY + 1.56, 0.35);
+    worldGroup.add(heartGroup);
+
+    const heartShape = new THREE.Shape();
+    heartShape.moveTo(0, -0.18);
+    heartShape.bezierCurveTo(0, -0.18, -0.26, 0.02, -0.26, 0.16);
+    heartShape.bezierCurveTo(-0.26, 0.29, -0.08, 0.32, 0, 0.18);
+    heartShape.bezierCurveTo(0.08, 0.32, 0.26, 0.29, 0.26, 0.16);
+    heartShape.bezierCurveTo(0.26, 0.02, 0, -0.18, 0, -0.18);
+
+    const heartExtrudeGeo = new THREE.ExtrudeGeometry(heartShape, {
+      depth: 0.08,
+      bevelEnabled: true,
+      bevelSegments: 5,
+      steps: 1,
+      bevelSize: 0.045,
+      bevelThickness: 0.045,
+    });
+    heartExtrudeGeo.center();
+    addToonMesh(heartExtrudeGeo, matHeartCoral, heartGroup, 0.06, false, false);
+
+    // 10. CHARACTER 3: PIP THE CHUBBY GOLDEN STAR (Front-Left of Blanket)
+    const pipBaseY = floorY + 0.42;
+    const pipGroup = new THREE.Group();
+    pipGroup.position.set(-2.18, pipBaseY, 1.32);
+    pipGroup.rotation.y = 0.48;
+    worldGroup.add(pipGroup);
+
+    addContactShadow(worldGroup, -2.18, floorY + 0.015, 1.32, 0.58, 0.52, 0.75);
+
+    const starShape = new THREE.Shape();
+    const outerR = 0.56;
+    const innerR = 0.32;
+    for (let i = 0; i < 10; i++) {
+      const r = i % 2 === 0 ? outerR : innerR;
+      const angle = (i * Math.PI) / 5 - Math.PI / 2;
+      const sx = Math.cos(angle) * r;
+      const sy = -Math.sin(angle) * r;
+      if (i === 0) starShape.moveTo(sx, sy);
+      else starShape.lineTo(sx, sy);
+    }
+    starShape.closePath();
+
+    const starExtrudeGeo = new THREE.ExtrudeGeometry(starShape, {
+      depth: 0.22,
+      bevelEnabled: true,
+      bevelSegments: 6,
+      steps: 1,
+      bevelSize: 0.12,
+      bevelThickness: 0.12,
+    });
+    starExtrudeGeo.center();
+    addToonMesh(starExtrudeGeo, matPipGold, pipGroup, 0.038);
+
+    const pipFootGeo = new THREE.SphereGeometry(0.14, 14, 14);
+    const pipFootL = addToonMesh(pipFootGeo, matPipGold, pipGroup, 0.045);
+    pipFootL.position.set(-0.18, -0.44, 0.2);
+    const pipFootR = addToonMesh(pipFootGeo, matPipGold, pipGroup, 0.045);
+    pipFootR.position.set(0.18, -0.44, 0.2);
+
+    const pipEyeGeo = new THREE.SphereGeometry(0.048, 12, 12);
+    const pipEyeL = new THREE.Mesh(pipEyeGeo, matDarkInk);
+    pipEyeL.position.set(-0.14, 0.02, 0.26);
+    const pipEyeR = new THREE.Mesh(pipEyeGeo, matDarkInk);
+    pipEyeR.position.set(0.14, 0.02, 0.26);
+    pipGroup.add(pipEyeL, pipEyeR);
+
+    const pipSmileGeo = new THREE.TorusGeometry(0.048, 0.016, 8, 16, Math.PI);
+    const pipSmile = new THREE.Mesh(pipSmileGeo, matDarkInk);
+    pipSmile.rotation.x = Math.PI;
+    pipSmile.position.set(0, -0.02, 0.26);
+    pipGroup.add(pipSmile);
+
+    registerInteractive(pipGroup, 'pip');
+
+    // 11. CHARACTER 4: SPROUT THE FRIENDLY GREEN SNAIL (Front-Right beside Teacup)
+    const sproutBaseY = floorY + 0.14;
+    const sproutGroup = new THREE.Group();
+    sproutGroup.position.set(1.78, sproutBaseY, 1.48);
+    sproutGroup.rotation.y = -0.58;
+    worldGroup.add(sproutGroup);
+
+    addContactShadow(worldGroup, 1.78, floorY + 0.015, 1.48, 0.56, 0.44, 0.72);
+
+    const snailBodyGeo = new THREE.CapsuleGeometry(0.16, 0.48, 14, 18);
+    const snailBody = addToonMesh(snailBodyGeo, matSproutBody, sproutGroup, 0.045);
+    snailBody.rotation.z = Math.PI / 2;
+    snailBody.position.set(0, 0.05, 0);
+
+    const snailHeadGeo = new THREE.SphereGeometry(0.21, 18, 18);
+    const snailHead = addToonMesh(snailHeadGeo, matSproutBody, sproutGroup, 0.045);
+    snailHead.position.set(-0.28, 0.18, 0);
+
+    const shellGeo = new THREE.SphereGeometry(0.32, 24, 20);
+    shellGeo.scale(1.0, 1.05, 0.76);
+    const shell = addToonMesh(shellGeo, matSproutShell, sproutGroup, 0.04);
+    shell.position.set(0.14, 0.28, 0);
+
+    const spiralGeo = new THREE.TorusGeometry(0.14, 0.028, 10, 24);
+    const spiralL = new THREE.Mesh(spiralGeo, matSproutSpiral);
+    spiralL.position.set(0.14, 0.28, 0.25);
+    const spiralR = new THREE.Mesh(spiralGeo, matSproutSpiral);
+    spiralR.position.set(0.14, 0.28, -0.25);
+    sproutGroup.add(spiralL, spiralR);
+
+    [-0.08, 0.08].forEach((zOff) => {
+      const stalkGeo = new THREE.CylinderGeometry(0.018, 0.018, 0.18, 8);
+      const stalk = new THREE.Mesh(stalkGeo, matDarkInk);
+      stalk.position.set(-0.34, 0.42, zOff);
+      stalk.rotation.z = 0.2;
+      const knobGeo = new THREE.SphereGeometry(0.042, 10, 10);
+      const knob = addToonMesh(knobGeo, matSproutBody, sproutGroup, 0.05);
+      knob.position.set(-0.37, 0.51, zOff);
+      sproutGroup.add(stalk);
+    });
+
+    const sproutEyeGeo = new THREE.SphereGeometry(0.032, 10, 10);
+    const sproutEyeL = new THREE.Mesh(sproutEyeGeo, matDarkInk);
+    sproutEyeL.position.set(-0.46, 0.2, 0.08);
+    const sproutEyeR = new THREE.Mesh(sproutEyeGeo, matDarkInk);
+    sproutEyeR.position.set(-0.46, 0.2, -0.08);
+    sproutGroup.add(sproutEyeL, sproutEyeR);
+
+    registerInteractive(sproutGroup, 'sprout');
+
+    // 12. STORYBOOK FLOWERS, LANTERN, AND TOADSTOOL MUSHROOMS AROUND THE CLEARING
+    const createFlower = (x: number, z: number, petalColor: number, scale = 1) => {
+      const fGroup = new THREE.Group();
+      fGroup.position.set(x, floorY + 0.02, z);
+      fGroup.scale.setScalar(scale);
+      worldGroup.add(fGroup);
+
+      const centerMat = new THREE.MeshStandardMaterial({ color: 0xffd23f, roughness: 0.4 });
+      const petalMat = new THREE.MeshStandardMaterial({ color: petalColor, roughness: 0.5 });
+
+      const cGeo = new THREE.SphereGeometry(0.09, 12, 12);
+      addToonMesh(cGeo, centerMat, fGroup, 0.04).position.y = 0.06;
+
+      for (let i = 0; i < 5; i++) {
+        const a = (i / 5) * Math.PI * 2;
+        const pGeo = new THREE.SphereGeometry(0.09, 12, 12);
+        pGeo.scale(1, 0.55, 1);
+        const p = addToonMesh(pGeo, petalMat, fGroup, 0.04);
+        p.position.set(Math.cos(a) * 0.14, 0.05, Math.sin(a) * 0.14);
+      }
+
+      const leafGeo = new THREE.ConeGeometry(0.1, 0.24, 8);
+      leafGeo.scale(1, 1, 0.4);
+      const leaf = addToonMesh(leafGeo, matLeafGreen, fGroup, 0.04);
+      leaf.rotation.x = Math.PI / 2;
+      leaf.rotation.z = x > 0 ? -0.6 : 0.6;
+      leaf.position.set(x > 0 ? 0.18 : -0.18, 0.02, 0);
+    };
+
+    createFlower(-3.2, 1.85, 0xff85a1, 1.15);
+    createFlower(-2.75, 2.35, 0xffc83d, 0.95);
+    createFlower(-3.55, 0.95, 0xc394f7, 1.0);
+    createFlower(2.95, 1.95, 0xff85a1, 1.15);
+    createFlower(2.45, 2.4, 0xffc83d, 0.95);
+    createFlower(3.45, 1.05, 0xc394f7, 1.0);
+
+    // Cozy Toadstool Mushrooms & Glowing Paper Lantern
+    const createMushroom = (x: number, z: number, scale = 1) => {
+      const mGroup = new THREE.Group();
+      mGroup.position.set(x, floorY, z);
+      mGroup.scale.setScalar(scale);
+      worldGroup.add(mGroup);
+
+      const stemGeo = new THREE.CylinderGeometry(0.11, 0.15, 0.34, 14);
+      addToonMesh(stemGeo, matMisoCream, mGroup, 0.04).position.y = 0.16;
+
+      const capGeo = new THREE.SphereGeometry(0.28, 20, 16, 0, Math.PI * 2, 0, Math.PI * 0.58);
+      addToonMesh(capGeo, matBerryRed, mGroup, 0.04).position.y = 0.26;
+
+      // White spots on mushroom cap
+      [
+        [0, 0.52, 0.08],
+        [-0.14, 0.45, -0.06],
+        [0.14, 0.44, -0.05],
+      ].forEach(([sx, sy, sz]) => {
+        const spotGeo = new THREE.SphereGeometry(0.045, 10, 10);
+        const spot = new THREE.Mesh(spotGeo, matMisoCream);
+        spot.position.set(sx, sy, sz);
+        mGroup.add(spot);
+      });
+    };
+
+    createMushroom(-3.55, -0.45, 1.05);
+    createMushroom(-3.85, -0.05, 0.72);
+    createMushroom(3.55, -0.25, 0.92);
+
+    // Glowing Paper Picnic Lantern on the Left Grass
+    const lanternGroup = new THREE.Group();
+    lanternGroup.position.set(-2.95, floorY + 0.02, 0.45);
+    worldGroup.add(lanternGroup);
+
+    const lanternBaseGeo = new THREE.CylinderGeometry(0.18, 0.2, 0.08, 16);
+    addToonMesh(lanternBaseGeo, matDarkInk, lanternGroup, 0.03).position.y = 0.04;
+    const lanternGlobeMat = new THREE.MeshStandardMaterial({
+      color: 0xfff2b2,
+      emissive: 0xffb72b,
+      emissiveIntensity: 0.75,
+      roughness: 0.3,
+    });
+    const lanternGlobeGeo = new THREE.SphereGeometry(0.24, 20, 16);
+    lanternGlobeGeo.scale(0.9, 1.15, 0.9);
+    addToonMesh(lanternGlobeGeo, lanternGlobeMat, lanternGroup, 0.035).position.y = 0.28;
+    const lanternCapGeo = new THREE.ConeGeometry(0.24, 0.16, 16);
+    addToonMesh(lanternCapGeo, matDarkInk, lanternGroup, 0.035).position.y = 0.54;
+
+    // 13. DRIFTING GOLDEN FIREFLIES & TWINKLING 3D STARS
+    const starsGroup = new THREE.Group();
+    scene.add(starsGroup);
+
+    const starOrbGeo = new THREE.OctahedronGeometry(0.11, 0);
+    const starPositions: [number, number, number, number][] = [
+      [-4.2, 3.2, -2.5, 1.2],
+      [-2.8, 3.9, -3.2, 0.9],
+      [-1.1, 3.7, -2.8, 1.1],
+      [0.4, 4.1, -3.0, 0.85],
+      [3.9, 3.5, -2.5, 1.15],
+      [-4.6, 1.9, -1.8, 0.8],
+      [4.5, 2.1, -1.5, 0.95],
+      [-3.5, 2.7, 1.2, 0.75],
+      [3.7, 2.9, 1.1, 0.8],
+    ];
+
+    starPositions.forEach(([sx, sy, sz, sScale]) => {
+      const sMesh = addToonMesh(starOrbGeo, matPipGold, starsGroup, 0.05, false, false);
+      sMesh.position.set(sx, sy, sz);
+      sMesh.scale.setScalar(sScale);
+    });
+
+    // Golden Fireflies Drifting Gently Around the Clearing
+    const firefliesGroup = new THREE.Group();
+    worldGroup.add(firefliesGroup);
+    const fireflyMat = new THREE.MeshBasicMaterial({
+      color: 0xffe875,
+      transparent: true,
+      opacity: 0.92,
+    });
+    const fireflyGeo = new THREE.SphereGeometry(0.052, 10, 10);
+    const fireflySeeds: Array<{
+      mesh: THREE.Mesh;
+      baseX: number;
+      baseY: number;
+      baseZ: number;
+      phase: number;
+      speed: number;
+    }> = [];
+
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const rad = 1.8 + (i % 4) * 0.75;
+      const fx = Math.cos(angle) * rad;
+      const fz = Math.sin(angle) * rad * 0.82;
+      const fy = floorY + 0.45 + (i % 5) * 0.48;
+      const m = new THREE.Mesh(fireflyGeo, fireflyMat);
+      m.position.set(fx, fy, fz);
+      firefliesGroup.add(m);
+      fireflySeeds.push({
+        mesh: m,
+        baseX: fx,
+        baseY: fy,
+        baseZ: fz,
+        phase: i * 1.17,
+        speed: 1.1 + (i % 3) * 0.35,
+      });
+    }
+
+    // --- RAYCAST CLICK INTERACTION FOR CHARACTERS ---
+    const raycaster = new THREE.Raycaster();
+    const pointerNdc = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0 };
+
+    const onPointerDown = (e: PointerEvent) => {
+      pointerDownPos = { x: e.clientX, y: e.clientY };
     };
 
     const onPointerUp = (e: PointerEvent) => {
-      if (Math.hypot(e.clientX - downX, e.clientY - downY) > 6) return;
-      updatePointer(e);
-      raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(
-        interactiveMeshes.map((m) => m.mesh),
-        false
-      );
+      const dx = e.clientX - pointerDownPos.x;
+      const dy = e.clientY - pointerDownPos.y;
+      if (Math.hypot(dx, dy) > 6) return; // Ignore drag orbits
+
+      const rect = renderer.domElement.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      pointerNdc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerNdc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointerNdc, camera);
+      const meshes = interactiveTargets.map((item) => item.mesh);
+      const hits = raycaster.intersectObjects(meshes, false);
       if (hits.length > 0) {
-        const data = hits[0].object.userData as { focus: FocusTargetKey; name: string };
-        if (data?.focus) {
-          isUserDraggingRef.current = false;
-          handleSelectFocus(data.focus);
+        const hitObj = hits[0].object;
+        const found = interactiveTargets.find((item) => item.mesh === hitObj);
+        if (found) {
+          handleSelectPreset(found.presetId);
         }
       }
     };
 
-    const domElem = renderer.domElement;
-    domElem.addEventListener('pointerdown', onPointerDown);
-    domElem.addEventListener('pointermove', onPointerMove);
-    domElem.addEventListener('pointerup', onPointerUp);
+    renderer.domElement.addEventListener('pointerdown', onPointerDown);
+    renderer.domElement.addEventListener('pointerup', onPointerUp);
 
-    // =========================================================================
-    // 9. ANIMATION LOOP (BREATHING CHARACTERS, LANTERN SWAY & CAMERA GLIDE)
-    // =========================================================================
-    let frameId = 0;
-    const clock = new THREE.Clock();
-    const desiredCamPos = new THREE.Vector3();
-    const desiredTarget = new THREE.Vector3();
+    // --- ANIMATION LOOP ---
+    let reqId: number;
+    let prevTime = performance.now();
+    let elapsed = 0;
+    let appliedMoodId: DioramaMoodId = lightingMoodRef.current;
 
-    const animate = () => {
-      frameId = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+    const animate = (now: number) => {
+      reqId = requestAnimationFrame(animate);
+      const dt = Math.min((now - prevTime) / 1000, 0.1);
+      prevTime = now;
+      elapsed += dt;
 
-      // Gentle breathing & head tilt on Miso, Plum, Pip, and Sprout
-      misoHead.rotation.z = Math.sin(t * 1.5) * 0.035;
-      misoHead.position.y = 1.56 + Math.sin(t * 2.1) * 0.015;
-      misoArmR.rotation.x = -0.78 + Math.sin(t * 2.4) * 0.04;
-
-      plumHead.rotation.z = Math.sin(t * 1.4 + 1.2) * 0.035;
-      plumHead.position.y = 1.54 + Math.sin(t * 2.0 + 1.0) * 0.015;
-      bouquetGroup.rotation.z = 0.24 + Math.sin(t * 2.2) * 0.04;
-
-      pipBody.position.y = 0.52 + Math.sin(t * 2.6 + 0.5) * 0.025;
-      pipBody.rotation.z = Math.sin(t * 1.8) * 0.045;
-
-      sproutGroup.position.y = 0.62 + Math.sin(t * 2.4) * 0.008;
-      cloudsGroup.position.y = Math.sin(t * 1.1) * 0.025;
-
-      // Gentle sway on hanging lanterns & twinkle on sky stars
-      lanterns.forEach((l, idx) => {
-        l.rotation.z = Math.sin(t * 1.3 + idx * 1.4) * 0.04;
-      });
-      floatingSkyStars.forEach((st, idx) => {
-        st.rotation.y = t * 0.6 + idx;
-        st.position.y += Math.sin(t * 2.0 + idx) * 0.0008;
-      });
-
-      // Smooth camera transition toward selected focus preset
-      if (!isUserDraggingRef.current) {
-        const preset = CAMERA_PRESETS[focusRef.current];
-        desiredCamPos.set(...preset.pos);
-        desiredTarget.set(...preset.target);
-
-        if (focusRef.current === 'room') {
-          desiredCamPos.x += Math.sin(t * 0.32) * 0.42;
-          desiredCamPos.y += Math.sin(t * 0.45) * 0.08;
+      // Apply Lighting Mood transitions smoothly if user switched mood
+      if (appliedMoodId !== lightingMoodRef.current) {
+        appliedMoodId = lightingMoodRef.current;
+        const moodCfg = getDioramaLightMood(appliedMoodId);
+        paintSkyTexture(appliedMoodId);
+        if (scene.fog instanceof THREE.FogExp2) {
+          scene.fog.color.setHex(moodCfg.fogColor);
         }
-        camera.position.lerp(desiredCamPos, 0.06);
-        controls.target.lerp(desiredTarget, 0.08);
+        keyLight.color.setHex(moodCfg.keyLightColor);
+        keyLight.intensity = moodCfg.keyLightIntensity;
+        fillLight.color.setHex(moodCfg.fillLightColor);
+        fillLight.intensity = moodCfg.fillLightIntensity;
+        moonGlowLight.intensity = moodCfg.moonGlowIntensity;
+        fireflyMat.opacity = moodCfg.fireflyOpacity;
       }
+
+      // Decay any joyful hop timers
+      for (const k of Object.keys(hopTimersRef.current)) {
+        if (hopTimersRef.current[k] > 0) {
+          hopTimersRef.current[k] = Math.max(0, hopTimersRef.current[k] - dt * 1.45);
+        }
+      }
+
+      const misoHop = Math.sin(hopTimersRef.current.miso * Math.PI) * 0.34;
+      const plumHop = Math.sin(hopTimersRef.current.plum * Math.PI) * 0.34;
+      const pipHop = Math.sin(hopTimersRef.current.pip * Math.PI) * 0.38;
+      const sproutHop = Math.sin(hopTimersRef.current.sprout * Math.PI) * 0.22;
+      const heartPulse = 1 + Math.sin(hopTimersRef.current.heart * Math.PI) * 0.32;
+
+      // Gentle character breathing & joyful nod animations
+      misoGroup.position.y = misoBaseY + misoHop;
+      misoHeadGroup.rotation.z = Math.sin(elapsed * 1.6) * 0.045;
+      misoHeadGroup.position.y = 0.86 + Math.sin(elapsed * 2.2) * 0.018;
+      sharedBunGroup.position.y = 0.22 + Math.sin(elapsed * 2.2) * 0.025;
+
+      plumGroup.position.y = plumBaseY + plumHop;
+      plumHeadGroup.rotation.z = Math.cos(elapsed * 1.5) * 0.045;
+      plumHeadGroup.position.y = 0.82 + Math.cos(elapsed * 2.1) * 0.018;
+
+      // Floating Heart between Miso & Plum
+      heartGroup.position.y = floorY + 1.56 + Math.sin(elapsed * 2.6) * 0.09 + (misoHop + plumHop) * 0.4;
+      heartGroup.rotation.y = Math.sin(elapsed * 1.4) * 0.28;
+      heartGroup.scale.setScalar((1 + Math.sin(elapsed * 3.4) * 0.06) * heartPulse);
+
+      pipGroup.position.y = pipBaseY + Math.sin(elapsed * 2.6) * 0.06 + pipHop;
+      pipGroup.rotation.z = Math.sin(elapsed * 1.8) * 0.06;
+
+      sproutGroup.position.y = sproutBaseY + sproutHop;
+      sproutGroup.position.x = 1.78 + Math.sin(elapsed * 0.9) * 0.04;
+
+      // Gentle breeze on paper moon garland pendulums
+      paperMoonPendulums.forEach((p, idx) => {
+        p.rotation.z = Math.sin(elapsed * 1.5 + idx * 0.9) * 0.075;
+      });
+
+      // Twinkling stars
+      starsGroup.children.forEach((star, idx) => {
+        star.rotation.y = elapsed * 0.7 + idx;
+        star.position.y += Math.sin(elapsed * 2 + idx) * 0.0008;
+      });
+
+      // Drifting golden fireflies
+      fireflySeeds.forEach((f) => {
+        f.mesh.position.x = f.baseX + Math.sin(elapsed * f.speed + f.phase) * 0.22;
+        f.mesh.position.y = f.baseY + Math.cos(elapsed * (f.speed * 1.2) + f.phase) * 0.16;
+        f.mesh.position.z = f.baseZ + Math.sin(elapsed * 0.8 + f.phase) * 0.18;
+      });
+
+      // Smooth camera preset focus or front-facing pendulum sway (keeps Miso, Plum & Moon Window facing viewer!)
+      const currentPresetId = activePresetRef.current;
+      const preset = CAMERA_PRESETS.find((p) => p.id === currentPresetId) || CAMERA_PRESETS[0];
+
+      if (autoRotateRef.current && currentPresetId === 'overview') {
+        const targetSwayY = Math.sin(elapsed * 0.45) * 0.22;
+        worldGroup.rotation.y = dampValue(worldGroup.rotation.y, targetSwayY, 3.5, dt);
+      } else if (currentPresetId !== 'overview') {
+        worldGroup.rotation.y = dampValue(worldGroup.rotation.y, 0, 5, dt);
+        camera.position.x = dampValue(camera.position.x, preset.position[0], 4.5, dt);
+        camera.position.y = dampValue(camera.position.y, preset.position[1], 4.5, dt);
+        camera.position.z = dampValue(camera.position.z, preset.position[2], 4.5, dt);
+      }
+
+      controls.target.x = dampValue(controls.target.x, preset.target[0], 5.5, dt);
+      controls.target.y = dampValue(controls.target.y, preset.target[1], 5.5, dt);
+      controls.target.z = dampValue(controls.target.z, preset.target[2], 5.5, dt);
 
       controls.update();
       renderer.render(scene, camera);
     };
-    animate();
+
+    reqId = requestAnimationFrame(animate);
+    setIsLoaded(true);
 
     const handleResize = () => {
-      if (!container) return;
-      const w = container.clientWidth || 860;
-      const h = container.clientHeight || 540;
+      if (!mountRef.current) return;
+      const w = mountRef.current.clientWidth;
+      const h = mountRef.current.clientHeight;
+      if (w === 0 || h === 0) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
+
     window.addEventListener('resize', handleResize);
 
     return () => {
-      cancelAnimationFrame(frameId);
       window.removeEventListener('resize', handleResize);
-      controls.removeEventListener('start', onStart);
-      controls.removeEventListener('end', onEnd);
-      domElem.removeEventListener('pointerdown', onPointerDown);
-      domElem.removeEventListener('pointermove', onPointerMove);
-      domElem.removeEventListener('pointerup', onPointerUp);
+      renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+      renderer.domElement.removeEventListener('pointerup', onPointerUp);
+      controls.removeEventListener('start', onStartInteraction);
+      cancelAnimationFrame(reqId);
       controls.dispose();
+      envTarget.dispose();
+      skyTex.dispose();
+      contactShadowTex.dispose();
+      ginghamTex.dispose();
+      bowlTex.dispose();
       renderer.dispose();
     };
-  }, [effectiveMode, isOpen]);
+  }, [isOpen, embedded, handleSelectPreset]);
 
-  if (effectiveMode === 'modal' && !isOpen) {
-    return null;
-  }
+  if (!isOpen && !embedded) return null;
 
-  if (webglError) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-3xl bg-[#FFF9F2] p-8 text-center border-2 border-[#322F37]">
-        <p className="font-bold text-lg text-[#322F37]">
-          Interactive 3D Picnic Preview — Miso, Plum, Pip &amp; Sprout
-        </p>
-        <img
-          src="/assets/hero-moon-picnic.jpg"
-          alt="The Little Moon Picnic illustration"
-          className="mt-4 max-h-72 rounded-2xl object-contain"
-        />
-      </div>
-    );
-  }
+  const audioUi = getForestAudioUiState(isAudioPlaying);
 
-  const cardContent = (
+  return (
     <div
-      className={`three-moon-wrapper relative flex flex-col overflow-hidden rounded-[24px] border-2 border-[#322F37] bg-[#241B38] shadow-[0_14px_34px_rgba(36,27,56,0.22)] ${
-        effectiveMode === 'modal' ? 'h-[min(82vh,720px)] w-[min(94vw,1120px)]' : 'h-[490px] w-full'
-      }`}
+      className={
+        embedded
+          ? 'three-diorama-embedded relative w-full h-[580px] sm:h-[660px] rounded-[28px] overflow-hidden border-[3px] border-[#4A251D] shadow-[0_14px_0_#4A251D] bg-[#243B6B]'
+          : 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6'
+      }
+      role={embedded ? 'region' : 'dialog'}
+      aria-label="3D Moon Picnic Interactive World"
     >
-      {/* Top Action Controls: Ambient Forest Sound Toggle & Coloring / Fullscreen Actions */}
-      <div className="pointer-events-none absolute top-2.5 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-1.5">
-        <button
-          type="button"
-          onClick={handleToggleForestSound}
-          aria-pressed={isForestSoundOn}
-          data-testid="button-forest-sound-toggle"
-          className={`diorama-top-pill pointer-events-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11.5px] font-bold transition-all hover:-translate-y-0.5 whitespace-nowrap shrink-0 ${
-            isForestSoundOn ? 'is-sound-on' : 'is-sound-off'
-          }`}
-        >
-          <svg
-            viewBox="0 0 20 20"
-            className="h-3.5 w-3.5 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M9 5L5 8H2v4h3l4 3V5z" fill="currentColor" />
-            {isForestSoundOn ? (
-              <>
-                <path d="M13.5 7.5a3.5 3.5 0 0 1 0 5" />
-                <path d="M16 5a7 7 0 0 1 0 10" />
-              </>
-            ) : (
-              <path d="M14 8l4 4m0-4l-4 4" />
-            )}
-          </svg>
-          <span>{isForestSoundOn ? 'Forest Sound: On' : 'Forest Sound: Off'}</span>
-        </button>
-
-        <div className="pointer-events-auto flex items-center gap-1.5">
-          {handleOpenColoring && (
-            <button
-              type="button"
-              onClick={handleOpenColoring}
-              className="diorama-top-pill diorama-top-pill--accent rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
-            >
-              Color This Scene
-            </button>
-          )}
-          {effectiveMode === 'embedded' && handleOpenModal && (
-            <button
-              type="button"
-              onClick={handleOpenModal}
-              data-testid="button-open-3d-modal"
-              className="diorama-top-pill diorama-top-pill--dark rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
-            >
-              Fullscreen 3D ↗
-            </button>
-          )}
-          {effectiveMode === 'modal' && handleCloseModal && (
-            <button
-              type="button"
-              onClick={handleCloseModal}
-              data-testid="button-close-3d-modal"
-              className="diorama-top-pill rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
-            >
-              Close ✕
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Three.js Canvas Mount */}
       <div
-        ref={mountRef}
-        className="relative h-full w-full flex-1 cursor-grab active:cursor-grabbing"
-        aria-label="Interactive 3D Moon Picnic diorama with Miso, Plum, Pip, and Sprout"
-      />
+        className={
+          embedded
+            ? 'relative w-full h-full flex flex-col justify-between'
+            : 'relative w-full max-w-6xl h-[86vh] rounded-[28px] overflow-hidden border-[3px] border-[#4A251D] shadow-[0_14px_0_#4A251D] bg-[#243B6B] flex flex-col justify-between'
+        }
+      >
+        {/* Top Overlay Controls */}
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 p-3.5 sm:p-5 pointer-events-none">
+          <div className="bg-[#FFFDF8] border-2 border-[#4A251D] rounded-2xl px-4 py-2 shadow-[0_4px_0_#4A251D] pointer-events-auto">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#C85A32] block">
+              ✦ Interactive 3D Storybook World
+            </span>
+            <h3 className="text-base sm:text-lg font-extrabold text-[#3B2219] leading-tight">
+              The Little Moon Picnic · Clearing
+            </h3>
+          </div>
 
-      {/* Bottom Camera Focus Bar */}
-      <div className="z-10 flex flex-wrap items-center justify-between gap-2 border-t border-[#322F37]/15 bg-[#FFFDF9]/95 px-4 py-2.5 backdrop-blur-sm">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-xs font-bold uppercase tracking-wider text-[#6D6478]">
-            Camera Focus:
-          </span>
-          {(Object.keys(CAMERA_PRESETS) as FocusTargetKey[]).map((key) => {
-            const preset = CAMERA_PRESETS[key];
-            const isSelected = activeFocus === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => handleSelectFocus(key)}
-                className={`diorama-focus-pill rounded-full px-3 py-1 text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
-                  isSelected ? 'is-selected' : ''
+          <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
+            {/* Ambient Forest Sound Toggle Button */}
+            <button
+              type="button"
+              onClick={handleToggleAudio}
+              aria-pressed={isAudioPlaying}
+              aria-label={audioUi.ariaLabel}
+              className={`px-3.5 py-2 rounded-full border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 flex items-center gap-2 cursor-pointer whitespace-nowrap ${
+                isAudioPlaying
+                  ? 'bg-[#FFE066] text-[#3B2219]'
+                  : 'bg-[#FFFDF8] text-[#3B2219] hover:bg-[#FFF5D6]'
+              }`}
+              title="Toggle cozy ambient forest breeze & wooden wind chimes"
+            >
+              <span className="inline-flex items-center justify-center w-4 h-4" aria-hidden="true">
+                {isAudioPlaying ? (
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2.4]">
+                    <path
+                      d="M11 5L6 9H2v6h4l5 4V5z"
+                      fill="currentColor"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" strokeLinecap="round" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[2.4]">
+                    <path
+                      d="M11 5L6 9H2v6h4l5 4V5z"
+                      fill="currentColor"
+                      strokeLinejoin="round"
+                    />
+                    <line x1="22" y1="9" x2="16" y2="15" strokeLinecap="round" />
+                    <line x1="16" y1="9" x2="22" y2="15" strokeLinecap="round" />
+                  </svg>
+                )}
+              </span>
+              <span>{audioUi.buttonLabel}</span>
+              <span
+                className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-[#4A251D]/30 ${
+                  isAudioPlaying ? 'bg-[#3B2219] text-[#FFE066]' : 'bg-[#F3E8EE] text-[#5E4352]'
                 }`}
               >
-                {preset.label}
+                {audioUi.statusBadge}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActivePreset('overview');
+                setAutoRotate((prev) => !prev);
+              }}
+              className="px-3.5 py-2 rounded-full bg-[#FFFDF8] hover:bg-[#FFF5D6] border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold text-[#3B2219] shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 cursor-pointer whitespace-nowrap"
+            >
+              {autoRotate && activePreset === 'overview' ? '⏸ Pause Spin' : '▶ Spin Island'}
+            </button>
+
+            {!embedded && onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-3.5 py-2 rounded-full bg-[#FF6B8B] hover:bg-[#FF5277] border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold text-white shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 cursor-pointer whitespace-nowrap"
+                aria-label="Close 3D scene"
+              >
+                ✕ Close
               </button>
-            );
-          })}
+            )}
+          </div>
         </div>
 
-        <span className="hidden text-xs font-medium text-[#6D6478] sm:inline">
-          Drag to orbit · Scroll to zoom · Click any character
-        </span>
+        {/* 3D WebGL Canvas Mount */}
+        <div
+          ref={mountRef}
+          className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        />
+
+        {!isLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-[#243B6B] text-[#FFFDF8] font-bold">
+            Preparing Miso &amp; Plum&apos;s Moon Picnic…
+          </div>
+        )}
+
+        {/* Bottom Camera Tour, Story Caption & Lighting Mood Controls */}
+        <div className="relative z-10 p-3 sm:p-4 flex flex-col items-center gap-2 pointer-events-none">
+          {/* Interactive Story Caption Banner */}
+          <div
+            className="bg-[#FFFDF8]/95 border-2 border-[#4A251D] rounded-full px-4 py-1 text-xs sm:text-sm font-bold text-[#3B2219] shadow-[0_3px_0_#4A251D] text-center max-w-xl pointer-events-auto"
+            role="status"
+            aria-live="polite"
+          >
+            {storyBanner}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 pointer-events-auto">
+            {/* Character Camera Tour Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-1.5 bg-[#FFFDF8] border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]">
+              {CAMERA_PRESETS.map((preset) => {
+                const isActive = activePreset === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => handleSelectPreset(preset.id)}
+                    aria-pressed={isActive}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
+                      isActive
+                        ? 'bg-[#FFE066] text-[#3B2219] border border-[#4A251D] shadow-sm scale-105'
+                        : 'bg-transparent text-[#3B2219] hover:bg-[#F3E8EE]'
+                    }`}
+                  >
+                    <span aria-hidden="true">{preset.badge}</span>
+                    <span>{preset.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Atmosphere Lighting Mood Switcher */}
+            <div
+              className="flex items-center gap-1 bg-[#FFFDF8] border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]"
+              role="group"
+              aria-label="3D scene lighting mood"
+            >
+              {(Object.keys(DIORAMA_LIGHT_MOODS) as DioramaMoodId[]).map((moodKey) => {
+                const moodCfg = DIORAMA_LIGHT_MOODS[moodKey];
+                const isSelected = lightingMood === moodKey;
+                return (
+                  <button
+                    key={moodKey}
+                    type="button"
+                    onClick={() => setLightingMood(moodKey)}
+                    aria-pressed={isSelected}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+                      isSelected
+                        ? 'bg-[#FFE066] text-[#3B2219] border border-[#4A251D]'
+                        : 'bg-transparent text-[#5E4352] hover:bg-[#F3E8EE]'
+                    }`}
+                  >
+                    {moodCfg.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-
-  if (effectiveMode === 'modal') {
-    return (
-      <div
-        className="scene-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-[#181224]/80 p-4 backdrop-blur-sm"
-        role="dialog"
-        aria-modal="true"
-        aria-label="3D Moon Picnic Studio"
-      >
-        {cardContent}
-      </div>
-    );
-  }
-
-  return cardContent;
 };
