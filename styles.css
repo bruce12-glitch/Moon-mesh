@@ -571,8 +571,8 @@ video {
   --lilac-deep: #b5a2ca;
   --peach: #f7e8df;
   --pink: #e7a6b4;
-  --display: Nunito, system-ui, sans-serif;
-  --body: Nunito, system-ui, sans-serif;
+  --display: "Fredoka", "DynaPuff", system-ui, sans-serif;
+  --body: "Quicksand", "Fredoka", system-ui, sans-serif;
   --shell: 1240px;
   --focus: #8161a7;
   --radius: 16px;
@@ -987,7 +987,7 @@ img {
 
 .hero h1 {
   color: #251c2d;
-  font-family: Fraunces, Georgia, serif;
+  font-family: "DynaPuff", "Fredoka", cursive;
   font-size: clamp(48px, 5.2vw, 74px);
   font-weight: 900;
   line-height: .99;
@@ -1062,7 +1062,7 @@ img {
 
 .hero-signoff {
   margin-top: 20px;
-  font-family: Caveat, cursive;
+  font-family: "Pacifico", cursive;
   color: #705e66;
   font-size: 25px;
 }
@@ -1274,7 +1274,7 @@ img {
   left: 7%;
   right: 5%;
   color: var(--cover-text);
-  font: 900 13cqw/1.02 Nunito, sans-serif;
+  font: 700 12.2cqw/1.05 "DynaPuff", "Fredoka", sans-serif;
   letter-spacing: -.035em;
 }
 
@@ -2055,7 +2055,7 @@ img {
 
 .footer-tagline {
   margin-top: 0;
-  font-family: Caveat, cursive;
+  font-family: "Pacifico", cursive;
   font-size: 28px;
 }
 
@@ -3177,7 +3177,7 @@ img {
 
 .hero-display-h1 {
   color: #251c2d;
-  font-family: Fraunces, Georgia, serif;
+  font-family: "DynaPuff", "Fredoka", cursive;
   font-size: clamp(46px, 5vw, 72px);
   font-weight: 900;
   line-height: 0.99;
@@ -3196,22 +3196,25 @@ img {
 
 .treat-block-line {
   display: block;
-  color: #3f2220;
-  font-family: Nunito, system-ui, sans-serif;
-  font-size: clamp(36px, 4.1vw, 56px);
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  color: #432320;
+  font-family: "DynaPuff", "Fredoka", system-ui, cursive;
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.85);
 }
 
 .treat-script-line {
   display: block;
-  color: #e44c77;
-  font-family: Caveat, Fraunces, cursive;
-  font-size: clamp(54px, 6.2vw, 84px);
-  font-weight: 700;
-  line-height: 0.88;
-  margin-block: -4px 4px;
+  color: #e44b76;
+  font-family: "Pacifico", cursive;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  margin-block: 0px 6px;
   transform: rotate(-2deg);
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
 }
 
 .hero-centered-inner {

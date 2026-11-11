@@ -20,8 +20,8 @@
     --lilac-deep: #b5a2ca;
     --peach: #f7e8df;
     --pink: #e7a6b4;
-    --display: Nunito, system-ui, sans-serif;
-    --body: Nunito, system-ui, sans-serif;
+    --display: "Fredoka", "DynaPuff", system-ui, sans-serif;
+    --body: "Quicksand", "Fredoka", system-ui, sans-serif;
     --shell: 1240px;
     --focus: #8161a7;
     --radius: 16px;
@@ -95,7 +95,7 @@
   .hero-inner { @apply flex items-center; min-height: clamp(540px, 43.6vw, 630px); }
   .hero-copy { width: 40%; max-width: 430px; padding-block: 36px; }
   .hero-copy .eyebrow { font-size: 14px; }
-  .hero h1 { color: #251c2d; font-family: Fraunces, Georgia, serif; font-size: clamp(48px, 5.2vw, 74px); font-weight: 900; line-height: .99; letter-spacing: -.055em; }
+  .hero h1 { color: #251c2d; font-family: "DynaPuff", "Fredoka", cursive; font-size: clamp(48px, 5.2vw, 74px); font-weight: 900; line-height: .99; letter-spacing: -.055em; }
   .marker-highlight, .marker-underline { position: relative; isolation: isolate; white-space: nowrap; }
   .marker-highlight::before { content: ""; position: absolute; z-index: -1; inset: 48% -.06em 7%; border-radius: 45% 18% 25% 20%; background: #ffc81e; transform: rotate(-3deg); }
   .marker-underline::after { content: ""; position: absolute; z-index: -1; left: -.02em; right: -.02em; bottom: .02em; height: .075em; border-radius: 50% 30% 10% 25%; background: #ed493d; transform: rotate(-3deg); }
@@ -106,7 +106,7 @@
   .hero-actions .button-ink:is(:hover, :focus-visible) { background: #463c4d; animation: hero-cta-pulse 1.6s ease-in-out infinite; }
   .hero-actions .button-ink:is(:hover, :focus-visible) .icon { transform: translateX(3px); }
   .hero-actions .text-link { font-size: 14px; }
-  .hero-signoff { margin-top: 20px; font-family: Caveat, cursive; color: #705e66; font-size: 25px; }
+  .hero-signoff { margin-top: 20px; font-family: "Pacifico", cursive; color: #705e66; font-size: 25px; }
   .hero-signoff span { font-family: Nunito, sans-serif; font-size: 21px; }
   .crew { padding: 40px 0 36px; background: var(--paper); }
   .crew-lineup { width: min(100%, 980px); margin: 0 auto 24px; }
@@ -135,7 +135,7 @@
   .cover-brand, .cover-no { position: absolute; z-index: 2; top: 5%; color: var(--cover-text); font-size: 4cqw; font-weight: 800; line-height: 1; }
   .cover-brand { left: 7%; }
   .cover-no { right: 7%; font-size: 3.5cqw; }
-  .cover-title { position: absolute; z-index: 2; top: 13%; left: 7%; right: 5%; color: var(--cover-text); font: 900 13cqw/1.02 Nunito, sans-serif; letter-spacing: -.035em; }
+  .cover-title { position: absolute; z-index: 2; top: 13%; left: 7%; right: 5%; color: var(--cover-text); font: 700 12.2cqw/1.05 "DynaPuff", "Fredoka", sans-serif; letter-spacing: -.035em; }
   .cover-title em { color: var(--cover-accent); font-style: normal; }
   .cover img { position: absolute; inset: auto 0 0; width: 100%; height: 58%; border: 0; background: var(--art-bg); object-fit: contain; }
   .book-art:focus-visible .cover { transform: perspective(900px) translateY(-7px) rotate(0deg); box-shadow: 3px 3px 0 #fff, 7px 12px 18px #342e4225; }
@@ -256,7 +256,7 @@
   .footer-main { padding-top: 44px; background: var(--lilac); }
   .footer-inner { display: grid; grid-template-columns: 1fr 1.55fr; gap: 75px; padding-bottom: 36px; }
   .footer-brand .wordmark { width: 285px; max-width: 100%; }
-  .footer-tagline { margin-top: 0; font-family: Caveat, cursive; font-size: 28px; }
+  .footer-tagline { margin-top: 0; font-family: "Pacifico", cursive; font-size: 28px; }
   .footer-blurb { max-width: 34ch; margin-top: 8px; color: var(--ink-soft); font-size: 14px; line-height: 1.75; }
   .footer-nav { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 24px; }
   .footer-nav h2 { margin-bottom: 14px; font-size: 18px; font-weight: 750; letter-spacing: 0; }
@@ -553,7 +553,7 @@
 
 .hero-display-h1 {
   color: #251c2d;
-  font-family: Fraunces, Georgia, serif;
+  font-family: "DynaPuff", "Fredoka", cursive;
   font-size: clamp(46px, 5vw, 72px);
   font-weight: 900;
   line-height: 0.99;
@@ -572,22 +572,25 @@
 
 .treat-block-line {
   display: block;
-  color: #3f2220;
-  font-family: Nunito, system-ui, sans-serif;
-  font-size: clamp(36px, 4.1vw, 56px);
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  color: #432320;
+  font-family: "DynaPuff", "Fredoka", system-ui, cursive;
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.85);
 }
 
 .treat-script-line {
   display: block;
-  color: #e44c77;
-  font-family: Caveat, Fraunces, cursive;
-  font-size: clamp(54px, 6.2vw, 84px);
-  font-weight: 700;
-  line-height: 0.88;
-  margin-block: -4px 4px;
+  color: #e44b76;
+  font-family: "Pacifico", cursive;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  margin-block: 0px 6px;
   transform: rotate(-2deg);
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
 }
 
 .hero-centered-inner {
