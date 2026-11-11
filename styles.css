@@ -2482,36 +2482,6 @@ img {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-@font-face {
-  font-family: Nunito;
-
-  src: url("assets/nunito.woff") format("woff");
-
-  font-display: swap;
-
-  font-weight: 400 900;
-}
-
-@font-face {
-  font-family: Caveat;
-
-  src: url("assets/caveat-brand.woff") format("woff");
-
-  font-display: swap;
-
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: Fraunces;
-
-  src: url("assets/fraunces.woff") format("woff");
-
-  font-display: swap;
-
-  font-weight: 650 900;
-}
-
 @media (min-width: 1500px) {
   .hero-copy {
     margin-left: 15px;
