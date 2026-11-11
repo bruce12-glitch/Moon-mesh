@@ -26,7 +26,7 @@ const EMPTY_SAVED_IDS = new Set<string>();
 
 export default function App() {
   // Crew outline vs color state
-  const [crewColored, setCrewColored] = useState<boolean>(false);
+  const [crewColored, setCrewColored] = useState<boolean>(true);
 
   // Modals & 3D Studio state
   const [isStudioOpen, setIsStudioOpen] = useState<boolean>(false);
@@ -280,7 +280,7 @@ export default function App() {
               <svg className="icon" aria-hidden="true">
                 <use href="#search" />
               </svg>
-              <span>Search the bookshelf</span>
+              <span>Search Moon Mesh</span>
             </button>
           </div>
 
@@ -297,7 +297,7 @@ export default function App() {
         </div>
 
         <nav id="main-nav" className="main-nav shell" aria-label="Main">
-          <a href="#books">Our books</a>
+          <a href="#books">Our book</a>
           <a href="#peek">Peek inside</a>
           <a href="#story">Our little world</a>
           <button
@@ -411,13 +411,13 @@ export default function App() {
                   <svg className="icon" aria-hidden="true">
                     <use href="#spark" />
                   </svg>{' '}
-                  The bookshelf
+                  Our featured storybook
                 </p>
-                <h2 id="books-title">Your next happy little escape.</h2>
+                <h2 id="books-title">The Little Moon Picnic.</h2>
               </div>
               <p className="section-aside">
-                Sleepy rooftops, little gardens, and faraway planets. A familiar friend in every
-                adventure.
+                Miso &amp; Friends · A Story Coloring Book for Kids Ages 6–9. Warm buns, fresh
+                berries, and paper moons beside the crescent window.
               </p>
             </div>
 
@@ -465,34 +465,14 @@ export default function App() {
                         </span>
                         <span className="book-3d-pages-top" aria-hidden="true" />
                         <span className="book-3d-front">
-                          {book.fullBleedCover ? (
-                            <img
-                              src={book.coverImage}
-                              width={680}
-                              height={510}
-                              alt=""
-                              loading="lazy"
-                              className="book-3d-fullbleed-img"
-                            />
-                          ) : (
-                            <span className="book-3d-structured-cover">
-                              <span className="cover-brand">Moon Mesh</span>
-                              <span className="cover-no">{book.number}</span>
-                              <span className="cover-title">
-                                {book.titleTop}
-                                <br />
-                                <em>{book.titleEm}</em>
-                              </span>
-                              <img
-                                src={book.coverImage}
-                                width={680}
-                                height={680}
-                                alt=""
-                                loading="lazy"
-                              />
-                              <span className="cover-edition">A coloring adventure</span>
-                            </span>
-                          )}
+                          <img
+                            src={book.coverImage}
+                            width={680}
+                            height={510}
+                            alt={book.title}
+                            loading="lazy"
+                            className="book-3d-fullbleed-img"
+                          />
                           <span className="book-3d-hinge-crease" aria-hidden="true" />
                         </span>
                       </span>
@@ -503,20 +483,26 @@ export default function App() {
                       {book.number} · {book.genre}
                     </p>
                     <h3>{book.title}</h3>
-                    <p>{book.description}</p>
-                    <a
-                      className="book-link"
-                      href={`#${book.id}-details`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveBookPreview(book);
-                      }}
-                    >
-                      Peek inside{' '}
-                      <svg className="icon" aria-hidden="true">
-                        <use href="#arrow" />
-                      </svg>
-                    </a>
+                    <p>{book.previewDescription}</p>
+                    <div className="book-featured-actions">
+                      <button
+                        type="button"
+                        className="button button-ink whitespace-nowrap"
+                        onClick={() => setActiveBookPreview(book)}
+                      >
+                        Peek inside this book{' '}
+                        <svg className="icon" aria-hidden="true">
+                          <use href="#arrow" />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        className="button button-paper whitespace-nowrap"
+                        onClick={() => setIs3DOpen(true)}
+                      >
+                        Open 3D Picnic Diorama
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}
@@ -994,11 +980,10 @@ export default function App() {
             </div>
             <nav className="footer-nav" aria-label="Explore Moon Mesh">
               <div>
-                <h2>Bookshelf</h2>
+                <h2>Our Book</h2>
                 <a href="#little-moon-picnic">The Little Moon Picnic</a>
-                <a href="#midnight-kittens">Midnight Kittens</a>
-                <a href="#starlight-garden">Starlight Garden</a>
-                <a href="#pocket-sized-planet">Pocket-Sized Planet</a>
+                <a href="#peek">Peek inside the pages</a>
+                <a href="#three-studio">3D Moon Picnic Diorama</a>
               </div>
               <div>
                 <h2>Coloring Club</h2>
