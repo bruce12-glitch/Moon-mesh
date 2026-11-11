@@ -15,16 +15,26 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.png" type="image/png" sizes="128x128">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
-  <link rel="preload" href="assets/nunito.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="assets/fraunces.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,650..900;1,9..144,650..900&family=Fredoka:wght@600;700&family=Nunito:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/"
+      }
+    }
+  </script>
   <link rel="stylesheet" href="styles.css">
 
   <div id="three-picnic-modal" class="three-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="three-modal-title" hidden>
     <div id="three-canvas-mount" class="three-canvas-mount"></div>
     <div class="three-top-bar">
-      <div class="three-title-badge">
-        <p class="three-kicker">Moon Mesh 3D Studio · The Little Moon Picnic</p>
-        <h2 id="three-modal-title">Miso, Pip, Plum &amp; Sprout Diorama</h2>
+      <div class="three-title-badge" style="max-width: 440px;">
+        <p class="three-kicker"><span id="three-card-badge" style="background:#f5c95d;color:#251c2d;padding:2px 8px;border-radius:6px;margin-right:6px;">Story World · 4 Characters</span> Moon Mesh 3D Studio</p>
+        <h2 id="three-modal-title">The Little Moon Picnic · Ages 6–9</h2>
+        <p id="three-card-desc" style="margin-top:4px;font-size:12px;line-height:1.45;color:#e6dcf5;">Rain taps the porch outside, so Miso, Pip, Plum, and Sprout turn the garden nook into a moonlit indoor picnic with paper moons, warm buns, and coloring pages.</p>
       </div>
       <div class="three-top-actions">
         <button type="button" class="three-btn-gold" data-three-color>Color Miso’s Page</button>
@@ -37,10 +47,12 @@
       </div>
       <div class="three-dock-panel">
         <div class="three-dock-group" role="group" aria-label="Camera views">
-          <span class="three-dock-label">Camera:</span>
-          <button type="button" class="three-chip is-active" data-cam-preset="overview">Picnic Table</button>
-          <button type="button" class="three-chip" data-cam-preset="miso">Miso &amp; Bun</button>
-          <button type="button" class="three-chip" data-cam-preset="sprout">Sprout’s Berry</button>
+          <span class="three-dock-label">Inspect:</span>
+          <button type="button" class="three-chip is-active" data-cam-preset="overview">Full Picnic</button>
+          <button type="button" class="three-chip" data-cam-preset="miso">Miso (1.00)</button>
+          <button type="button" class="three-chip" data-cam-preset="plum">Plum (0.95)</button>
+          <button type="button" class="three-chip" data-cam-preset="pip">Pip (0.45)</button>
+          <button type="button" class="three-chip" data-cam-preset="sprout">Sprout (0.30)</button>
           <button type="button" class="three-chip" data-cam-preset="window">Moon Window</button>
         </div>
         <label class="three-dock-group">
@@ -57,8 +69,7 @@
       </div>
     </div>
   </div>
-
-  <script src="app.js" defer></script>
+  <script type="module" src="app.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>

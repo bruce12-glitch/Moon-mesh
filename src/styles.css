@@ -2,25 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: Nunito;
-  src: url("assets/nunito.woff") format("woff");
-  font-display: swap;
-  font-weight: 400 900;
-}
-@font-face {
-  font-family: Caveat;
-  src: url("assets/caveat-brand.woff") format("woff");
-  font-display: swap;
-  font-weight: 700;
-}
-@font-face {
-  font-family: Fraunces;
-  src: url("assets/fraunces.woff") format("woff");
-  font-display: swap;
-  font-weight: 650 900;
-}
-
 @layer base {
   :root {
     --paper: #fffefe;
