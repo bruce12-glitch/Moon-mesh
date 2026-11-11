@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 52" role="img" aria-label="A little wrapped gift">
+  <g stroke="#2b2328" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+    <path fill="#edb3c3" d="M8 23c8-1 23-1 31 0l-1 23c-8 2-20 1-28 0Z"/>
+    <path fill="#f5d987" d="m21 22 7 1-1 24-7-1Z"/>
+    <path fill="#f1c2ce" d="m6 16 35 1 1 9-36-1Z"/>
+    <path fill="#f5d987" d="m21 16 7 1-1 9-7-1Z"/>
+    <path fill="#f5d987" d="M24 16C11 18 9 11 13 8c5-4 11 2 11 8Zm0 0c1-12 7-14 11-10 4 5-2 11-11 10Z"/>
+    <path fill="none" stroke-width="1.5" d="m15 10 6 5m10-7-5 7"/>
+  </g>
+</svg>
