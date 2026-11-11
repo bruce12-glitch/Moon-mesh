@@ -430,12 +430,7 @@ export default function App() {
                 >
                   <div className="book-mat cocowyo-shelf-stage">
                     <div className="cocowyo-shelf-curtains" aria-hidden="true" />
-                    <div className="cocowyo-shelf-wood" aria-hidden="true">
-                      <span
-                        className="shelf-mini-marker"
-                        style={{ '--marker-cap': book.markerColor } as React.CSSProperties}
-                      />
-                    </div>
+                    <div className="cocowyo-shelf-wood" aria-hidden="true" />
                     <a
                       className="book-art"
                       href={`#${book.id}-details`}
@@ -447,33 +442,53 @@ export default function App() {
                         setActiveBookPreview(book);
                       }}
                     >
-                      <span
-                        className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
-                        style={
-                          {
-                            '--spine-bg': book.spineColor,
-                            '--spine-ink': book.spineTextColor,
-                          } as React.CSSProperties
-                        }
-                      >
-                        <span className="book-table-shadow" aria-hidden="true" />
-                        <span className="book-3d-spine" aria-hidden="true">
-                          <span className="spine-emblem">✦</span>
-                          <span className="spine-brand">Moon Mesh</span>
-                          <span className="spine-title">{book.title}</span>
-                          <span className="spine-no">{book.number}</span>
-                        </span>
-                        <span className="book-3d-pages-top" aria-hidden="true" />
-                        <span className="book-3d-front">
-                          <img
-                            src={book.coverImage}
-                            width={680}
-                            height={510}
-                            alt={book.title}
-                            loading="lazy"
-                            className="book-3d-fullbleed-img"
-                          />
-                          <span className="book-3d-hinge-crease" aria-hidden="true" />
+                      <span className="cocowyo-book-stage-group">
+                        <img
+                          src="/assets/prop-courier-bird.webp"
+                          alt=""
+                          aria-hidden="true"
+                          className="book-stage-prop prop-courier-bird"
+                        />
+                        <img
+                          src="/assets/prop-open-easel.webp"
+                          alt=""
+                          aria-hidden="true"
+                          className="book-stage-prop prop-open-easel"
+                        />
+                        <img
+                          src="/assets/prop-alcohol-marker.webp"
+                          alt=""
+                          aria-hidden="true"
+                          className="book-stage-prop prop-alcohol-marker"
+                        />
+                        <span
+                          className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
+                          style={
+                            {
+                              '--spine-bg': book.spineColor,
+                              '--spine-ink': book.spineTextColor,
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span className="book-table-shadow" aria-hidden="true" />
+                          <span className="book-3d-spine" aria-hidden="true">
+                            <span className="spine-emblem">✦</span>
+                            <span className="spine-brand">Moon Mesh</span>
+                            <span className="spine-title">{book.title}</span>
+                            <span className="spine-no">{book.number}</span>
+                          </span>
+                          <span className="book-3d-pages-top" aria-hidden="true" />
+                          <span className="book-3d-front">
+                            <img
+                              src={book.coverImage}
+                              width={680}
+                              height={650}
+                              alt={book.title}
+                              loading="lazy"
+                              className="book-3d-fullbleed-img"
+                            />
+                            <span className="book-3d-hinge-crease" aria-hidden="true" />
+                          </span>
                         </span>
                       </span>
                     </a>
@@ -534,23 +549,23 @@ export default function App() {
           <div className="shell">
             <div className="three-callout-card">
               <div>
-                <p className="eyebrow" style={{ color: '#f5c95d' }}>
+                <p className="eyebrow" style={{ color: '#B55770' }}>
                   <svg className="icon" aria-hidden="true">
                     <use href="#spark" />
                   </svg>{' '}
                   Interactive 3D Story World
                 </p>
-                <h2 id="three-callout-title" className="text-[#fff4db]">
+                <h2 id="three-callout-title" className="text-[#2C2028]">
                   Step inside The Little Moon Picnic in 3D.
                 </h2>
-                <p className="mt-3 max-w-[48ch] text-base text-[#e2d6f3]">
+                <p className="mt-3 max-w-[48ch] text-base text-[#5A4C55]">
                   Inspect Miso’s warm bun handoff, Plum’s cushion, Pip’s spotted berry bowl, and
                   Sprout’s leaf tray from any camera angle under studio moonlight.
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-3 max-[900px]:justify-center">
                   <button
                     type="button"
-                    className="button button-yellow whitespace-nowrap shrink-0"
+                    className="button button-ink whitespace-nowrap shrink-0"
                     onClick={() => setIs3DOpen(true)}
                   >
                     Launch 3D Moon Picnic{' '}

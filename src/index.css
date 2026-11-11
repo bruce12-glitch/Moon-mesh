@@ -489,13 +489,6 @@ img {
   display: block;
   object-fit: contain;
   object-position: right center;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 28%, #000 44%, #000 96%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, transparent 28%, #000 44%, #000 96%, transparent 100%);
-}
-
-.hero-art img[src*="hero-moon-picnic"] {
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 50.5%, #000 56%, #000 97%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, transparent 50.5%, #000 56%, #000 97%, transparent 100%);
 }
 
 .hero-float-art {
@@ -714,33 +707,33 @@ img {
   --spine-ink: #3b2314;
   position: relative;
   display: block;
-  width: clamp(290px, 28vw, 390px);
-  aspect-ratio: 4 / 3.35;
+  width: clamp(235px, 24vw, 305px);
+  aspect-ratio: 1.04 / 1;
   transform-style: preserve-3d;
-  transform: perspective(1200px) rotateY(18deg) rotateX(2deg) rotateZ(-1deg);
+  transform: perspective(1200px) rotateY(15deg) rotateX(2deg) rotateZ(-0.5deg);
   transition: transform 0.42s var(--ease-smooth);
 }
 
 .cocowyo-3d-book.book-night,
 .cocowyo-3d-book.book-garden,
 .cocowyo-3d-book.book-space {
-  width: clamp(240px, 22vw, 310px);
-  aspect-ratio: 3 / 3.85;
+  width: clamp(230px, 22vw, 295px);
+  aspect-ratio: 1.04 / 1;
 }
 
 .cocowyo-3d-book-btn:hover .cocowyo-3d-book,
 .cocowyo-banner-book-hotspot:hover .cocowyo-3d-book {
-  transform: perspective(1200px) rotateY(12deg) rotateX(0deg) rotateZ(0deg) translateY(-6px) scale(1.02);
+  transform: perspective(1200px) rotateY(10deg) rotateX(0deg) rotateZ(0deg) translateY(-6px) scale(1.02);
 }
 
 .book-table-shadow {
   position: absolute;
-  left: -16px;
-  right: 6px;
-  bottom: -16px;
+  left: -20px;
+  right: 4px;
+  bottom: -14px;
   height: 28px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(36, 18, 6, 0.52) 0%, rgba(36, 18, 6, 0.22) 55%, transparent 78%);
+  background: radial-gradient(ellipse at center, rgba(32, 16, 6, 0.56) 0%, rgba(32, 16, 6, 0.25) 56%, transparent 80%);
   filter: blur(4px);
   z-index: 0;
   pointer-events: none;
@@ -748,38 +741,41 @@ img {
 
 .book-3d-spine {
   position: absolute;
-  top: -4px;
-  bottom: 4px;
-  left: -24px;
-  width: 25px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0%, rgba(255, 255, 255, 0.3) 28%, var(--spine-bg) 62%, rgba(0, 0, 0, 0.18) 100%);
+  top: 0;
+  bottom: 0;
+  left: -22px;
+  width: 23px;
+  background: linear-gradient(90deg, rgba(168, 122, 24, 0.42) 0%, rgba(255, 248, 210, 0.48) 32%, var(--spine-bg) 68%, rgba(120, 82, 14, 0.34) 100%);
   background-color: var(--spine-bg);
   color: var(--spine-ink);
-  border: 2.5px solid #2b1b19;
-  border-right-width: 1.5px;
+  border: 0;
   border-radius: 4px 0 0 4px;
   transform-origin: right center;
-  transform: skewY(10deg);
+  transform: skewY(7deg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 2px;
+  padding: 12px 2px;
   overflow: hidden;
   z-index: 3;
-  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    -2px 4px 10px rgba(38, 20, 8, 0.22),
+    inset 1px 0 1px rgba(255, 255, 255, 0.55),
+    inset -2px 0 4px rgba(68, 42, 12, 0.25);
 }
 
 .spine-emblem {
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1;
+  opacity: 0.9;
 }
 
 .spine-brand {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: "Pacifico", cursive;
-  font-size: 10px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
@@ -788,40 +784,43 @@ img {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: "Fredoka", sans-serif;
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 52%;
+  max-height: 54%;
 }
 
 .spine-no {
   font-size: 8px;
   font-weight: 800;
+  opacity: 0.85;
 }
 
 .book-3d-pages-top {
   position: absolute;
   top: -10px;
-  left: -12px;
-  right: 4px;
+  left: -10px;
+  right: 3px;
   height: 11px;
   background:
+    linear-gradient(90deg, rgba(210, 198, 182, 0.45) 0%, rgba(255, 255, 255, 0.98) 12%, rgba(255, 255, 255, 0.98) 92%, rgba(220, 210, 196, 0.6) 100%),
     repeating-linear-gradient(
       180deg,
       #ffffff 0px,
       #ffffff 2px,
-      #e6dfd5 3px,
-      #faf6f0 4px
+      #ebe4da 3px,
+      #fcfaf6 4px
     );
-  border: 2.2px solid #2b1b19;
-  border-bottom: 0;
-  border-radius: 3px 4px 0 0;
+  border: 0;
+  border-top: 1px solid rgba(175, 160, 142, 0.65);
+  border-radius: 3px 6px 0 0;
   transform-origin: bottom right;
-  transform: skewX(64deg);
+  transform: skewX(48deg);
+  box-shadow: 0 -2px 6px rgba(42, 24, 12, 0.08);
   z-index: 2;
 }
 
@@ -830,15 +829,17 @@ img {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 2px 10px 10px 2px;
-  border: 2.8px solid #2b1b19;
-  background: #fffdf7;
+  border-radius: 2px 11px 11px 2px;
+  border: 0;
+  background: #fbe39c;
   overflow: hidden;
   z-index: 3;
   box-shadow:
-    4px 0 0 #fffdf9,
-    6px 0 0 #cfc5b9,
-    12px 18px 28px rgba(38, 22, 10, 0.32);
+    3px 0 0 #fffdf9,
+    5px -1px 0 #ebe3d6,
+    7px -2px 0 #fffdf9,
+    8px -2px 0 #d5cbbd,
+    14px 18px 28px rgba(38, 22, 10, 0.34);
 }
 
 .book-3d-fullbleed-img {
@@ -944,9 +945,7 @@ img {
   max-height: 460px;
   object-fit: contain;
   margin-inline: auto;
-  border-radius: 24px;
-  -webkit-mask-image: radial-gradient(ellipse 96% 95% at 50% 50%, #000 82%, transparent 100%);
-  mask-image: radial-gradient(ellipse 96% 95% at 50% 50%, #000 82%, transparent 100%);
+  display: block;
 }
 
 .hero-centered-overlay-bar {
@@ -1269,9 +1268,9 @@ img {
   position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 3.2;
+  aspect-ratio: 4 / 3.45;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 22px;
   border: 1.5px solid rgba(50, 47, 55, 0.1);
   background: var(--mat);
   transition: transform 0.38s var(--ease-smooth), box-shadow 0.38s var(--ease-smooth);
@@ -1281,6 +1280,7 @@ img {
 .cocowyo-shelf-stage {
   position: relative;
   isolation: isolate;
+  background: url("/assets/book-stage-backdrop.webp") center / cover no-repeat;
 }
 
 .cocowyo-shelf-curtains {
@@ -1288,44 +1288,16 @@ img {
   inset: 0 0 28% 0;
   z-index: 0;
   background:
-    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.85), transparent 75%),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.62) 0px,
-      rgba(255, 255, 255, 0.9) 22px,
-      rgba(235, 228, 218, 0.48) 44px,
-      rgba(255, 255, 255, 0.62) 66px
-    );
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.35), transparent 75%);
+  pointer-events: none;
 }
 
 .cocowyo-shelf-wood {
   position: absolute;
   inset: 72% 0 0 0;
   z-index: 1;
-  border-top: 3px solid #5d381e;
-  background:
-    repeating-linear-gradient(
-      180deg,
-      transparent 0px,
-      transparent 9px,
-      rgba(52, 28, 12, 0.2) 10px,
-      transparent 12px
-    ),
-    linear-gradient(180deg, #8c5b36 0%, #a8744a 32%, #8e5d37 100%);
-  box-shadow: inset 0 4px 10px rgba(42, 22, 10, 0.22);
-}
-
-.shelf-mini-marker {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  width: 54px;
-  height: 11px;
-  border-radius: 4px;
-  border: 2px solid #2b1b19;
-  background: linear-gradient(90deg, var(--marker-cap, #e86a78) 0 32%, #fffdf9 32% 100%);
-  transform: rotate(-14deg);
-  box-shadow: 0 3px 4px rgba(36, 18, 8, 0.28);
+  background: linear-gradient(180deg, rgba(93, 56, 30, 0.08) 0%, rgba(52, 28, 12, 0.16) 100%);
+  pointer-events: none;
 }
 
 .book-art {
@@ -1335,34 +1307,85 @@ img {
   place-items: center;
   width: 100%;
   height: 100%;
-  padding: 24px 16px 32px 32px;
+  padding: 28px 18px 22px 34px;
+}
+
+.cocowyo-book-stage-group {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 74%;
+  max-width: 268px;
+}
+
+.book-stage-prop {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 4px 8px rgba(38, 20, 8, 0.22));
+  transition: transform 0.38s var(--ease-smooth);
+}
+
+.prop-courier-bird {
+  width: 22%;
+  top: -17%;
+  left: -13%;
+  z-index: 6;
+  transform: rotate(-3deg);
+}
+
+.prop-open-easel {
+  width: 24%;
+  bottom: -4%;
+  left: -14%;
+  z-index: 6;
+}
+
+.prop-alcohol-marker {
+  width: 26%;
+  bottom: 4%;
+  left: -26%;
+  z-index: 1;
+}
+
+.book-card:hover .prop-courier-bird {
+  transform: translateY(-5px) rotate(-6deg) scale(1.04);
+}
+
+.book-card:hover .prop-open-easel {
+  transform: translateY(-3px) rotate(-2deg);
+}
+
+.book-card:hover .prop-alcohol-marker {
+  transform: translateX(-3px) rotate(-3deg);
 }
 
 .cocowyo-3d-book-card.book-picnic {
-  width: 82%;
-  max-width: 310px;
-  aspect-ratio: 4 / 3.1;
-  transform: perspective(900px) rotateY(16deg) rotateX(2deg) rotateZ(-1deg);
+  width: 100%;
+  max-width: 268px;
+  aspect-ratio: 1.04 / 1;
+  transform: perspective(950px) rotateY(15deg) rotateX(2deg) rotateZ(-0.5deg);
 }
 
 .cocowyo-3d-book-card .book-3d-spine {
-  left: -19px;
-  width: 20px;
-  padding: 6px 1px;
+  left: -21px;
+  width: 22px;
+  padding: 10px 1px;
 }
 
 .cocowyo-3d-book-card .spine-brand {
-  font-size: 8px;
+  font-size: 8.5px;
 }
 
 .cocowyo-3d-book-card .spine-title {
-  font-size: 7.5px;
+  font-size: 8px;
 }
 
 .cocowyo-3d-book-card .book-3d-pages-top {
-  top: -8px;
+  top: -9px;
   left: -9px;
-  height: 9px;
+  right: 3px;
+  height: 10px;
 }
 
 .cover-brand, .cover-no {
@@ -1474,10 +1497,10 @@ img {
   gap: 36px;
   padding: 36px 44px;
   border-radius: 28px;
-  background: #2b213d;
-  color: #fff4db;
-  border: 2px solid #322f37;
-  box-shadow: 0 14px 32px rgba(43, 33, 61, 0.14);
+  background: linear-gradient(135deg, #FFF6E5 0%, #FDEAEF 52%, #F2EAFC 100%);
+  color: #2C2028;
+  border: 1.5px solid rgba(181, 87, 112, 0.22);
+  box-shadow: 0 16px 36px rgba(90, 56, 74, 0.09);
 }
 
 .three-callout-preview {
@@ -1487,12 +1510,43 @@ img {
   min-width: 0;
 }
 
+.diorama-top-pill {
+  background-color: #FFFDF8;
+  color: #231715 !important;
+  border: 2px solid #231715;
+  box-shadow: 0 4px 12px rgba(24, 16, 36, 0.28);
+}
+
+.diorama-top-pill.is-sound-on {
+  background-color: #7CE0A3;
+  color: #1B2920 !important;
+  border-color: #1B2920;
+}
+
+.diorama-top-pill.is-sound-off {
+  background-color: #FFFDF8;
+  color: #231715 !important;
+  border-color: #231715;
+}
+
+.diorama-top-pill--accent {
+  background-color: #FFE066;
+  color: #231715 !important;
+  border-color: #231715;
+}
+
+.diorama-top-pill--dark {
+  background-color: #2C2028;
+  color: #FFFDF8 !important;
+  border-color: #FFFDF8;
+}
+
 .diorama-focus-pill {
   padding: 5px 12px;
   border-radius: 999px;
   border: 1.5px solid #d8cbb8;
   background: #f5ede2;
-  color: #322f37;
+  color: #322f37 !important;
   font-size: 12px;
   font-weight: 700;
   transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
@@ -1500,14 +1554,14 @@ img {
 
 .diorama-focus-pill:hover {
   background: #eadbc8;
-  color: #322f37;
+  color: #322f37 !important;
   transform: translateY(-1px);
 }
 
 .diorama-focus-pill.is-selected {
   background: #322f37;
   border-color: #322f37;
-  color: #fffdf9;
+  color: #fffdf9 !important;
   transform: scale(1.04);
 }
 
