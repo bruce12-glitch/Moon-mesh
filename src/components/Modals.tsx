@@ -203,48 +203,64 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
           <div className={`preview-art cocowyo-shelf-stage ${book.themeClass}`}>
             <div className="cocowyo-shelf-curtains" aria-hidden="true" />
             <div className="cocowyo-shelf-wood" aria-hidden="true" />
-            <div
-              className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
-              style={
-                {
-                  '--spine-bg': book.spineColor,
-                  '--spine-ink': book.spineTextColor,
-                } as React.CSSProperties
-              }
-              aria-hidden="true"
-            >
-              <span className="book-table-shadow" />
-              <span className="book-3d-spine">
-                <span className="spine-emblem">✦</span>
-                <span className="spine-brand">Moon Mesh</span>
-                <span className="spine-title">{book.title}</span>
-                <span className="spine-no">{book.number}</span>
-              </span>
-              <span className="book-3d-pages-top" />
-              <span className="book-3d-front">
-                {book.fullBleedCover ? (
-                  <img
-                    src={book.coverImage}
-                    width={680}
-                    height={510}
-                    alt=""
-                    className="book-3d-fullbleed-img"
-                  />
-                ) : (
-                  <span className="book-3d-structured-cover">
-                    <span className="cover-brand">Moon Mesh</span>
-                    <span className="cover-no">{book.number}</span>
-                    <span className="cover-title">
-                      {book.titleTop}
-                      <br />
-                      <em>{book.titleEm}</em>
+            <div className="cocowyo-book-stage-group" aria-hidden="true">
+              <img
+                src="/assets/prop-courier-bird.webp"
+                alt=""
+                className="book-stage-prop prop-courier-bird"
+              />
+              <img
+                src="/assets/prop-open-easel.webp"
+                alt=""
+                className="book-stage-prop prop-open-easel"
+              />
+              <img
+                src="/assets/prop-alcohol-marker.webp"
+                alt=""
+                className="book-stage-prop prop-alcohol-marker"
+              />
+              <div
+                className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
+                style={
+                  {
+                    '--spine-bg': book.spineColor,
+                    '--spine-ink': book.spineTextColor,
+                  } as React.CSSProperties
+                }
+              >
+                <span className="book-table-shadow" />
+                <span className="book-3d-spine">
+                  <span className="spine-emblem">✦</span>
+                  <span className="spine-brand">Moon Mesh</span>
+                  <span className="spine-title">{book.title}</span>
+                  <span className="spine-no">{book.number}</span>
+                </span>
+                <span className="book-3d-pages-top" />
+                <span className="book-3d-front">
+                  {book.fullBleedCover ? (
+                    <img
+                      src={book.coverImage}
+                      width={680}
+                      height={650}
+                      alt=""
+                      className="book-3d-fullbleed-img"
+                    />
+                  ) : (
+                    <span className="book-3d-structured-cover">
+                      <span className="cover-brand">Moon Mesh</span>
+                      <span className="cover-no">{book.number}</span>
+                      <span className="cover-title">
+                        {book.titleTop}
+                        <br />
+                        <em>{book.titleEm}</em>
+                      </span>
+                      <img src={book.coverImage} width={680} height={680} alt="" />
+                      <span className="cover-edition">A coloring adventure</span>
                     </span>
-                    <img src={book.coverImage} width={680} height={680} alt="" />
-                    <span className="cover-edition">A coloring adventure</span>
-                  </span>
-                )}
-                <span className="book-3d-hinge-crease" />
-              </span>
+                  )}
+                  <span className="book-3d-hinge-crease" />
+                </span>
+              </div>
             </div>
           </div>
           <div className="preview-copy">
