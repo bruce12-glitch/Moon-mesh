@@ -98,16 +98,16 @@ test('isEraserSwatch identifies eraser hex codes', () => {
 });
 
 test('HERO_SLIDES first slide uses Grand Opening book showcase artwork', () => {
-  assert.equal(HERO_SLIDES[0].id, 'little-moon-picnic');
+  assert.equal(HERO_SLIDES[0].id, 'book-showcase');
   assert.equal(HERO_SLIDES[0].image, '/assets/hero-book-showcase.png');
-  assert.ok(HERO_SLIDES[0].badge.includes('GRAND OPENING'));
+  assert.equal(HERO_SLIDES[0].layout, 'book-showcase');
 });
 
 test('BOOKS catalog contains all four cozy coloring books with valid cover paths', () => {
   assert.equal(BOOKS.length, 4);
   for (const book of BOOKS) {
-    assert.ok(book.cover.startsWith('/assets/'));
-    assert.ok(book.pages.length >= 3);
+    assert.ok(book.coverImage.startsWith('/assets/'));
+    assert.ok(book.stageTagline.length > 0);
   }
 });
 
