@@ -26,7 +26,7 @@ const EMPTY_SAVED_IDS = new Set<string>();
 
 export default function App() {
   // Crew outline vs color state
-  const [crewColored, setCrewColored] = useState<boolean>(false);
+  const [crewColored, setCrewColored] = useState<boolean>(true);
 
   // Modals & 3D Studio state
   const [isStudioOpen, setIsStudioOpen] = useState<boolean>(false);
