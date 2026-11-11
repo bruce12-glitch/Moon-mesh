@@ -37,4 +37,11 @@
     </linearGradient>
     <linearGradient id="houseWallRight" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFF8EC"/>
+      <stop offset="60%" stop-color="#F5DFC2"/>
+      <stop offset="100%" stop-color="#DFBC96"/>
+    </linearGradient>
+    <linearGradient id="terraceFloor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F0CFC0"/>
+      <stop offset="55%" stop-color="#DEB09C"/>
+      <stop offset="100%" stop-color="#C48E78"/>
 </svg>
