@@ -1913,21 +1913,19 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       }`}
     >
       {/* Top Action Controls: Ambient Forest Sound Toggle & Coloring / Fullscreen Actions */}
-      <div className="pointer-events-none absolute top-3.5 left-3.5 right-3.5 z-10 flex flex-wrap items-center justify-between gap-2">
+      <div className="pointer-events-none absolute top-2.5 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-1.5">
         <button
           type="button"
           onClick={handleToggleForestSound}
           aria-pressed={isForestSoundOn}
           data-testid="button-forest-sound-toggle"
-          className={`pointer-events-auto inline-flex items-center gap-2 rounded-full border-2 border-[#322F37] px-3.5 py-1.5 text-xs font-bold shadow-sm transition-all hover:-translate-y-0.5 whitespace-nowrap shrink-0 ${
-            isForestSoundOn
-              ? 'bg-[#8FD3A8] text-[#231715]'
-              : 'bg-[#FFFDF9]/95 text-[#322F37]'
+          className={`diorama-top-pill pointer-events-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11.5px] font-bold transition-all hover:-translate-y-0.5 whitespace-nowrap shrink-0 ${
+            isForestSoundOn ? 'is-sound-on' : 'is-sound-off'
           }`}
         >
           <svg
             viewBox="0 0 20 20"
-            className="h-4 w-4 shrink-0"
+            className="h-3.5 w-3.5 shrink-0"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -1948,12 +1946,12 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
           <span>{isForestSoundOn ? 'Forest Sound: On' : 'Forest Sound: Off'}</span>
         </button>
 
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-auto flex items-center gap-1.5">
           {handleOpenColoring && (
             <button
               type="button"
               onClick={handleOpenColoring}
-              className="rounded-full border-2 border-[#322F37] bg-[#FFE066] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="diorama-top-pill diorama-top-pill--accent rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
               Color This Scene
             </button>
@@ -1963,9 +1961,9 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               type="button"
               onClick={handleOpenModal}
               data-testid="button-open-3d-modal"
-              className="rounded-full border-2 border-[#322F37] bg-[#322F37] px-3.5 py-1.5 text-xs font-bold text-[#FFFDF9] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="diorama-top-pill diorama-top-pill--dark rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
-              Fullscreen 3D Studio ↗
+              Fullscreen 3D ↗
             </button>
           )}
           {effectiveMode === 'modal' && handleCloseModal && (
@@ -1973,7 +1971,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               type="button"
               onClick={handleCloseModal}
               data-testid="button-close-3d-modal"
-              className="rounded-full border-2 border-[#322F37] bg-[#FFFDF9] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="diorama-top-pill rounded-full px-3 py-1 text-[11.5px] font-bold transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
               Close ✕
             </button>
