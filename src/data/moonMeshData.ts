@@ -157,11 +157,11 @@ export const HERO_SLIDES: HeroSlide[] = [
     subtitle:
       'A Story Coloring Book for Kids Ages 6–9. Pull up a cushion at the low wooden table for warm buns, sweet berries, and cozy pages to color.',
     signoff: 'Now serving cozy moments ♡',
-    bgColor: '#FBF8F3',
+    bgColor: '#F6EFE6',
     themeClass: 'slide-showcase',
     image: '/assets/hero-book-showcase.png',
     imageAlt:
-      'The Little Moon Picnic story coloring book standing on a warm wooden tabletop with Miso, Plum, Pip, and Sprout sharing a moonlit picnic.',
+      'Moon Mesh Grand Opening showcase featuring The Little Moon Picnic story coloring book standing on a wooden tabletop alongside Miso, Pip, and Plum.',
     layout: 'book-showcase',
     primaryCta: { label: 'Peek inside this book', href: '#books', action: 'preview-book' },
     secondaryCta: { label: 'Open 3D Picnic Diorama', href: '#three-studio', action: 'open-3d' },
