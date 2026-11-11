@@ -33,7 +33,7 @@ const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
   miso: {
     pos: [-1.45, 2.55, 3.85],
     target: [-1.35, 1.45, 0.05],
-    label: 'Miso (1.00)',
+    label: 'Miso',
     badge: 'Miso · Cream Kitten, Sky Bow & Warm Bun',
   },
   plum: {
