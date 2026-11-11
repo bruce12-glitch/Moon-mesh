@@ -147,28 +147,30 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           <rect width="1440" height="620" fill="url(#heroSunGlow)" />
           {/* Soft hand-drawn clouds in outer sky margins */}
           <g className="hero-cloud-drift-slow" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.12" strokeWidth="2.5">
-            <path d="M55 155 C55 132, 83 118, 107 128 C121 104, 161 104, 177 128 C201 122, 223 138, 219 160 C217 172, 201 178, 179 178 L77 178 C61 178, 55 168, 55 155 Z" />
-            <path d="M1210 130 C1210 108, 1238 94, 1262 104 C1278 80, 1318 80, 1334 104 C1358 98, 1380 114, 1376 136 C1374 148, 1358 154, 1336 154 L1232 154 C1216 154, 1210 144, 1210 130 Z" />
+            <path d="M28 135 C28 112, 56 98, 80 108 C94 84, 134 84, 150 108 C174 102, 196 118, 192 140 C190 152, 174 158, 152 158 L50 158 C34 158, 28 148, 28 135 Z" />
+            <path d="M1245 120 C1245 98, 1273 84, 1297 94 C1313 70, 1353 70, 1369 94 C1393 88, 1415 104, 1411 126 C1409 138, 1393 144, 1371 144 L1267 144 C1251 144, 1245 134, 1245 120 Z" />
           </g>
           <g className="hero-cloud-drift-fast" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.1" strokeWidth="2">
-            <path d="M115 475 C115 458, 137 447, 155 455 C167 437, 197 437, 209 455 C227 451, 243 463, 240 479 C238 488, 226 493, 210 493 L131 493 C119 493, 115 485, 115 475 Z" />
-            <path d="M1185 465 C1185 448, 1207 437, 1225 445 C1237 427, 1267 427, 1279 445 C1297 441, 1313 453, 1310 469 C1308 478, 1296 483, 1280 483 L1201 483 C1189 483, 1185 475, 1185 465 Z" />
+            <path d="M35 495 C35 478, 57 467, 75 475 C87 457, 117 457, 129 475 C147 471, 163 483, 160 499 C158 508, 146 513, 130 513 L51 513 C39 513, 35 505, 35 495 Z" />
+            <path d="M1265 485 C1265 468, 1287 457, 1305 465 C1317 447, 1347 447, 1359 465 C1377 461, 1393 473, 1390 489 C1388 498, 1376 503, 1360 503 L1281 503 C1269 503, 1265 495, 1265 485 Z" />
           </g>
-          {/* Hand-drawn twinkling stars in outer sky margins */}
-          <g fill="#F6C84C" stroke="#2B1B19" strokeWidth="2" strokeLinejoin="round">
-            <path
-              className="hero-svg-star star-a"
-              d="M168 78 L173 90 L186 92 L176 101 L179 114 L168 107 L157 114 L160 101 L150 92 L163 90 Z"
-            />
-            <path
-              className="hero-svg-star star-b"
-              d="M1278 232 L1282 241 L1292 243 L1285 250 L1287 260 L1278 255 L1269 260 L1271 250 L1264 243 L1274 241 Z"
-            />
-            <path
-              className="hero-svg-star star-c"
-              d="M148 318 L152 327 L162 329 L155 336 L157 346 L148 341 L139 346 L141 336 L134 329 L144 327 Z"
-            />
-          </g>
+          {/* Hand-drawn twinkling stars placed strictly in far outer sky corners away from all text and character ears */}
+          {activeSlide.layout !== 'centered' && (
+            <g fill="#F6C84C" stroke="#2B1B19" strokeWidth="2" strokeLinejoin="round">
+              <path
+                className="hero-svg-star star-a"
+                d="M58 54 L63 66 L76 68 L66 77 L69 90 L58 83 L47 90 L50 77 L40 68 L53 66 Z"
+              />
+              <path
+                className="hero-svg-star star-b"
+                d="M1384 62 L1388 71 L1398 73 L1391 80 L1393 90 L1384 85 L1375 90 L1377 80 L1370 73 L1380 71 Z"
+              />
+              <path
+                className="hero-svg-star star-c"
+                d="M52 388 L56 397 L66 399 L59 406 L61 416 L52 411 L43 416 L45 406 L38 399 L48 397 Z"
+              />
+            </g>
+          )}
         </svg>
 
         {activeSlide.id === 'coloring-treat' &&
@@ -248,9 +250,17 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   </div>
                 </div>
               ) : slide.layout === 'centered' ? (
-                /* Centered "COME JOIN US" Coco Wyo-inspired Banner Layout */
-                <div className="hero-centered-inner shell">
-                  <div className="hero-centered-art-wrap">
+                /* Centered Coco Wyo-inspired Banner Layout ("READY FOR a little COLORiNG TREAT?" & "COME JOIN US") */
+                <div
+                  className={`hero-centered-inner shell ${
+                    slide.id === 'coloring-treat' ? 'is-treat-slide' : 'is-join-slide'
+                  }`}
+                >
+                  <div
+                    className={`hero-centered-art-wrap ${
+                      slide.id === 'coloring-treat' ? 'hero-treat-art-wrap' : 'hero-join-art-wrap'
+                    }`}
+                  >
                     <img
                       src={imgSrc}
                       width={1600}
@@ -260,32 +270,41 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                       onError={() =>
                         setImageErrors((prev) => ({ ...prev, [slide.id]: true }))
                       }
-                      className="hero-centered-img"
+                      onClick={slide.id === 'coloring-treat' ? onOpenStudio : undefined}
+                      className={`hero-centered-img ${
+                        slide.id === 'coloring-treat' ? 'hero-treat-img cursor-pointer' : 'hero-join-img'
+                      }`}
                     />
                   </div>
-                  <div className="hero-centered-overlay-bar">
+                  <div
+                    className={`hero-centered-overlay-bar ${
+                      slide.id === 'coloring-treat' ? 'hero-treat-quote-only' : ''
+                    }`}
+                  >
                     <p className="hero-centered-subtitle">{slide.subtitle}</p>
-                    <div className="hero-actions justify-center">
-                      <a
-                        className="button button-ink whitespace-nowrap shrink-0"
-                        href={slide.primaryCta.href}
-                        onClick={(e) => handleCtaClick(e, slide.primaryCta)}
-                        tabIndex={isCurrent ? 0 : -1}
-                      >
-                        {slide.primaryCta.label}
-                        <svg className="icon" aria-hidden="true">
-                          <use href="#arrow" />
-                        </svg>
-                      </a>
-                      <a
-                        className="button button-paper whitespace-nowrap shrink-0"
-                        href={slide.secondaryCta.href}
-                        onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
-                        tabIndex={isCurrent ? 0 : -1}
-                      >
-                        {slide.secondaryCta.label}
-                      </a>
-                    </div>
+                    {slide.id !== 'coloring-treat' && (
+                      <div className="hero-actions justify-center">
+                        <a
+                          className="button button-ink whitespace-nowrap shrink-0"
+                          href={slide.primaryCta.href}
+                          onClick={(e) => handleCtaClick(e, slide.primaryCta)}
+                          tabIndex={isCurrent ? 0 : -1}
+                        >
+                          {slide.primaryCta.label}
+                          <svg className="icon" aria-hidden="true">
+                            <use href="#arrow" />
+                          </svg>
+                        </a>
+                        <a
+                          className="button button-paper whitespace-nowrap shrink-0"
+                          href={slide.secondaryCta.href}
+                          onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
+                          tabIndex={isCurrent ? 0 : -1}
+                        >
+                          {slide.secondaryCta.label}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
