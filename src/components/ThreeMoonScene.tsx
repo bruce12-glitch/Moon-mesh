@@ -28,37 +28,37 @@ const CAMERA_PRESETS: Record<FocusTargetKey, CameraPreset> = {
     pos: [0.2, 4.1, 7.8],
     target: [0, 1.35, -0.1],
     label: 'Full Picnic',
-    badge: '3D Toy Island · Golden Moon & Lanterns',
+    badge: 'The Little Moon Picnic',
   },
   miso: {
     pos: [-1.45, 2.55, 3.85],
     target: [-1.35, 1.45, 0.05],
     label: 'Miso',
-    badge: 'Miso · Cream Kitten, Sky Bow & Warm Bun',
+    badge: 'Miso the Kitten',
   },
   plum: {
     pos: [1.55, 2.55, 3.85],
     target: [1.35, 1.45, 0.05],
     label: 'Plum',
-    badge: 'Plum · Strawberry Hood & Fresh Tulips',
+    badge: 'Plum the Rabbit',
   },
   pip: {
     pos: [-0.95, 1.65, 3.35],
     target: [-0.82, 0.68, 1.15],
     label: 'Pip',
-    badge: 'Pip · Plump Star Pillow & Berry Bowl',
+    badge: 'Pip the Star',
   },
   sprout: {
     pos: [0.35, 2.05, 2.75],
     target: [0.32, 1.05, 0.18],
     label: 'Sprout',
-    badge: 'Sprout · Leaf Coaster, Cocoa & Coloring Book',
+    badge: 'Sprout the Snail',
   },
   window: {
     pos: [0.0, 3.45, 5.5],
     target: [0, 2.35, -1.2],
-    label: 'Moon Arch',
-    badge: 'Sculpted Crescent Moon · Cottage Window & Lanterns',
+    label: 'Moon Window',
+    badge: 'Moonlit Window',
   },
 };
 
@@ -81,10 +81,146 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [activeFocus, setActiveFocus] = useState<FocusTargetKey>('room');
   const [webglError, setWebglError] = useState<boolean>(false);
-  const [hoveredName, setHoveredName] = useState<string | null>(null);
+  const [isForestSoundOn, setIsForestSoundOn] = useState<boolean>(false);
 
   const focusRef = useRef<FocusTargetKey>('room');
   const isUserDraggingRef = useRef<boolean>(false);
+  const audioCleanupRef = useRef<(() => void) | null>(null);
+
+  const stopForestAmbience = () => {
+    if (audioCleanupRef.current) {
+      audioCleanupRef.current();
+      audioCleanupRef.current = null;
+    }
+  };
+
+  const startForestAmbience = () => {
+    stopForestAmbience();
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtx) return;
+
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') {
+        void ctx.resume();
+      }
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
+      masterGain.gain.exponentialRampToValueAtTime(0.24, ctx.currentTime + 1.2);
+      masterGain.connect(ctx.destination);
+
+      // 1. Soft Night Forest Breeze (filtered pink/brown noise modulated by slow LFO)
+      const bufferSize = ctx.sampleRate * 4;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      let lastOut = 0.0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        output[i] = (lastOut + 0.02 * white) / 1.02;
+        lastOut = output[i];
+        output[i] *= 1.8;
+      }
+
+      const breezeSource = ctx.createBufferSource();
+      breezeSource.buffer = noiseBuffer;
+      breezeSource.loop = true;
+
+      const breezeFilter = ctx.createBiquadFilter();
+      breezeFilter.type = 'bandpass';
+      breezeFilter.frequency.value = 420;
+      breezeFilter.Q.value = 0.85;
+
+      const breezeLfo = ctx.createOscillator();
+      breezeLfo.type = 'sine';
+      breezeLfo.frequency.value = 0.14;
+      const breezeLfoGain = ctx.createGain();
+      breezeLfoGain.gain.value = 180;
+      breezeLfo.connect(breezeLfoGain);
+      breezeLfoGain.connect(breezeFilter.frequency);
+
+      const breezeGain = ctx.createGain();
+      breezeGain.gain.value = 0.22;
+
+      breezeSource.connect(breezeFilter);
+      breezeFilter.connect(breezeGain);
+      breezeGain.connect(masterGain);
+      breezeSource.start();
+      breezeLfo.start();
+
+      // 2. Gentle Forest Crickets & Cozy Moonlit Chimes Interval
+      const chimeNotes = [349.23, 440.0, 523.25, 587.33, 659.25, 783.99]; // Warm Fmaj9 pentatonic
+      const chirpTimer = window.setInterval(() => {
+        if (ctx.state !== 'running') return;
+        const now = ctx.currentTime;
+
+        // Soft cricket trill (3 tiny high sine pulses)
+        for (let c = 0; c < 3; c++) {
+          const tStart = now + c * 0.065;
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(3950 + (c % 2) * 120, tStart);
+          g.gain.setValueAtTime(0.0001, tStart);
+          g.gain.linearRampToValueAtTime(0.018, tStart + 0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, tStart + 0.05);
+          osc.connect(g);
+          g.connect(masterGain);
+          osc.start(tStart);
+          osc.stop(tStart + 0.055);
+        }
+
+        // Occasional soft distant wooden wind chime / owl call
+        if (Math.random() > 0.35) {
+          const noteFreq = chimeNotes[Math.floor(Math.random() * chimeNotes.length)];
+          const chimeOsc = ctx.createOscillator();
+          const chimeGain = ctx.createGain();
+          chimeOsc.type = 'sine';
+          chimeOsc.frequency.setValueAtTime(noteFreq, now + 0.35);
+          chimeGain.gain.setValueAtTime(0.0001, now + 0.35);
+          chimeGain.gain.linearRampToValueAtTime(0.045, now + 0.45);
+          chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+          chimeOsc.connect(chimeGain);
+          chimeGain.connect(masterGain);
+          chimeOsc.start(now + 0.35);
+          chimeOsc.stop(now + 2.5);
+        }
+      }, 2800);
+
+      audioCleanupRef.current = () => {
+        window.clearInterval(chirpTimer);
+        try {
+          breezeSource.stop();
+          breezeLfo.stop();
+          void ctx.close();
+        } catch {
+          // Ignore close errors
+        }
+      };
+    } catch {
+      // Ignore Web Audio API restrictions if blocked
+    }
+  };
+
+  const handleToggleForestSound = () => {
+    setIsForestSoundOn((prev) => {
+      const next = !prev;
+      if (next) {
+        startForestAmbience();
+      } else {
+        stopForestAmbience();
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      stopForestAmbience();
+    };
+  }, []);
 
   const handleSelectFocus = (key: FocusTargetKey) => {
     focusRef.current = key;
@@ -712,7 +848,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     registerInteractive(
       moonWindowGroup,
       'window',
-      'Crescent Moon Arch · Cottage Window & Lanterns'
+      'Moon Window'
     );
 
     // =========================================================================
@@ -954,7 +1090,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     registerInteractive(
       sproutGroup,
       'sprout',
-      'Sprout (0.30 scale) · Cozy Snail on Leaf Coaster'
+      'Sprout'
     );
 
     // =========================================================================
@@ -1253,7 +1389,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     registerInteractive(
       misoGroup,
       'miso',
-      'Miso (1.00 scale) · Cream Kitten with Sky Bow & Warm Bun'
+      'Miso'
     );
 
     // =========================================================================
@@ -1473,7 +1609,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     registerInteractive(
       plumGroup,
       'plum',
-      'Plum (0.95 scale) · Rabbit in Strawberry Hood with Tulip Bouquet'
+      'Plum'
     );
 
     // =========================================================================
@@ -1612,7 +1748,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     registerInteractive(
       pipGroup,
       'pip',
-      'Pip (0.45 scale) · Plump Star Friend & Polka-Dot Berry Bowl'
+      'Pip'
     );
 
     // =========================================================================
@@ -1644,12 +1780,10 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       if (hits.length > 0) {
         const data = hits[0].object.userData as { focus: FocusTargetKey; name: string };
         if (data?.name) {
-          setHoveredName(data.name);
           renderer.domElement.style.cursor = 'pointer';
           return;
         }
       }
-      setHoveredName(null);
       renderer.domElement.style.cursor = 'grab';
     };
 
@@ -1772,29 +1906,56 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     );
   }
 
-  const currentPreset = CAMERA_PRESETS[activeFocus];
-
   const cardContent = (
     <div
       className={`three-moon-wrapper relative flex flex-col overflow-hidden rounded-[24px] border-2 border-[#322F37] bg-[#241B38] shadow-[0_14px_34px_rgba(36,27,56,0.22)] ${
         effectiveMode === 'modal' ? 'h-[min(82vh,720px)] w-[min(94vw,1120px)]' : 'h-[490px] w-full'
       }`}
     >
-      {/* Top Floating Badge & Hover Readout */}
+      {/* Top Action Controls: Ambient Forest Sound Toggle & Coloring / Fullscreen Actions */}
       <div className="pointer-events-none absolute top-3.5 left-3.5 right-3.5 z-10 flex flex-wrap items-center justify-between gap-2">
-        <div className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-[#322F37]/15 bg-[#FFFDF9]/95 px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm backdrop-blur-sm">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#F5B82E]" />
-          <span>{hoveredName || currentPreset.badge}</span>
-        </div>
+        <button
+          type="button"
+          onClick={handleToggleForestSound}
+          aria-pressed={isForestSoundOn}
+          data-testid="button-forest-sound-toggle"
+          className={`pointer-events-auto inline-flex items-center gap-2 rounded-full border-2 border-[#322F37] px-3.5 py-1.5 text-xs font-bold shadow-sm transition-all hover:-translate-y-0.5 whitespace-nowrap shrink-0 ${
+            isForestSoundOn
+              ? 'bg-[#8FD3A8] text-[#231715]'
+              : 'bg-[#FFFDF9]/95 text-[#322F37]'
+          }`}
+        >
+          <svg
+            viewBox="0 0 20 20"
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M9 5L5 8H2v4h3l4 3V5z" fill="currentColor" />
+            {isForestSoundOn ? (
+              <>
+                <path d="M13.5 7.5a3.5 3.5 0 0 1 0 5" />
+                <path d="M16 5a7 7 0 0 1 0 10" />
+              </>
+            ) : (
+              <path d="M14 8l4 4m0-4l-4 4" />
+            )}
+          </svg>
+          <span>{isForestSoundOn ? 'Forest Sound: On' : 'Forest Sound: Off'}</span>
+        </button>
 
         <div className="pointer-events-auto flex items-center gap-2">
           {handleOpenColoring && (
             <button
               type="button"
               onClick={handleOpenColoring}
-              className="rounded-full border border-[#322F37]/20 bg-[#FFE066] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="rounded-full border-2 border-[#322F37] bg-[#FFE066] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
-              Color This Scene ✦
+              Color This Scene
             </button>
           )}
           {effectiveMode === 'embedded' && handleOpenModal && (
@@ -1802,7 +1963,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               type="button"
               onClick={handleOpenModal}
               data-testid="button-open-3d-modal"
-              className="rounded-full border border-[#322F37] bg-[#322F37] px-3.5 py-1.5 text-xs font-bold text-[#FFFDF9] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="rounded-full border-2 border-[#322F37] bg-[#322F37] px-3.5 py-1.5 text-xs font-bold text-[#FFFDF9] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
               Fullscreen 3D Studio ↗
             </button>
@@ -1812,7 +1973,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               type="button"
               onClick={handleCloseModal}
               data-testid="button-close-3d-modal"
-              className="rounded-full border border-[#322F37] bg-[#FFFDF9] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
+              className="rounded-full border-2 border-[#322F37] bg-[#FFFDF9] px-3.5 py-1.5 text-xs font-bold text-[#322F37] shadow-sm transition-transform hover:-translate-y-0.5 whitespace-nowrap shrink-0"
             >
               Close ✕
             </button>
