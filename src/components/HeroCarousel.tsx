@@ -163,6 +163,73 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             />
             <path
               className="hero-svg-star star-b"
+              d="M1018 152 L1022 161 L1032 163 L1025 170 L1027 180 L1018 175 L1009 180 L1011 170 L1004 163 L1014 161 Z"
+            />
+            <path
+              className="hero-svg-star star-c"
+              d="M620 430 L624 439 L634 441 L627 448 L629 458 L620 453 L611 458 L613 448 L606 441 L616 439 Z"
+            />
+          </g>
+        </svg>
+
+        {activeSlide.id === 'coloring-treat' &&
+          CONFETTI_PIECES.map((piece) => (
+            <span
+              key={piece.id}
+              className="hero-confetti-ribbon"
+              style={{
+                top: piece.top,
+                left: piece.left,
+                backgroundColor: piece.color,
+                ['--confetti-rot' as string]: piece.rot,
+                animationDelay: piece.delay,
+                animationDuration: piece.dur,
+              }}
+            />
+          ))}
+
+        {activeSlide.id === 'come-join-us' && <div className="hero-raindrop-pattern" />}
+
+        {activeSlide.id === 'moon-color' && (
+          <div className="hero-starlight-layer">
+            <span className="hero-floating-star star-1">✦</span>
+            <span className="hero-floating-star star-2">✧</span>
+            <span className="hero-floating-star star-3">✦</span>
+          </div>
+        )}
+      </div>
+
+      {/* Slides Viewport */}
+      <div className="hero-slides-stage relative mx-auto w-full max-w-[1600px]">
+        {HERO_SLIDES.map((slide, index) => {
+          const isCurrent = index === activeIndex;
+          const imgSrc = getFallbackImage(slide);
+
+          return (
+            <div
+              key={slide.id}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${totalSlides}: ${slide.titleLines.join(' ')}`}
+              aria-hidden={!isCurrent}
+              className={`hero-slide-panel ${isCurrent ? 'is-active' : 'is-inactive'} ${
+                slide.layout === 'book-showcase'
+                  ? 'layout-book-showcase'
+                  : slide.layout === 'centered'
+                  ? 'layout-centered'
+                  : 'layout-split'
+              }`}
+            >
+              {slide.layout === 'book-showcase' ? (
+                /* Provided Coco Wyo-Style Full-Bleed Book Showcase Stage + Interactive Book Switcher */
+                <div className="cocowyo-showcase-banner-wrap">
+                  <h1 id={isCurrent ? 'hero-title' : undefined} className="sr-only">
+                    Moon Mesh — {activeShowcaseBook.stageTagline} {activeShowcaseBook.title}
+                  </h1>
+
+                  {/* Main Full-Bleed Stage Artwork (User's Provided Book Showcase Image) */}
+                  <div className="cocowyo-banner-figure">
+                    <img
     </section>
   );
 }
