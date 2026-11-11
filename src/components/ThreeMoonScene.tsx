@@ -1370,6 +1370,41 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       });
     }
 
+    // Rising Warm Steam Puffs above the Teacup and Honey Buns
+    const steamMat = new THREE.MeshBasicMaterial({
+      color: 0xfffdf8,
+      transparent: true,
+      opacity: 0.52,
+    });
+    const steamGeo = new THREE.SphereGeometry(0.068, 12, 12);
+    const steamPuffs: Array<{
+      mesh: THREE.Mesh;
+      originX: number;
+      originY: number;
+      originZ: number;
+      phase: number;
+    }> = [];
+
+    const steamOrigins: [number, number, number][] = [
+      [1.22, floorY + 0.36, 1.56], // Blossom teacup
+      [0.46, floorY + 0.62, 0.94], // Plate of honey buns on table
+      [-0.78, floorY + 0.88, 0.72], // Shared warm bun held by Miso
+    ];
+    steamOrigins.forEach(([ox, oy, oz], sIdx) => {
+      for (let p = 0; p < 3; p++) {
+        const puff = new THREE.Mesh(steamGeo, steamMat);
+        puff.position.set(ox, oy + p * 0.18, oz);
+        worldGroup.add(puff);
+        steamPuffs.push({
+          mesh: puff,
+          originX: ox,
+          originY: oy,
+          originZ: oz,
+          phase: sIdx * 1.3 + p * 2.1,
+        });
+      }
+    });
+
     // --- RAYCAST CLICK INTERACTION FOR CHARACTERS ---
     const raycaster = new THREE.Raycaster();
     const pointerNdc = new THREE.Vector2();
@@ -1439,60 +1474,81 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
         }
       }
 
-      const misoHop = Math.sin(hopTimersRef.current.miso * Math.PI) * 0.34;
-      const plumHop = Math.sin(hopTimersRef.current.plum * Math.PI) * 0.34;
-      const pipHop = Math.sin(hopTimersRef.current.pip * Math.PI) * 0.38;
-      const sproutHop = Math.sin(hopTimersRef.current.sprout * Math.PI) * 0.22;
-      const heartPulse = 1 + Math.sin(hopTimersRef.current.heart * Math.PI) * 0.32;
+      const misoHop = Math.sin(hopTimersRef.current.miso * Math.PI) * 0.36;
+      const plumHop = Math.sin(hopTimersRef.current.plum * Math.PI) * 0.36;
+      const pipHop = Math.sin(hopTimersRef.current.pip * Math.PI) * 0.4;
+      const sproutHop = Math.sin(hopTimersRef.current.sprout * Math.PI) * 0.24;
+      const heartPulse = 1 + Math.sin(hopTimersRef.current.heart * Math.PI) * 0.34;
 
-      // Gentle character breathing & joyful nod animations
-      misoGroup.position.y = misoBaseY + misoHop;
-      misoHeadGroup.rotation.z = Math.sin(elapsed * 1.6) * 0.045;
-      misoHeadGroup.position.y = 0.86 + Math.sin(elapsed * 2.2) * 0.018;
-      sharedBunGroup.position.y = 0.22 + Math.sin(elapsed * 2.2) * 0.025;
+      // Lively, clearly visible character breathing, bobbing, ear wiggling & warm bun handoff
+      misoGroup.position.y = misoBaseY + Math.sin(elapsed * 2.4) * 0.045 + misoHop;
+      misoHeadGroup.rotation.z = Math.sin(elapsed * 2.1) * 0.085;
+      misoHeadGroup.rotation.x = Math.sin(elapsed * 1.7) * 0.045;
+      misoHeadGroup.position.y = 0.86 + Math.sin(elapsed * 2.6) * 0.032;
+      misoArmR.rotation.x = 1.15 + Math.sin(elapsed * 2.8) * 0.12;
+      sharedBunGroup.position.y = 0.22 + Math.sin(elapsed * 2.8) * 0.055;
 
-      plumGroup.position.y = plumBaseY + plumHop;
-      plumHeadGroup.rotation.z = Math.cos(elapsed * 1.5) * 0.045;
-      plumHeadGroup.position.y = 0.82 + Math.cos(elapsed * 2.1) * 0.018;
+      plumGroup.position.y = plumBaseY + Math.cos(elapsed * 2.3) * 0.045 + plumHop;
+      plumHeadGroup.rotation.z = Math.cos(elapsed * 2.0) * 0.085;
+      plumHeadGroup.rotation.x = Math.cos(elapsed * 1.6) * 0.045;
+      plumHeadGroup.position.y = 0.82 + Math.cos(elapsed * 2.5) * 0.032;
+      lopEarL.rotation.z = -0.34 + Math.sin(elapsed * 3.0) * 0.09;
+      lopEarR.rotation.z = 0.34 - Math.sin(elapsed * 3.0) * 0.09;
+      plumArmL.rotation.x = 1.18 + Math.cos(elapsed * 2.8) * 0.12;
 
-      // Floating Heart between Miso & Plum
-      heartGroup.position.y = floorY + 1.56 + Math.sin(elapsed * 2.6) * 0.09 + (misoHop + plumHop) * 0.4;
-      heartGroup.rotation.y = Math.sin(elapsed * 1.4) * 0.28;
-      heartGroup.scale.setScalar((1 + Math.sin(elapsed * 3.4) * 0.06) * heartPulse);
+      // Sculpted Floating Heart between Miso & Plum
+      heartGroup.position.y =
+        floorY + 1.56 + Math.sin(elapsed * 3.1) * 0.14 + (misoHop + plumHop) * 0.4;
+      heartGroup.rotation.y = Math.sin(elapsed * 1.9) * 0.42;
+      heartGroup.scale.setScalar((1 + Math.sin(elapsed * 3.8) * 0.11) * heartPulse);
 
-      pipGroup.position.y = pipBaseY + Math.sin(elapsed * 2.6) * 0.06 + pipHop;
-      pipGroup.rotation.z = Math.sin(elapsed * 1.8) * 0.06;
+      // Pip the Star joyful bounce & tilt
+      pipGroup.position.y = pipBaseY + Math.sin(elapsed * 3.0) * 0.095 + pipHop;
+      pipGroup.rotation.z = Math.sin(elapsed * 2.2) * 0.11;
 
-      sproutGroup.position.y = sproutBaseY + sproutHop;
-      sproutGroup.position.x = 1.78 + Math.sin(elapsed * 0.9) * 0.04;
+      // Sprout the Snail cozy glide & nod
+      sproutGroup.position.y = sproutBaseY + Math.abs(Math.sin(elapsed * 2.2)) * 0.035 + sproutHop;
+      sproutGroup.position.x = 1.78 + Math.sin(elapsed * 1.2) * 0.065;
+      sproutGroup.rotation.z = Math.sin(elapsed * 2.0) * 0.05;
 
-      // Gentle breeze on paper moon garland pendulums
+      // Swinging paper crescent moons on the garland cord
       paperMoonPendulums.forEach((p, idx) => {
-        p.rotation.z = Math.sin(elapsed * 1.5 + idx * 0.9) * 0.075;
+        p.rotation.z = Math.sin(elapsed * 2.1 + idx * 0.9) * 0.14;
+      });
+      moonCrescentGroup.rotation.z = Math.sin(elapsed * 1.4) * 0.06;
+
+      // Rising warm steam puffs above teacup and buns
+      steamPuffs.forEach((sp) => {
+        const cycle = ((elapsed * 0.55 + sp.phase) % 1.0);
+        sp.mesh.position.y = sp.originY + cycle * 0.62;
+        sp.mesh.position.x = sp.originX + Math.sin(elapsed * 2.2 + sp.phase) * 0.06;
+        const scale = 0.55 + Math.sin(cycle * Math.PI) * 0.85;
+        sp.mesh.scale.setScalar(scale);
       });
 
       // Twinkling stars
       starsGroup.children.forEach((star, idx) => {
-        star.rotation.y = elapsed * 0.7 + idx;
-        star.position.y += Math.sin(elapsed * 2 + idx) * 0.0008;
+        star.rotation.y = elapsed * 1.1 + idx;
+        star.position.y += Math.sin(elapsed * 2.4 + idx) * 0.0014;
       });
 
       // Drifting golden fireflies
       fireflySeeds.forEach((f) => {
-        f.mesh.position.x = f.baseX + Math.sin(elapsed * f.speed + f.phase) * 0.22;
-        f.mesh.position.y = f.baseY + Math.cos(elapsed * (f.speed * 1.2) + f.phase) * 0.16;
-        f.mesh.position.z = f.baseZ + Math.sin(elapsed * 0.8 + f.phase) * 0.18;
+        f.mesh.position.x = f.baseX + Math.sin(elapsed * f.speed + f.phase) * 0.34;
+        f.mesh.position.y = f.baseY + Math.cos(elapsed * (f.speed * 1.3) + f.phase) * 0.24;
+        f.mesh.position.z = f.baseZ + Math.sin(elapsed * 1.1 + f.phase) * 0.26;
       });
 
-      // Smooth camera preset focus or front-facing pendulum sway (keeps Miso, Plum & Moon Window facing viewer!)
+      // Smooth camera preset focus & continuous gentle storybook island sway
       const currentPresetId = activePresetRef.current;
       const preset = CAMERA_PRESETS.find((p) => p.id === currentPresetId) || CAMERA_PRESETS[0];
 
       if (autoRotateRef.current && currentPresetId === 'overview') {
-        const targetSwayY = Math.sin(elapsed * 0.45) * 0.22;
+        const targetSwayY = Math.sin(elapsed * 0.55) * 0.26;
         worldGroup.rotation.y = dampValue(worldGroup.rotation.y, targetSwayY, 3.5, dt);
       } else if (currentPresetId !== 'overview') {
-        worldGroup.rotation.y = dampValue(worldGroup.rotation.y, 0, 5, dt);
+        const subtleSwayY = Math.sin(elapsed * 0.75) * 0.055;
+        worldGroup.rotation.y = dampValue(worldGroup.rotation.y, subtleSwayY, 4.5, dt);
         camera.position.x = dampValue(camera.position.x, preset.position[0], 4.5, dt);
         camera.position.y = dampValue(camera.position.y, preset.position[1], 4.5, dt);
         camera.position.z = dampValue(camera.position.z, preset.position[2], 4.5, dt);
@@ -1546,7 +1602,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       className={
         embedded
           ? 'three-diorama-embedded relative w-full h-[580px] sm:h-[660px] rounded-[28px] overflow-hidden border-[3px] border-[#4A251D] shadow-[0_14px_0_#4A251D] bg-[#243B6B]'
-          : 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6'
+          : 'fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 sm:p-6'
       }
       role={embedded ? 'region' : 'dialog'}
       aria-label="3D Moon Picnic Interactive World"
@@ -1576,11 +1632,11 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               onClick={handleToggleAudio}
               aria-pressed={isAudioPlaying}
               aria-label={audioUi.ariaLabel}
-              className={`px-3.5 py-2 rounded-full border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 flex items-center gap-2 cursor-pointer whitespace-nowrap ${
-                isAudioPlaying
-                  ? 'bg-[#FFE066] text-[#3B2219]'
-                  : 'bg-[#FFFDF8] text-[#3B2219] hover:bg-[#FFF5D6]'
-              }`}
+              style={{
+                backgroundColor: isAudioPlaying ? '#FFE066' : '#FFFDF8',
+                color: '#3B2219',
+              }}
+              className="px-3.5 py-2 rounded-full border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 flex items-center gap-2 cursor-pointer whitespace-nowrap"
               title="Toggle cozy ambient forest breeze & wooden wind chimes"
             >
               <span className="inline-flex items-center justify-center w-4 h-4" aria-hidden="true">
@@ -1608,30 +1664,22 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
               </span>
               <span>{audioUi.buttonLabel}</span>
               <span
-                className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-[#4A251D]/30 ${
-                  isAudioPlaying ? 'bg-[#3B2219] text-[#FFE066]' : 'bg-[#F3E8EE] text-[#5E4352]'
-                }`}
+                style={{
+                  backgroundColor: isAudioPlaying ? '#3B2219' : '#F3E8EE',
+                  color: isAudioPlaying ? '#FFE066' : '#5E4352',
+                }}
+                className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-[#4A251D]/30"
               >
                 {audioUi.statusBadge}
               </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setActivePreset('overview');
-                setAutoRotate((prev) => !prev);
-              }}
-              className="px-3.5 py-2 rounded-full bg-[#FFFDF8] hover:bg-[#FFF5D6] border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold text-[#3B2219] shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 cursor-pointer whitespace-nowrap"
-            >
-              {autoRotate && activePreset === 'overview' ? '⏸ Pause Spin' : '▶ Spin Island'}
             </button>
 
             {!embedded && onClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="px-3.5 py-2 rounded-full bg-[#FF6B8B] hover:bg-[#FF5277] border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold text-white shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 cursor-pointer whitespace-nowrap"
+                style={{ backgroundColor: '#FF6B8B', color: '#FFFFFF' }}
+                className="px-3.5 py-2 rounded-full hover:bg-[#FF5277] border-2 border-[#4A251D] text-xs sm:text-sm font-extrabold shadow-[0_4px_0_#4A251D] transition-transform active:translate-y-0.5 cursor-pointer whitespace-nowrap"
                 aria-label="Close 3D scene"
               >
                 ✕ Close
@@ -1656,7 +1704,8 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
         <div className="relative z-10 p-3 sm:p-4 flex flex-col items-center gap-2 pointer-events-none">
           {/* Interactive Story Caption Banner */}
           <div
-            className="bg-[#FFFDF8]/95 border-2 border-[#4A251D] rounded-full px-4 py-1 text-xs sm:text-sm font-bold text-[#3B2219] shadow-[0_3px_0_#4A251D] text-center max-w-xl pointer-events-auto"
+            style={{ backgroundColor: 'rgba(255, 253, 248, 0.96)', color: '#3B2219' }}
+            className="border-2 border-[#4A251D] rounded-full px-4 py-1 text-xs sm:text-sm font-bold shadow-[0_3px_0_#4A251D] text-center max-w-xl pointer-events-auto"
             role="status"
             aria-live="polite"
           >
@@ -1665,7 +1714,10 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
 
           <div className="flex flex-wrap items-center justify-center gap-2 pointer-events-auto">
             {/* Character Camera Tour Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 bg-[#FFFDF8] border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]">
+            <div
+              style={{ backgroundColor: '#FFFDF8' }}
+              className="flex flex-wrap items-center justify-center gap-1.5 border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]"
+            >
               {CAMERA_PRESETS.map((preset) => {
                 const isActive = activePreset === preset.id;
                 return (
@@ -1674,10 +1726,13 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
                     type="button"
                     onClick={() => handleSelectPreset(preset.id)}
                     aria-pressed={isActive}
-                    className={`px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
-                      isActive
-                        ? 'bg-[#FFE066] text-[#3B2219] border border-[#4A251D] shadow-sm scale-105'
-                        : 'bg-transparent text-[#3B2219] hover:bg-[#F3E8EE]'
+                    style={{
+                      backgroundColor: isActive ? '#FFE066' : 'transparent',
+                      color: '#3B2219',
+                      borderColor: isActive ? '#4A251D' : 'transparent',
+                    }}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap border ${
+                      isActive ? 'shadow-sm scale-105' : 'hover:bg-[#F3E8EE]'
                     }`}
                   >
                     <span aria-hidden="true">{preset.badge}</span>
@@ -1689,7 +1744,8 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
 
             {/* Atmosphere Lighting Mood Switcher */}
             <div
-              className="flex items-center gap-1 bg-[#FFFDF8] border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]"
+              style={{ backgroundColor: '#FFFDF8' }}
+              className="flex items-center gap-1 border-2 border-[#4A251D] rounded-2xl px-2.5 py-1.5 shadow-[0_4px_0_#4A251D]"
               role="group"
               aria-label="3D scene lighting mood"
             >
@@ -1702,11 +1758,12 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
                     type="button"
                     onClick={() => setLightingMood(moodKey)}
                     aria-pressed={isSelected}
-                    className={`px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
-                      isSelected
-                        ? 'bg-[#FFE066] text-[#3B2219] border border-[#4A251D]'
-                        : 'bg-transparent text-[#5E4352] hover:bg-[#F3E8EE]'
-                    }`}
+                    style={{
+                      backgroundColor: isSelected ? '#FFE066' : 'transparent',
+                      color: isSelected ? '#3B2219' : '#5E4352',
+                      borderColor: isSelected ? '#4A251D' : 'transparent',
+                    }}
+                    className="px-2.5 py-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap border hover:bg-[#F3E8EE]"
                   >
                     {moodCfg.label}
                   </button>
