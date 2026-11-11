@@ -86,66 +86,6 @@ export const BOOKS: BookItem[] = [
     markerColor: '#E86A78',
     stageTagline: 'GRAND OPENING:',
   },
-  {
-    id: 'midnight-kittens',
-    number: 'No. 02',
-    title: 'Midnight Kittens',
-    titleTop: 'Midnight',
-    titleEm: 'Kittens',
-    genre: 'Cozy nights · Ages 4+',
-    description:
-      'Follow Miso over sleepy rooftops, past glowing lanterns, and up to a crescent moon.',
-    previewDescription:
-      'Follow Miso over sleepy rooftops, past glowing lanterns, and up to a crescent moon. A quiet adventure for the last few minutes before bedtime.',
-    coverImage: '/assets/cover-midnight-cozy.webp',
-    themeClass: 'book-night',
-    keywords: 'book coloring colouring preview amazon midnight kittens rooftop moon lantern',
-    fullBleedCover: false,
-    spineColor: '#C4B0E0',
-    spineTextColor: '#2E243C',
-    markerColor: '#9C82C8',
-    stageTagline: 'COZY NIGHTS:',
-  },
-  {
-    id: 'starlight-garden',
-    number: 'No. 03',
-    title: 'Starlight Garden',
-    titleTop: 'Starlight',
-    titleEm: 'Garden',
-    genre: 'Nature magic · Ages 4+',
-    description:
-      'Water flowers that look like stars, say hello to a snail, and see what grows after dark.',
-    previewDescription:
-      'Help Miso water flowers that look like stars, say hello to a snail, and see what else grows after the sun goes down.',
-    coverImage: '/assets/cover-garden-cozy.webp',
-    themeClass: 'book-garden',
-    keywords: 'book coloring colouring preview amazon starlight garden flowers snail sprout nature',
-    fullBleedCover: false,
-    spineColor: '#AED09A',
-    spineTextColor: '#293B24',
-    markerColor: '#76A865',
-    stageTagline: 'GARDEN CLUB:',
-  },
-  {
-    id: 'pocket-sized-planet',
-    number: 'No. 04',
-    title: 'Pocket-Sized Planet',
-    titleTop: 'Pocket-sized',
-    titleEm: 'Planet',
-    genre: 'Little space trips · Ages 4+',
-    description:
-      'Climb aboard Miso’s little rocket for ringed planets, twisty comets, and a crayon-powered trip through space.',
-    previewDescription:
-      'Climb aboard Miso’s little rocket for ringed planets, twisty comets, and a trip through space with your favorite crayons.',
-    coverImage: '/assets/cover-planet-cozy.webp',
-    themeClass: 'book-space',
-    keywords: 'book coloring colouring preview amazon pocket-sized planet space rocket pip comet',
-    fullBleedCover: false,
-    spineColor: '#F0B6A2',
-    spineTextColor: '#482B28',
-    markerColor: '#E57A6E',
-    stageTagline: 'SPACE TRIP:',
-  },
 ];
 
 export const HERO_SLIDES: HeroSlide[] = [
@@ -180,7 +120,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     imageAlt:
       'Miso the kitten and Plum the rabbit share a coloring book at a little table beneath a moonlit window. Pip and Sprout keep them company.',
     layout: 'split',
-    primaryCta: { label: 'Find your next book', href: '#books' },
+    primaryCta: { label: 'Explore our book', href: '#books' },
     secondaryCta: { label: 'Explore 3D Moon Picnic', href: '#three-studio', action: 'open-3d' },
   },
   {
@@ -189,15 +129,15 @@ export const HERO_SLIDES: HeroSlide[] = [
     titleLines: ['READY FOR', 'a little', 'COLORiNG', 'TREAT?'],
     accentLine: 'a little',
     subtitle:
-      'Plum picked fresh tulips and Miso tied a sky-blue ribbon just for you. Grab a warm mug and color a page right in your browser.',
-    bgColor: '#FEDDE4',
+      'Miso put on a strawberry beret and Sprout tucked into fresh tulips just for you! Grab a warm mug and color a page right in your browser.',
+    bgColor: '#FEEBF0',
     themeClass: 'slide-treat',
     image: '/assets/hero-coloring-treat.jpg',
     imageAlt:
-      'Miso the cream kitten with a blue striped ribbon bow and Plum the lavender rabbit in a strawberry cap holding three tulips beside Sprout the snail.',
-    layout: 'split',
+      'Miso the cream kitten wearing a red strawberry beret with a blue striped ribbon bow, holding three tulips with Sprout the snail peeking out.',
+    layout: 'centered',
     primaryCta: { label: 'Color a free treat', href: '#color', action: 'open-studio' },
-    secondaryCta: { label: 'Peek inside the books', href: '#peek' },
+    secondaryCta: { label: 'Peek inside the book', href: '#peek' },
   },
   {
     id: 'come-join-us',
@@ -205,11 +145,11 @@ export const HERO_SLIDES: HeroSlide[] = [
     titleLines: ['COME', 'JOIN', 'US'],
     subtitle:
       'Pull up a cushion with Miso, Pip, Plum, and Sprout! Try our free interactive coloring page, print a sheet for the kitchen table, or hop into Moon Mail.',
-    bgColor: '#FBE69C',
+    bgColor: '#FFF3C8',
     themeClass: 'slide-join',
     image: '/assets/hero-come-join-us.jpg',
     imageAlt:
-      'Miso, Pip, Plum, and Sprout hugging a giant coral-red heart that says Come Join Us on a warm butter-yellow raindrop background.',
+      'Miso the cream kitten, Plum the lavender bunny, Pip the golden star, and Sprout the snail hugging a giant coral-red heart that says Come Join Us.',
     layout: 'centered',
     primaryCta: { label: 'Join the Coloring Club', href: '#color' },
     secondaryCta: { label: 'Read Moon Mail', href: '#moon-mail' },
