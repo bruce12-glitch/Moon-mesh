@@ -219,48 +219,16 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
                 alt=""
                 className="book-stage-prop prop-alcohol-marker"
               />
-              <div
-                className={`cocowyo-3d-book cocowyo-3d-book-card ${book.themeClass}`}
-                style={
-                  {
-                    '--spine-bg': book.spineColor,
-                    '--spine-ink': book.spineTextColor,
-                  } as React.CSSProperties
-                }
-              >
-                <span className="book-table-shadow" />
-                <span className="book-3d-spine">
-                  <span className="spine-emblem">✦</span>
-                  <span className="spine-brand">Moon Mesh</span>
-                  <span className="spine-title">{book.title}</span>
-                  <span className="spine-no">{book.number}</span>
-                </span>
-                <span className="book-3d-pages-top" />
-                <span className="book-3d-front">
-                  {book.fullBleedCover ? (
-                    <img
-                      src={book.coverImage}
-                      width={680}
-                      height={650}
-                      alt=""
-                      className="book-3d-fullbleed-img"
-                    />
-                  ) : (
-                    <span className="book-3d-structured-cover">
-                      <span className="cover-brand">Moon Mesh</span>
-                      <span className="cover-no">{book.number}</span>
-                      <span className="cover-title">
-                        {book.titleTop}
-                        <br />
-                        <em>{book.titleEm}</em>
-                      </span>
-                      <img src={book.coverImage} width={680} height={680} alt="" />
-                      <span className="cover-edition">A coloring adventure</span>
-                    </span>
-                  )}
-                  <span className="book-3d-hinge-crease" />
-                </span>
-              </div>
+              <span className="standing-3d-book-figure">
+                <img
+                  src="/assets/standing-3d-book.webp"
+                  width={1100}
+                  height={1040}
+                  alt=""
+                  className="standing-3d-book-img"
+                />
+                <span className="standing-3d-book-sheen" />
+              </span>
             </div>
           </div>
           <div className="preview-copy">
