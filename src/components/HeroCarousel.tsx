@@ -145,28 +145,28 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             </radialGradient>
           </defs>
           <rect width="1440" height="620" fill="url(#heroSunGlow)" />
-          {/* Soft hand-drawn clouds */}
+          {/* Soft hand-drawn clouds in outer sky margins */}
           <g className="hero-cloud-drift-slow" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.12" strokeWidth="2.5">
-            <path d="M90 135 C90 112, 118 98, 142 108 C156 84, 196 84, 212 108 C236 102, 258 118, 254 140 C252 152, 236 158, 214 158 L112 158 C96 158, 90 148, 90 135 Z" />
-            <path d="M1140 110 C1140 88, 1168 74, 1192 84 C1208 60, 1248 60, 1264 84 C1288 78, 1310 94, 1306 116 C1304 128, 1288 134, 1266 134 L1162 134 C1146 134, 1140 124, 1140 110 Z" />
+            <path d="M55 155 C55 132, 83 118, 107 128 C121 104, 161 104, 177 128 C201 122, 223 138, 219 160 C217 172, 201 178, 179 178 L77 178 C61 178, 55 168, 55 155 Z" />
+            <path d="M1210 130 C1210 108, 1238 94, 1262 104 C1278 80, 1318 80, 1334 104 C1358 98, 1380 114, 1376 136 C1374 148, 1358 154, 1336 154 L1232 154 C1216 154, 1210 144, 1210 130 Z" />
           </g>
           <g className="hero-cloud-drift-fast" fill="url(#heroCloudGrad)" stroke="#3A2824" strokeOpacity="0.1" strokeWidth="2">
-            <path d="M510 92 C510 75, 532 64, 550 72 C562 54, 592 54, 604 72 C622 68, 638 80, 635 96 C633 105, 621 110, 605 110 L526 110 C514 110, 510 102, 510 92 Z" />
-            <path d="M360 495 C360 478, 382 467, 400 475 C412 457, 442 457, 454 475 C472 471, 488 483, 485 499 C483 508, 471 513, 455 513 L376 513 C364 513, 360 505, 360 495 Z" />
+            <path d="M115 475 C115 458, 137 447, 155 455 C167 437, 197 437, 209 455 C227 451, 243 463, 240 479 C238 488, 226 493, 210 493 L131 493 C119 493, 115 485, 115 475 Z" />
+            <path d="M1185 465 C1185 448, 1207 437, 1225 445 C1237 427, 1267 427, 1279 445 C1297 441, 1313 453, 1310 469 C1308 478, 1296 483, 1280 483 L1201 483 C1189 483, 1185 475, 1185 465 Z" />
           </g>
-          {/* Hand-drawn twinkling stars & sparkles */}
+          {/* Hand-drawn twinkling stars in outer sky margins */}
           <g fill="#F6C84C" stroke="#2B1B19" strokeWidth="2" strokeLinejoin="round">
             <path
               className="hero-svg-star star-a"
-              d="M448 164 L453 176 L466 178 L456 187 L459 200 L448 193 L437 200 L440 187 L430 178 L443 176 Z"
+              d="M168 78 L173 90 L186 92 L176 101 L179 114 L168 107 L157 114 L160 101 L150 92 L163 90 Z"
             />
             <path
               className="hero-svg-star star-b"
-              d="M1018 152 L1022 161 L1032 163 L1025 170 L1027 180 L1018 175 L1009 180 L1011 170 L1004 163 L1014 161 Z"
+              d="M1278 232 L1282 241 L1292 243 L1285 250 L1287 260 L1278 255 L1269 260 L1271 250 L1264 243 L1274 241 Z"
             />
             <path
               className="hero-svg-star star-c"
-              d="M620 430 L624 439 L634 441 L627 448 L629 458 L620 453 L611 458 L613 448 L606 441 L616 439 Z"
+              d="M148 318 L152 327 L162 329 L155 336 L157 346 L148 341 L139 346 L141 336 L134 329 L144 327 Z"
             />
           </g>
         </svg>
