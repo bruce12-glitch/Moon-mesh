@@ -46,4 +46,12 @@
       <stop offset="100%" stop-color="#C48E78"/>
     </linearGradient>
     <linearGradient id="gradGold" x1="15%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#FFF099"/>
+      <stop offset="48%" stop-color="#F6D056"/>
+      <stop offset="82%" stop-color="#E5AA2E"/>
+      <stop offset="100%" stop-color="#C9861B"/>
+    </linearGradient>
+    <linearGradient id="gradCream" x1="18%" y1="6%" x2="85%" y2="94%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="52%" stop-color="#FFF3D9"/>
 </svg>
