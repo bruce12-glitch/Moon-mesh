@@ -582,13 +582,6 @@ export default function App() {
                           <use href="#arrow" />
                         </svg>
                       </button>
-                      <button
-                        type="button"
-                        className="button button-paper whitespace-nowrap"
-                        onClick={() => setIs3DOpen(true)}
-                      >
-                        Open 3D Picnic Diorama
-                      </button>
                     </div>
                   </div>
                 </article>
