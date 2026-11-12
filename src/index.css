@@ -1243,14 +1243,33 @@ img {
    SECTIONS: CREW, BOOKS, 3D SHOWCASE, PEEK, VIDEO, FREE PAGE, SHOPS, FAQ, MAIL
    ========================================================================== */
 .crew {
+  position: relative;
+  overflow: hidden;
   padding: 44px 0 36px;
-  background: var(--paper);
+  background:
+    radial-gradient(ellipse 68% 58% at 50% 44%, rgba(255, 232, 242, 0.46) 0%, rgba(244, 232, 255, 0.28) 48%, rgba(255, 255, 255, 0) 82%),
+    var(--paper);
 }
 
 .crew-lineup {
   position: relative;
+  isolation: isolate;
   width: min(100%, 1200px);
   margin: 0 auto 22px;
+}
+
+.crew-lineup::before {
+  content: "";
+  position: absolute;
+  inset: -18% -10% -6% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 36% 48% at 22% 48%, rgba(255, 214, 108, 0.38) 0%, transparent 78%),
+    radial-gradient(ellipse 36% 48% at 42% 46%, rgba(255, 174, 204, 0.36) 0%, transparent 78%),
+    radial-gradient(ellipse 38% 50% at 62% 46%, rgba(208, 170, 255, 0.38) 0%, transparent 78%),
+    radial-gradient(ellipse 34% 46% at 81% 50%, rgba(156, 236, 200, 0.36) 0%, transparent 78%);
+  filter: blur(48px);
 }
 
 .crew-art-button {
@@ -1273,6 +1292,14 @@ img {
   width: 100%;
   aspect-ratio: 1400 / 467;
   object-fit: contain;
+}
+
+.crew-img-outline {
+  transition: opacity 0.4s var(--ease-smooth);
+}
+
+.crew.is-colored .crew-img-outline {
+  opacity: 0;
 }
 
 .crew-img-color {
@@ -2023,8 +2050,12 @@ img {
 
 /* FAQ Section */
 .faq-section {
+  position: relative;
+  overflow: hidden;
   padding: 36px 0 52px;
-  background: var(--paper);
+  background:
+    radial-gradient(ellipse 66% 48% at 50% 24%, rgba(255, 234, 208, 0.42) 0%, rgba(238, 224, 255, 0.26) 50%, rgba(255, 255, 255, 0) 84%),
+    var(--paper);
 }
 
 .faq-inner {
@@ -2034,9 +2065,24 @@ img {
 
 .faq-art {
   position: relative;
+  isolation: isolate;
   max-width: 960px;
   margin: 0 auto 24px;
   animation: hero-gentle-bob 4.8s ease-in-out infinite;
+}
+
+.faq-art::before {
+  content: "";
+  position: absolute;
+  inset: -14% -10% -6% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 34% 46% at 24% 52%, rgba(164, 238, 202, 0.34) 0%, transparent 78%),
+    radial-gradient(ellipse 38% 48% at 42% 46%, rgba(255, 214, 112, 0.38) 0%, transparent 78%),
+    radial-gradient(ellipse 36% 48% at 58% 44%, rgba(255, 176, 206, 0.35) 0%, transparent 78%),
+    radial-gradient(ellipse 38% 48% at 74% 50%, rgba(208, 172, 255, 0.38) 0%, transparent 78%);
+  filter: blur(46px);
 }
 
 .faq-intro {
@@ -2233,21 +2279,39 @@ img {
 
 /* Footer Section */
 .footer {
-  padding-top: 24px;
+  padding-top: 12px;
   background: var(--paper);
 }
 
 .footer-scene {
   position: relative;
+  padding-top: 36px;
   padding-bottom: 56px;
+  background:
+    radial-gradient(ellipse 68% 48% at 50% 52%, rgba(255, 230, 240, 0.42) 0%, rgba(236, 222, 255, 0.24) 48%, rgba(255, 255, 255, 0) 78%);
 }
 
 .footer-illustration {
   position: relative;
+  isolation: isolate;
   z-index: 1;
   width: min(calc(100% - 24px), 1040px);
   margin: 0 auto;
   animation: hero-gentle-bob 4.6s ease-in-out infinite;
+}
+
+.footer-illustration::before {
+  content: "";
+  position: absolute;
+  inset: -6% -10% -4% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 36% 44% at 26% 50%, rgba(255, 214, 112, 0.38) 0%, transparent 74%),
+    radial-gradient(ellipse 36% 44% at 46% 46%, rgba(255, 174, 204, 0.36) 0%, transparent 74%),
+    radial-gradient(ellipse 38% 44% at 64% 50%, rgba(206, 170, 255, 0.38) 0%, transparent 74%),
+    radial-gradient(ellipse 34% 42% at 80% 54%, rgba(158, 236, 202, 0.34) 0%, transparent 74%);
+  filter: blur(44px);
 }
 
 .footer-main {
@@ -2849,56 +2913,4 @@ img {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
-}
-
-/* Animated Hero Slides Styles */
-.is-treat-slide {
-  background-color: #FEEBF0 !important;
-}
-
-.is-join-slide {
-  background-color: #FFF3C8 !important;
-}
-
-.hero-treat-heading {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-  text-align: left;
-}
-
-.treat-block-line {
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.treat-script-line {
-  font-family: 'Caveat', cursive;
-  color: #D87977;
-  font-size: 1.4em;
-  margin: -0.1em 0;
-  transform: rotate(-2deg);
-}
-
-.hero-centered-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 20px;
-  min-height: 500px;
-}
-
-.hero-centered-art-wrap {
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 30px;
-}
-
-.hero-centered-subtitle {
-  font-size: 1.2rem;
-  color: #322F37;
-  max-width: 60ch;
-  margin: 0 auto;
 }
