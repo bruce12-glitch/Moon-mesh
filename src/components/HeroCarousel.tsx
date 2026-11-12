@@ -367,14 +367,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                             <use href="#arrow" />
                           </svg>
                         </a>
-                        <a
-                          className="text-link whitespace-nowrap shrink-0"
-                          href={slide.secondaryCta.href}
-                          onClick={(e) => handleCtaClick(e, slide.secondaryCta)}
-                          tabIndex={isCurrent ? 0 : -1}
-                        >
-                          {slide.secondaryCta.label}
-                        </a>
                       </div>
 
                       {slide.signoff && (
