@@ -222,8 +222,8 @@ export const BookPreviewModal: React.FC<BookPreviewModalProps> = ({
               <span className="standing-3d-book-figure">
                 <img
                   src="/assets/standing-3d-book.webp"
-                  width={1100}
-                  height={1040}
+                  width={670}
+                  height={745}
                   alt=""
                   className="standing-3d-book-img"
                 />

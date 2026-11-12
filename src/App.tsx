@@ -554,8 +554,8 @@ export default function App() {
                         <span className="standing-3d-book-figure">
                           <img
                             src="/assets/standing-3d-book.webp"
-                            width={1100}
-                            height={1040}
+                            width={670}
+                            height={745}
                             alt={`${book.title} — 3D hardcover storybook edition`}
                             loading="lazy"
                             className="standing-3d-book-img"
@@ -740,96 +740,45 @@ export default function App() {
           </div>
         </section>
 
-        {/* From the Coloring Table High-Density Studio Video Showcase */}
-        <section className="coloring-table" id="watch" aria-labelledby="watch-title">
+        {/* From the Coloring Table Video Section */}
+        <section className="coloring-table" id="watch" aria-label="Coloring table video">
           <div className="shell coloring-table-inner">
-            <div className="coloring-table-showcase">
-              <div className="coloring-table-copy">
-                <p className="eyebrow">
-                  <svg className="icon" aria-hidden="true">
-                    <use href="#spark" />
-                  </svg>{' '}
-                  From the coloring table
-                </p>
-                <h2 id="watch-title">Slow markers, bold lines, and quiet afternoons.</h2>
-                <p className="coloring-table-lede">
-                  Every Moon Mesh page is drawn with thick, confident felt-tip outlines and roomy
-                  shapes so alcohol markers, crayons, and colored pencils glide across the paper
-                  without crowding.
-                </p>
-                <ul className="coloring-table-highlights" aria-label="Studio paper highlights">
-                  <li>✦ Bold 1.4mm rounded contours crafted for stress-free coloring</li>
-                  <li>✦ Roomy, cozy scenes with Miso, Plum, Pip &amp; Sprout</li>
-                  <li>✦ Designed for both kitchen-table printables and hardcover keepsakes</li>
-                </ul>
-                <div className="coloring-table-actions">
-                  <button
-                    type="button"
-                    className="button button-ink whitespace-nowrap"
-                    onClick={() => {
-                      const v = inlineVideoRef.current;
-                      if (!v) return;
-                      if (v.paused) {
-                        setClipPausedByUser(false);
-                        v.play().catch(() => {});
-                      } else {
-                        setClipPausedByUser(true);
-                        v.pause();
-                      }
-                    }}
-                  >
-                    {clipPausedByUser ? '▶ Play Studio Clip' : '⏸ Pause Studio Clip'}
-                  </button>
-                  <button
-                    type="button"
-                    className="button button-paper whitespace-nowrap"
-                    onClick={() => setIsStudioOpen(true)}
-                  >
-                    Try Online Coloring Studio
-                  </button>
-                </div>
+            <figure className="coloring-table-visual">
+              <div className="clip-card">
+                <video
+                  ref={inlineVideoRef}
+                  className="clip-video"
+                  id="inline-coloring-video"
+                  src="/assets/coloring-table.mp4"
+                  poster="/assets/coloring-table-poster.webp"
+                  width={1080}
+                  height={1920}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="A quiet moment at the coloring table"
+                  aria-describedby="inline-video-description"
+                  onClick={() => {
+                    const v = inlineVideoRef.current;
+                    if (!v) return;
+                    if (v.paused) {
+                      setClipPausedByUser(false);
+                      v.play().catch(() => {});
+                    } else {
+                      setClipPausedByUser(true);
+                      v.pause();
+                    }
+                  }}
+                >
+                  <a href="/assets/coloring-table.mp4">Watch the coloring clip</a>
+                </video>
               </div>
-
-              <figure className="coloring-table-visual">
-                <div className="clip-card">
-                  <video
-                    ref={inlineVideoRef}
-                    className="clip-video"
-                    id="inline-coloring-video"
-                    src="/assets/coloring-table.mp4"
-                    poster="/assets/coloring-table-poster.webp"
-                    width={1080}
-                    height={1920}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label="A quiet moment at the coloring table"
-                    aria-describedby="inline-video-description"
-                    onClick={() => {
-                      const v = inlineVideoRef.current;
-                      if (!v) return;
-                      if (v.paused) {
-                        setClipPausedByUser(false);
-                        v.play().catch(() => {});
-                      } else {
-                        setClipPausedByUser(true);
-                        v.pause();
-                      }
-                    }}
-                  >
-                    <a href="/assets/coloring-table.mp4">Watch the coloring clip</a>
-                  </video>
-                  <span className="clip-hd-badge" aria-hidden="true">
-                    1080p Studio Reel
-                  </span>
-                </div>
-                <p id="inline-video-description" className="visually-hidden">
-                  A hand adds color with markers to a cozy page of puppies and plants.
-                </p>
-              </figure>
-            </div>
+              <p id="inline-video-description" className="visually-hidden">
+                A hand adds color with markers to a cozy page of puppies and plants.
+              </p>
+            </figure>
           </div>
         </section>
 

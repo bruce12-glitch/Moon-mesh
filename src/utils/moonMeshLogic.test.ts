@@ -10,6 +10,7 @@ import {
   isEraserSwatch,
   getForestAudioUiState,
   getDioramaLightMood,
+  computeGroundedCharacterY,
 } from './moonMeshLogic';
 import { HERO_SLIDES, BOOKS } from '../data/moonMeshData';
 
@@ -134,4 +135,13 @@ test('getDioramaLightMood returns valid lighting configuration for all presets',
   assert.ok(dusk.moonGlowIntensity > moonlit.moonGlowIntensity);
 });
 
-
+test('computeGroundedCharacterY keeps Pip the Star and characters strictly at or above baseY', () => {
+  const floorY = -0.58;
+  const pipBaseY = floorY + 0.6;
+  for (let t = 0; t <= 10; t += 0.17) {
+    const y = computeGroundedCharacterY(pipBaseY, t, 3.0, 0.11, 0);
+    assert.ok(y >= pipBaseY - 1e-9, `Expected y (${y}) >= pipBaseY (${pipBaseY}) at t=${t}`);
+    // Lowest local point of Pip is -0.58, so world bottom is y - 0.58 >= floorY + 0.02
+    assert.ok(y - 0.58 >= floorY, `Expected Pip bottom (${y - 0.58}) >= floorY (${floorY})`);
+  }
+});

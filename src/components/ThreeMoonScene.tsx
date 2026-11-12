@@ -59,8 +59,8 @@ const CAMERA_PRESETS: CameraPreset[] = [
     id: 'pip',
     label: 'Pip Star',
     badge: '⭐',
-    position: [-3.1, 1.75, 6.35],
-    target: [-2.15, -0.1, 1.3],
+    position: [-3.1, 1.85, 6.35],
+    target: [-2.15, 0.14, 1.3],
     storyCaption: 'Pip the Star is glowing beside the gingham blanket and counting paper moons!',
   },
   {
@@ -865,7 +865,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     teacupGroup.add(teaMesh);
 
     // 7. CHARACTER 1: MISO THE CREAM KITTEN (Left of Table, Sharing a Warm Bun)
-    const misoBaseY = floorY + 0.56;
+    const misoBaseY = floorY + 0.68;
     const misoGroup = new THREE.Group();
     misoGroup.position.set(-1.32, misoBaseY, 0.18);
     misoGroup.rotation.y = 0.42;
@@ -1001,7 +1001,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
 
     // 8. CHARACTER 2: PLUM THE LAVENDER LOP-EARED BUNNY (Right of Table)
     // Authentic rounded lavender bunny head + long lop ears + dainty strawberry leaf crown!
-    const plumBaseY = floorY + 0.54;
+    const plumBaseY = floorY + 0.66;
     const plumGroup = new THREE.Group();
     plumGroup.position.set(1.32, plumBaseY, 0.14);
     plumGroup.rotation.y = -0.48;
@@ -1122,7 +1122,7 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
     addToonMesh(heartExtrudeGeo, matHeartCoral, heartGroup, 0.06, false, false);
 
     // 10. CHARACTER 3: PIP THE CHUBBY GOLDEN STAR (Front-Left of Blanket)
-    const pipBaseY = floorY + 0.42;
+    const pipBaseY = floorY + 0.60;
     const pipGroup = new THREE.Group();
     pipGroup.position.set(-2.18, pipBaseY, 1.32);
     pipGroup.rotation.y = 0.48;
@@ -1152,25 +1152,26 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       bevelThickness: 0.12,
     });
     starExtrudeGeo.center();
+    starExtrudeGeo.translate(0, 0.08, 0);
     addToonMesh(starExtrudeGeo, matPipGold, pipGroup, 0.038);
 
     const pipFootGeo = new THREE.SphereGeometry(0.14, 14, 14);
     const pipFootL = addToonMesh(pipFootGeo, matPipGold, pipGroup, 0.045);
-    pipFootL.position.set(-0.18, -0.44, 0.2);
+    pipFootL.position.set(-0.18, -0.44, 0.22);
     const pipFootR = addToonMesh(pipFootGeo, matPipGold, pipGroup, 0.045);
-    pipFootR.position.set(0.18, -0.44, 0.2);
+    pipFootR.position.set(0.18, -0.44, 0.22);
 
     const pipEyeGeo = new THREE.SphereGeometry(0.048, 12, 12);
     const pipEyeL = new THREE.Mesh(pipEyeGeo, matDarkInk);
-    pipEyeL.position.set(-0.14, 0.02, 0.26);
+    pipEyeL.position.set(-0.14, 0.10, 0.26);
     const pipEyeR = new THREE.Mesh(pipEyeGeo, matDarkInk);
-    pipEyeR.position.set(0.14, 0.02, 0.26);
+    pipEyeR.position.set(0.14, 0.10, 0.26);
     pipGroup.add(pipEyeL, pipEyeR);
 
     const pipSmileGeo = new THREE.TorusGeometry(0.048, 0.016, 8, 16, Math.PI);
     const pipSmile = new THREE.Mesh(pipSmileGeo, matDarkInk);
     pipSmile.rotation.x = Math.PI;
-    pipSmile.position.set(0, -0.02, 0.26);
+    pipSmile.position.set(0, 0.06, 0.26);
     pipGroup.add(pipSmile);
 
     registerInteractive(pipGroup, 'pip');
@@ -1480,15 +1481,15 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
       const sproutHop = Math.sin(hopTimersRef.current.sprout * Math.PI) * 0.24;
       const heartPulse = 1 + Math.sin(hopTimersRef.current.heart * Math.PI) * 0.34;
 
-      // Lively, clearly visible character breathing, bobbing, ear wiggling & warm bun handoff
-      misoGroup.position.y = misoBaseY + Math.sin(elapsed * 2.4) * 0.045 + misoHop;
+      // Lively, grounded character breathing, bobbing, ear wiggling & warm bun handoff (never dipping below floorY!)
+      misoGroup.position.y = misoBaseY + (1 + Math.sin(elapsed * 2.4)) * 0.5 * 0.045 + misoHop;
       misoHeadGroup.rotation.z = Math.sin(elapsed * 2.1) * 0.085;
       misoHeadGroup.rotation.x = Math.sin(elapsed * 1.7) * 0.045;
       misoHeadGroup.position.y = 0.86 + Math.sin(elapsed * 2.6) * 0.032;
       misoArmR.rotation.x = 1.15 + Math.sin(elapsed * 2.8) * 0.12;
       sharedBunGroup.position.y = 0.22 + Math.sin(elapsed * 2.8) * 0.055;
 
-      plumGroup.position.y = plumBaseY + Math.cos(elapsed * 2.3) * 0.045 + plumHop;
+      plumGroup.position.y = plumBaseY + (1 + Math.cos(elapsed * 2.3)) * 0.5 * 0.045 + plumHop;
       plumHeadGroup.rotation.z = Math.cos(elapsed * 2.0) * 0.085;
       plumHeadGroup.rotation.x = Math.cos(elapsed * 1.6) * 0.045;
       plumHeadGroup.position.y = 0.82 + Math.cos(elapsed * 2.5) * 0.032;
@@ -1498,13 +1499,13 @@ export const ThreeMoonScene: React.FC<ThreeMoonSceneProps> = ({
 
       // Sculpted Floating Heart between Miso & Plum
       heartGroup.position.y =
-        floorY + 1.56 + Math.sin(elapsed * 3.1) * 0.14 + (misoHop + plumHop) * 0.4;
+        floorY + 1.64 + Math.sin(elapsed * 3.1) * 0.14 + (misoHop + plumHop) * 0.4;
       heartGroup.rotation.y = Math.sin(elapsed * 1.9) * 0.42;
       heartGroup.scale.setScalar((1 + Math.sin(elapsed * 3.8) * 0.11) * heartPulse);
 
-      // Pip the Star joyful bounce & tilt
-      pipGroup.position.y = pipBaseY + Math.sin(elapsed * 3.0) * 0.095 + pipHop;
-      pipGroup.rotation.z = Math.sin(elapsed * 2.2) * 0.11;
+      // Pip the Star joyful bounce & tilt (strictly grounded >= pipBaseY above the blanket)
+      pipGroup.position.y = pipBaseY + (1 + Math.sin(elapsed * 3.0)) * 0.5 * 0.11 + pipHop;
+      pipGroup.rotation.z = Math.sin(elapsed * 2.2) * 0.09;
 
       // Sprout the Snail cozy glide & nod
       sproutGroup.position.y = sproutBaseY + Math.abs(Math.sin(elapsed * 2.2)) * 0.035 + sproutHop;

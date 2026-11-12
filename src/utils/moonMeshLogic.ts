@@ -207,3 +207,19 @@ export function getDioramaLightMood(moodId: DioramaMoodId): DioramaLightMoodConf
   return DIORAMA_LIGHT_MOODS[moodId] ?? DIORAMA_LIGHT_MOODS['moonlit-night'];
 }
 
+/**
+ * Computes a non-negative upward bounce Y position for 3D picnic characters
+ * so characters (like Pip the Star) never sink below their grounded blanket baseY.
+ */
+export function computeGroundedCharacterY(
+  baseY: number,
+  elapsedSeconds: number,
+  frequency: number,
+  amplitude: number,
+  hopOffset = 0
+): number {
+  const safeAmp = Math.max(0, amplitude);
+  const safeHop = Math.max(0, hopOffset);
+  const upwardWave = (1 + Math.sin(elapsedSeconds * frequency)) * 0.5 * safeAmp;
+  return baseY + upwardWave + safeHop;
+}
